@@ -12,26 +12,15 @@ Below is a high-level overview of how the study is conducted, from data to resul
 
 ```mermaid
 flowchart TD
-    A[Define research question<br/>Young stroke disparities] --> B[Obtain stroke dataset<br/>(approved clinical / registry source)]
-    B --> C[Apply inclusion/exclusion criteria<br/>(young stroke population)]
-    C --> D[Data cleaning & preprocessing<br/>(missing values, coding, outliers)]
-    D --> E[Feature engineering<br/>(risk factors, demographics, clinical vars)]
-    E --> F[Exploratory data analysis<br/>(summaries, tables, visualizations)]
-    F --> G[Statistical modeling / ML<br/>(e.g., regression, risk modeling)]
-    G --> H[Evaluate model & validate<br/>(performance, assumptions, sensitivity)]
-    H --> I[Interpret disparities<br/>(compare groups, adjust for confounders)]
-    I --> J[Report results & figures<br/>(manuscript, slides, dashboards)]
-
-    style A fill:#f3f0ff,stroke:#5b3fd5,stroke-width:2px
-    style B fill:#eef7ff,stroke:#1b75d1,stroke-width:1.5px
-    style C fill:#eef7ff,stroke:#1b75d1,stroke-width:1.5px
-    style D fill:#e8f8f2,stroke:#0b8a6a,stroke-width:1.5px
-    style E fill:#e8f8f2,stroke:#0b8a6a,stroke-width:1.5px
-    style F fill:#fff7e6,stroke:#e6a100,stroke-width:1.5px
-    style G fill:#fff7e6,stroke:#e6a100,stroke-width:1.5px
-    style H fill:#ffeef2,stroke:#d23b6a,stroke-width:1.5px
-    style I fill:#ffeef2,stroke:#d23b6a,stroke-width:1.5px
-    style J fill:#f3f0ff,stroke:#5b3fd5,stroke-width:2px
+    A[Define research question - young stroke disparities] --> B[Obtain stroke dataset from approved source]
+    B --> C[Apply inclusion and exclusion criteria - young stroke cohort]
+    C --> D[Data cleaning and preprocessing - missing values, coding, outliers]
+    D --> E[Feature engineering - risk factors, demographics, clinical variables]
+    E --> F[Exploratory data analysis - tables and visualizations]
+    F --> G[Statistical modeling or ML - e.g. regression or risk modeling]
+    G --> H[Evaluate models - performance, assumptions, sensitivity]
+    H --> I[Interpret disparities - compare groups, adjust for confounders]
+    I --> J[Report results and figures - manuscript, slides, dashboards]
 ```
 
 ---
