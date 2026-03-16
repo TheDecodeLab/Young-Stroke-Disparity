@@ -1,0 +1,10 @@
+category,CPTcode,description
+MRA,70544,Mr angiography head w/o dye
+MRA,70545,Mr angiography head w/dye
+MRI,70551,Mri brain w/o dye
+MRI,70552,Mri brain w/dye
+MRI,70553,Mri brain w/o & w/dye 
+CTA,70496,Ct angiography head
+CT,70450,Ct head/brain w/o dye
+CT,70460,Ct head/brain w/dye
+CT,70470,Ct head/brain w/o & w/dye
