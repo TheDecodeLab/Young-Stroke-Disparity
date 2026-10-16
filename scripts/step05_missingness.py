@@ -62,6 +62,9 @@ def suppress_small_cells(table: pd.DataFrame, threshold: int = 11) -> pd.DataFra
     if threshold < 1:
         raise ValueError("threshold must be at least 1")
     out = table.copy()
+    for col in ("n", "MRI_received_n", "MRI_received_pct",
+                "vascular_received_n", "vascular_received_pct"):
+        out[col] = out[col].astype("Float64")
     mask = out["n"] < threshold
     for col in ("n", "MRI_received_n", "MRI_received_pct",
                 "vascular_received_n", "vascular_received_pct"):
