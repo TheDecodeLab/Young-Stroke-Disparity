@@ -1,4 +1,5 @@
 """Step 18 synthetic fixtures for full and bounded direct-ZIP diagnosis scans."""
+from __future__ import annotations
 from pathlib import Path
 import sqlite3
 from zipfile import ZipFile
