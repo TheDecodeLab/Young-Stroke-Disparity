@@ -202,7 +202,7 @@ def build_demographic_cohort(zip_path: Path, index_file: Path, base: Path,
                 reader = pd.read_csv(src, usecols=["patient_id", "sex", "race",
                                       "ethnicity", "year_of_birth"], dtype="string",
                                      chunksize=chunk_rows, keep_default_na=False)
-                for frame in reader:
+                for batch_number, frame in enumerate(reader, start=1):
                     records, audit = choose_eligible_demographics(frame, indexes,
                                                                  min_age, max_age)
                     totals.update(audit)
@@ -211,6 +211,9 @@ def build_demographic_cohort(zip_path: Path, index_file: Path, base: Path,
                         conn.executemany(
                             "INSERT INTO eligible VALUES (?,?,?,?,?,?)", records)
                     conn.commit()
+                    if batch_number % 25 == 0:
+                        print(f"Step 19: scanned {totals['source_rows']:,} demographic rows",
+                              flush=True)
             if totals["source_rows"] != declared:
                 raise ValueError("Incomplete demographic source scan relative to manifest")
         n = conn.execute("SELECT COUNT(*) FROM eligible").fetchone()[0]
@@ -327,13 +330,16 @@ def build_imaging(zip_path: Path, cohort_file: Path, base: Path, chunk_rows: int
                 reader = pd.read_csv(src, usecols=["patient_id", "code_system",
                                          "code", "date"], dtype="string",
                                      chunksize=chunk_rows, keep_default_na=False)
-                for frame in reader:
+                for batch_number, frame in enumerate(reader, start=1):
                     rows, audit = select_imaging_events(frame, index_dates)
                     counters.update(audit)
                     if rows:
                         conn.executemany(
                             "INSERT OR IGNORE INTO imaging_event VALUES (?,?,?)", rows)
                     conn.commit()
+                    if batch_number % 100 == 0:
+                        print(f"Step 20: scanned {counters['source_rows']:,} procedure rows",
+                              flush=True)
             if counters["source_rows"] != declared:
                 raise ValueError("Incomplete procedure scan relative to manifest")
         saved_events = conn.execute("SELECT COUNT(*) FROM imaging_event").fetchone()[0]
