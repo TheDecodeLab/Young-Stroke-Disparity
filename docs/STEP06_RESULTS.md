@@ -1,3 +1,16 @@
+# IMPORTANT ADDENDUM: REVISED INTERPRETATION (Step 7)
+
+**DO NOT USE THE MODEL VALUES BELOW AS POPULATION ESTIMATES.**
+Step 7 revealed that no patient in the selected cohort lacks MRI, CTA
+AND MRA. The original notebook excludes CT-only patients by removing CT
+records before patient aggregation. Thus, all Step 6 estimates are
+conditioned on receiving additional imaging, and may be substantially
+biased for the intended stroke cohort. See
+[cohort selection finding](COHORT_SELECTION_FINDING.md). The original
+denominator must be reconstructed before any manuscript inference.
+
+---
+
 # Step 6 results: preliminary age/year-only models (2026-10-16)
 
 Source: the study team's `minimal_models_age50.csv` (six aggregate rows)
