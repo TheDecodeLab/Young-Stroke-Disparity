@@ -81,6 +81,33 @@ should be made public or committed**; institutional cross-table disclosure
 and data-use review remains necessary before sharing even this aggregate
 review ZIP.
 
+## Step 37 pilot revision: synthetic fixture and date formats
+
+The original synthetic fixture accidentally declared `source_id` twice in
+the diagnosis CSV header and omitted it from the procedure header, although
+the fixture rows carried that field. This caused a single test assertion
+to fail, not a crash in the real-data pilot. The fixture now declares
+`source_id` once in both event files, preserving the intended test.
+
+The bounded pilot also now reports `date_shape_category_counts` and
+`year_last_month_day_ambiguous_n` (aggregate only), with support for
+ISO-like year-first, year-first slash, year-last slash, and eight-digit
+year-first dates. A recognized **year** does not validate the exact
+clinical event **day** when the month/day order is ambiguous. Unknown
+formats remain `unparseable`; never infer dates from arbitrary strings.
+
+`source_id` might identify record provenance or source systems rather
+than a globally identical facility ID. Discordant event-versus-encounter
+`source_id` values are **investigation targets**, not proof of an invalid
+encounter join. For the primary join, patient ID equality is independently
+checked when encounter IDs overlap; the scope of the keys must be
+documented before population-level analysis.
+
+**Action after pulling the revision:** rerun the test suite and this
+same 50,000-prefix script, then review the newly generated ZIP under
+`results/phase1/`. This is still a pilot; no larger scan or clinical
+inference is authorized.
+
 ## Interpretation and next decision
 
 1. **Good sample-level ID consistency** supports designing one carefully
