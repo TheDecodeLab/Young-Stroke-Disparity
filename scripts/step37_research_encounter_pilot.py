@@ -50,25 +50,77 @@ def private_count(number):
     return REDACTED if 0 < number < 11 else number
 
 
-def coarse_year(raw):
-    """Only parse unambiguous leading ISO dates; never emit source dates."""
+def date_profile(raw):
+    """Return (coarse date-shape category, year bucket, ambiguity flag).
+
+    Never export literal source dates. The year is usable without resolving
+    month/day order where the year is last, but episode-day matching is NOT.
+    """
+    import datetime
     value = (raw or "").strip()
-    match = re.match(r"^(\d{4})-(\d{2})-(\d{2})(?:$|[ T])", value)
-    if not match:
-        return "missing" if not value else "unparseable"
-    year, month, day = (int(item) for item in match.groups())
+    if not value:
+        return "missing", "missing", False
+    shape = "unrecognized"
+    parts = None
+    year = month = day = None
+    ambiguous = False
+    match = re.match(r"^(\d{4})-(\d{1,2})-(\d{1,2})(?:$|[ T])", value)
+    if match:
+        shape = "year_first_dash"
+        year, month, day = map(int, match.groups())
+    else:
+        match = re.match(r"^(\d{4})/(\d{1,2})/(\d{1,2})(?:$|[ T])", value)
+        if match:
+            shape = "year_first_slash"
+            year, month, day = map(int, match.groups())
+        else:
+            match = re.fullmatch(r"(\d{4})(\d{2})(\d{2})", value)
+            if match:
+                shape = "compact_yyyymmdd"
+                year, month, day = map(int, match.groups())
+            else:
+                match = re.match(r"^(\d{1,2})/([0-9]{1,2})/(\d{4})(?:$|[ T])", value)
+                if match:
+                    shape = "year_last_slash"
+                    first, second, year = map(int, match.groups())
+                    # Either US month/day or day/month may be valid.
+                    valid_us = valid_day_first = False
+                    try:
+                        datetime.date(year, first, second)
+                        valid_us = True
+                    except ValueError:
+                        pass
+                    try:
+                        datetime.date(year, second, first)
+                        valid_day_first = True
+                    except ValueError:
+                        pass
+                    if not (valid_us or valid_day_first):
+                        return shape, "unparseable", False
+                    ambiguous = valid_us and valid_day_first and first != second
+                    # Both valid interpretations have the same calendar year.
+                    month, day = (first, second) if valid_us else (second, first)
+                elif re.fullmatch(r"\d{10}|\d{13}", value):
+                    return "unix_epoch_candidate_unverified", "unparseable", False
+                else:
+                    return "unrecognized", "unparseable", False
     try:
-        import datetime
         datetime.date(year, month, day)
-    except ValueError:
-        return "unparseable"
+    except (ValueError, TypeError):
+        return shape, "unparseable", ambiguous
     if year in (2018, 2019):
-        return "2018_2019"
-    if 2020 <= year <= 2025:
-        return "2020_2025"
-    if 1900 <= year <= 2017:
-        return "before_2018"
-    return "other_year"
+        bucket = "2018_2019"
+    elif 2020 <= year <= 2025:
+        bucket = "2020_2025"
+    elif 1900 <= year <= 2017:
+        bucket = "before_2018"
+    else:
+        bucket = "other_year"
+    return shape, bucket, ambiguous
+
+
+def coarse_year(raw):
+    return date_profile(raw)[1]
 
 
 def type_group(value):
@@ -140,6 +192,8 @@ def summarize(rows, table):
     missing_encounter = 0
     missing_patient = 0
     years = Counter()
+    date_shapes = Counter()
+    ambiguous_date_count = 0
     specifics = Counter()
     encounter_patient = {}
     conflicting_encounter_patient = 0
@@ -161,7 +215,10 @@ def summarize(rows, table):
         if encounter_id and patient_id:
             nonblank_pairs.append((encounter_id, patient_id))
         year_col = "start_date" if table == "encounter.csv" else "date"
-        years[coarse_year(row.get(year_col))] += 1
+        shape, year_bucket, ambiguous_date = date_profile(row.get(year_col))
+        years[year_bucket] += 1
+        date_shapes[shape] += 1
+        ambiguous_date_count += int(ambiguous_date)
         if table == "encounter.csv":
             specifics[type_group(row.get("type"))] += 1
             if encounter_id:
@@ -197,6 +254,10 @@ def summarize(rows, table):
             len({pair[0] for pair in nonblank_pairs})
         ),
         "coarse_date_bucket_counts": {k: private_count(v) for k, v in sorted(years.items())},
+        "date_shape_category_counts": {
+            k: private_count(v) for k, v in sorted(date_shapes.items())
+        },
+        "year_last_month_day_ambiguous_n": private_count(ambiguous_date_count),
         "restricted_characteristic_counts": {
             k: private_count(v) for k, v in sorted(specifics.items())
         },
@@ -336,6 +397,8 @@ def run(archive_path, preflight_path, output_directory, max_rows):
             "Each sample is an independent, possibly sorted file prefix; sampling is not random.",
             "Prefix encounter joins are diagnostic only; missing overlap is not evidence of bad real-world keys.",
             "Encounter type labels are lexical candidates, NOT proof of inpatient admission.",
+            "Year-last slash dates can have ambiguous month/day order even when their calendar year is valid.",
+            "Unrecognized date shapes must be investigated locally before day-level episode matching.",
             "Patient/encounter/source identifiers may have cross-site scope; review source_id agreement when available.",
             "I63 and imaging-CPT signals in sampled rows are not patient rates or codebook validation.",
             "All numbers require data-use/disclosure review; do not commit generated outputs.",
