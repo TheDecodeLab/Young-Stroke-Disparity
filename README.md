@@ -37,8 +37,8 @@ Each age/recorded-sex/index-year breakdown sums to
 **39,815 head-only matches** and **39,949 head+neck matches**
 for the working +/-1-day window.
 
-A [working methodological manuscript draft](docs/METHODS_MANUSCRIPT_DRAFT_v0.1.md)
-and [Step34 internal exhibit instructions](docs/STEP34_INTERNAL_MANUSCRIPT_PACKAGE.md)
+A private internal methodological manuscript draft is available separately
+from this public GitHub repository; [Step34 internal exhibit instructions](docs/STEP34_INTERNAL_MANUSCRIPT_PACKAGE.md)
 are now available. The aggregate-only
 [Step34 script](scripts/step34_manuscript_exhibits.py)
 creates internal vector SVG/high-resolution PNG plots,
