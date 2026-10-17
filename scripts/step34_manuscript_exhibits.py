@@ -11,7 +11,11 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+WINDOW_KEYS = ('0', '1', '3', '7')
 
 WINDOWS = ("0", "1", "3", "7")
 GROUPS = ("age_band", "recorded_sex", "index_year")
@@ -59,6 +63,12 @@ def build_data(step25: dict, step31: dict, step33: dict) -> dict:
         expanded = a["expanded_with_any_included_code_n"]
         require(0 <= historical <= head <= expanded <= n,
                 "non-nested procedure code sets: " + w)
+        # Cross-table arithmetic can expose an apparently suppressed small
+        # increment even if every published marginal itself exceeds 11.
+        for value in (historical, head, expanded, n - expanded,
+                      head-historical, expanded-head):
+            require(value == 0 or value >= 11,
+                    "potentially disclosive window count: " + w)
         require(pct(head, n) ==
                 step33["window_head_only_any_code_percent"][w],
                 "head-only rounded percentage mismatch: " + w)
@@ -98,6 +108,10 @@ def build_data(step25: dict, step31: dict, step33: dict) -> dict:
             wide = person_group["expanded_head_plus_neck_any_code_n"]
             require(0 <= head <= wide <= denominator,
                     "non-nested group count: " + group)
+            for value in (denominator, head, wide, denominator-wide,
+                          wide-head):
+                require(value == 0 or value >= 11,
+                        "potentially disclosive subgroup count: " + group)
             require(pct(head, denominator) ==
                     person_group["head_only_any_code_percent"],
                     "head-only group percentage: " + group)
@@ -214,7 +228,12 @@ def run(step25_path: Path, step31_path: Path, step33_path: Path,
     paths = (step25_path, step31_path, step33_path)
     data = build_data(*(json.loads(p.read_text(encoding="utf-8"))
                         for p in paths))
-    out_dir.mkdir(parents=True, exist_ok=True)
+    resolved = out_dir.expanduser().resolve()
+    results_dir = (ROOT / "results").resolve()
+    require(results_dir == resolved or results_dir in resolved.parents,
+            "exhibits must stay under gitignored results/ directory")
+    out_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+    os.chmod(out_dir, 0o700)
     win_path = out_dir / "table2_temporal_code_definitions.csv"
     strata_path = out_dir / "table3_unadjusted_code_frequency.csv"
     write_csv(win_path, data["windows"])
@@ -244,9 +263,11 @@ def run(step25_path: Path, step31_path: Path, step33_path: Path,
             "or demographic access disparities."
         )
     }
-    (out_dir / "step34_internal_manifest.json").write_text(
-        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8")
+    manifest_path = out_dir / "step34_internal_manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True)
+                             + "\n", encoding="utf-8")
+    for name in (*artifacts, manifest_path.name):
+        os.chmod(out_dir / name, 0o600)
     return manifest
 
 
