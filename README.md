@@ -27,6 +27,30 @@ If encounter-linkage cannot be established, the original admission
 study remains blocked and a distinct research question must be
 formally approved.
 
+## Next local step: safe candidate imaging-codebook preflight
+
+The fixed-data plan now has a **14-code, clinically unapproved**
+[CPT candidate catalog](dataset/imaging_codebook_candidate_v1.csv),
+plus a [Step 28 review-gated extractor](docs/STEP28_IMAGING_CODEBOOK_PREFLIGHT.md).
+The five candidate additions are CTA neck 70498 and MRA head/neck
+70546-70549, supported by older CMS code lists but **not**
+approved by a stroke clinician for the study protocol.
+
+The next command is ONLY a metadata preflight. It does **not**
+reprocess the source ZIP clinical rows or begin the 1.17-billion
+procedure-row scan.
+
+```bash
+python -m pytest -q && python scripts/step28_imaging_extract.py --plan   --zip "$TRINETX_ZIP" --private-dir "$TRINETX_PRIVATE"   --output results/phase1/step28_codebook_plan.json
+```
+
+A future --execute requires separately documented investigator,
+clinical and data-use review. The committed
+[approval template](docs/STEP28_APPROVAL_TEMPLATE.json) has
+decision=NOT_APPROVED and must NEVER be treated as actual approval.
+No new TriNetX data will be requested. Do not merge or publish
+unvalidated clinical results.
+
 ## Data availability constraint and study redesign
 
 **Investigator confirmation (2026-10-17): No additional TriNetX data
