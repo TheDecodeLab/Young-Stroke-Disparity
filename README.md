@@ -15,8 +15,17 @@ Therefore Steps 2-7 currently describe an imaging-selected subset
 and MUST NOT be used to estimate population MRI/vascular imaging rates
 or clinical disparities. Reconstruct the index stroke cohort using the
 upstream diagnosis, encounter and procedure data while retaining CT-only
-patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md).
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md).
 
+
+
+**Step 12 confirmed a second limitation:** among 208,867 imaging-linked
+patients with CT and non-CT imaging in the larger event file, the earliest
+CT-linked and earliest non-CT imaging-linked diagnosis dates differ for
+9,584 patients (4.59%). These are not encounter-validated admissions.
+Steps 01-12 are diagnostic, not valid final population estimates.
+Next, locate the original diagnosis/procedure/demographic exports and
+run the Step 13 source readiness audit before reconstruction.
 
 **Phase 1: data provenance and baseline audit (in progress).**
 No new adjusted association or manuscript finding has been validated.
@@ -52,6 +61,8 @@ python scripts/step10_reconcile_cohorts.py
 python scripts/step11_event_linkage.py
 # Compare provisional CT-index and advanced-imaging-index dates:
 python scripts/step12_index_sensitivity.py
+# Step 13 requires original secure source paths (not intermediate cohorts):
+# python scripts/step13_source_inventory.py --diagnoses PATH --procedures PATH --demographics PATH
 ```
 
 ### What each script does
@@ -70,6 +81,7 @@ python scripts/step12_index_sensitivity.py
 | `step10_reconcile_cohorts.py` | Reconcile CT-inclusive and legacy derived young-stroke tables by aggregate patient overlap and imaging-count concordance | `results/phase1/cohort_reconciliation.json` |
 | `step11_event_linkage.py` | Check event-date linkage, first imaging-linked diagnosis and discordance with saved tables (audit only) | `results/phase1/event_linkage_audit.json` |
 | `step12_index_sensitivity.py` | Compare earliest any-imaging, CT-linked, and advanced-imaging-linked diagnosis dates (audit only) | `results/phase1/index_definition_audit.json` |
+| `step13_source_inventory.py` | Inspect original diagnosis, procedure and demographic source schemas and provisional code coverage (audit only) | `results/phase1/source_readiness.json` |
 
 ### How to interpret
 
