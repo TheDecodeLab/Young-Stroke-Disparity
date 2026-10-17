@@ -99,6 +99,29 @@ count, and computes the same-day, +/-1, +/-3, and +/-7-day
 modality-group counts. No clinical rows appear in returned JSON.
 These remain **temporal code matches, not confirmed admissions**.
 
+## Anatomical reporting safeguards (added after preflight)
+
+The future Step 28 extraction report will now summarize both
+**head-only recorded CTA/MRA** (the working primary endpoints) and
+**head-plus-neck recorded CTA/MRA** (expanded sensitivity), using
+the *same private exact-code event database*. Brain CT/MRI are
+separate outcomes in both. Neck CTA/MRA without a corresponding
+head CTA/MRA is counted separately when disclosure checks permit.
+
+The entire anatomic comparison for an individual time window is
+withheld if any positive group count or any positive nested-endpoint
+difference is under 11. This is a conservative LOCAL QC protection,
+not approval to release multiple tables: cross-window and other
+published marginals can still create complementary disclosure risks.
+The report explicitly sets aggregate_disclosure_review_required=true.
+All person-level events remain private outside Git.
+
+The updated source has additional fail-closed checks for anatomical
+modality labels (before any expensive scan) and rejects approval
+JSONs saved inside the Git repository. The candidate CSV and its
+SHA256 fingerprint remain unchanged from the already completed
+Step 28 preflight. The **new tests still require local execution**.
+
 ## Go/no-go after expansion
 
 Evaluate whether matching-code coverage and source observation are
