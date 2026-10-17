@@ -74,3 +74,11 @@ def test_nonrepresentative_flag():
                        "ethnicity": ["Unknown"] * 12, "year_of_birth": ["1980"] * 12})
     out = sample_summary("demographics", df)
     assert out["sample_is_nonrepresentative"] is True
+
+
+def test_reason_for_visit_is_not_encounter_id():
+    from scripts.step16_zip_preflight import is_encounter_identifier
+    assert not is_encounter_identifier("reason_for_visit")
+    assert not is_encounter_identifier("admitting_diagnosis")
+    assert is_encounter_identifier("encounter_id")
+    assert is_encounter_identifier("visit_occurrence_id")
