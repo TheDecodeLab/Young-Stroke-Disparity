@@ -145,6 +145,9 @@ def summarize(rows, table):
     conflicting_encounter_patient = 0
     duplicate_encounter_rows = 0
     nonblank_pairs = []
+    missing_source_id = 0
+    conflicting_encounter_source = 0
+    encounter_source = {}
     for row in rows:
         encounter_id = (row.get("encounter_id") or "").strip()
         patient_id = (row.get("patient_id") or "").strip()
@@ -152,6 +155,9 @@ def summarize(rows, table):
             missing_encounter += 1
         if not patient_id:
             missing_patient += 1
+        source_id = (row.get("source_id") or "").strip()
+        if "source_id" in row and not source_id:
+            missing_source_id += 1
         if encounter_id and patient_id:
             nonblank_pairs.append((encounter_id, patient_id))
         year_col = "start_date" if table == "encounter.csv" else "date"
@@ -165,6 +171,9 @@ def summarize(rows, table):
                         conflicting_encounter_patient += 1
                 else:
                     encounter_patient[encounter_id] = patient_id
+                if encounter_id in encounter_source and source_id != encounter_source[encounter_id]:
+                    conflicting_encounter_source += 1
+                encounter_source.setdefault(encounter_id, source_id)
         elif table == "diagnosis.csv":
             if (row.get("code_system") or "").strip().upper() == "ICD-10-CM" and re.match(
                 r"^I63(?:\.|$)", (row.get("code") or "").strip().upper()
@@ -182,6 +191,7 @@ def summarize(rows, table):
         "max_rows_exhausted_or_table_finished": None,  # set by caller
         "missing_encounter_id_n": private_count(missing_encounter),
         "missing_patient_id_n": private_count(missing_patient),
+        "missing_source_id_n": private_count(missing_source_id) if rows and "source_id" in rows[0] else None,
         "nonblank_encounter_patient_pairs_n": private_count(len(nonblank_pairs)),
         "sample_distinct_nonblank_encounter_ids_n": private_count(
             len({pair[0] for pair in nonblank_pairs})
@@ -196,6 +206,9 @@ def summarize(rows, table):
         "sample_encounter_id_conflicting_patient_n": (
             private_count(conflicting_encounter_patient) if table == "encounter.csv" else None
         ),
+        "sample_encounter_id_conflicting_source_n": (
+            private_count(conflicting_encounter_source) if table == "encounter.csv" and rows and "source_id" in rows[0] else None
+        ),
     }
 
 
@@ -204,6 +217,8 @@ def sample_overlap(events, parent):
     in_parent = 0
     same_patient = 0
     differing_patient = 0
+    agreeing_source = 0
+    differing_source = 0
     for row in events:
         encounter_id = (row.get("encounter_id") or "").strip()
         if not encounter_id:
@@ -211,21 +226,32 @@ def sample_overlap(events, parent):
         with_id += 1
         if encounter_id in parent:
             in_parent += 1
-            if parent[encounter_id] and (row.get("patient_id") or "").strip() == parent[encounter_id]:
+            parent_patient, parent_source = parent[encounter_id]
+            if parent_patient and (row.get("patient_id") or "").strip() == parent_patient:
                 same_patient += 1
             else:
                 differing_patient += 1
+            event_source = (row.get("source_id") or "").strip()
+            if parent_source and event_source:
+                if event_source == parent_source:
+                    agreeing_source += 1
+                else:
+                    differing_source += 1
     return {
         "sample_event_rows_with_encounter_id_n": private_count(with_id),
         "encounter_id_seen_in_encounter_prefix_n": private_count(in_parent),
         "matching_patient_id_when_observed_n": private_count(same_patient),
         "missing_or_different_patient_id_when_observed_n": private_count(differing_patient),
+        "agreeing_nonblank_source_id_when_observed_n": private_count(agreeing_source),
+        "differing_nonblank_source_id_when_observed_n": private_count(differing_source),
         "interpretation": "Prefix-to-prefix overlap only; absence of matches does not indicate failed source-wide linkage.",
     }
 
 
 def output_dir_guard(directory):
     allowed = PHASE1.resolve()
+    if allowed != ROOT.resolve() / "results" / "phase1":
+        raise ValueError("results/phase1 must not be a symlink outside the cloned repository")
     resolved = directory.expanduser().resolve()
     if resolved != allowed and allowed not in resolved.parents:
         raise ValueError("Output directory must be within the cloned repository results/phase1/")
@@ -281,7 +307,10 @@ def run(archive_path, preflight_path, output_directory, max_rows):
     for row in sampled["encounter.csv"]:
         key = (row.get("encounter_id") or "").strip()
         if key and key not in parent:
-            parent[key] = (row.get("patient_id") or "").strip()
+            parent[key] = (
+                (row.get("patient_id") or "").strip(),
+                (row.get("source_id") or "").strip(),
+            )
     summaries = {k: summarize(v, k) for k, v in sampled.items()}
     for table in TABLES:
         summaries[table]["max_rows_exhausted_or_table_finished"] = (
@@ -307,6 +336,7 @@ def run(archive_path, preflight_path, output_directory, max_rows):
             "Each sample is an independent, possibly sorted file prefix; sampling is not random.",
             "Prefix encounter joins are diagnostic only; missing overlap is not evidence of bad real-world keys.",
             "Encounter type labels are lexical candidates, NOT proof of inpatient admission.",
+            "Patient/encounter/source identifiers may have cross-site scope; review source_id agreement when available.",
             "I63 and imaging-CPT signals in sampled rows are not patient rates or codebook validation.",
             "All numbers require data-use/disclosure review; do not commit generated outputs.",
         ],
