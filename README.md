@@ -53,7 +53,7 @@ Do not interpret imaging frequency as quality or equity of clinical care.
 
 ## Requirements
 
-Python >=3.10. In the repository root:
+Python >=3.9 (3.10+ recommended). The reconstruction tests were exercised by the study team with Python 3.9.18. In the repository root:
 
 ```bash
 python -m venv .venv
