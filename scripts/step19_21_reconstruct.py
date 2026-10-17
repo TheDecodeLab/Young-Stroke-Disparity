@@ -179,8 +179,12 @@ def build_demographic_cohort(zip_path: Path, index_file: Path, base: Path,
         if not db_complete(complete):
             raise ValueError("Previously completed demographic DB has invalid state")
         with sqlite3.connect(f"file:{complete}?mode=ro", uri=True) as con:
+            config = dict(con.execute("SELECT key,value FROM scan_state"))
+            if (config.get("min_age"), config.get("max_age")) != (str(min_age), str(max_age)):
+                raise ValueError("Cannot reuse demographic index with a different age interval")
             n = con.execute("SELECT COUNT(*) FROM eligible").fetchone()[0]
-        return {"stage": "demographics", "reused_complete": True, "eligible_n": n}
+        return {"stage": "demographics", "reused_complete": True, "eligible_n": n,
+                "min_age": min_age, "max_age": max_age}
 
     with sqlite3.connect(f"file:{index_file}?mode=ro", uri=True) as con:
         indexes = {pid: date for pid, date in con.execute(
@@ -212,6 +216,8 @@ def build_demographic_cohort(zip_path: Path, index_file: Path, base: Path,
         n = conn.execute("SELECT COUNT(*) FROM eligible").fetchone()[0]
         if n != totals["eligible_rows"]:
             raise ValueError("Duplicate or inconsistent demographic eligibility counts")
+        conn.executemany("INSERT INTO scan_state VALUES (?,?)",
+                         [("min_age", str(min_age)), ("max_age", str(max_age))])
         finalize_db(conn, partial, complete)
     except Exception:
         conn.close()
@@ -298,6 +304,14 @@ def build_imaging(zip_path: Path, cohort_file: Path, base: Path, chunk_rows: int
     if complete.exists():
         if not db_complete(complete):
             raise ValueError("Previously completed imaging DB has invalid state")
+        import hashlib
+        protocol = hashlib.sha256(
+            json.dumps({"cpt": CPT, "window": [-7, 7]}, sort_keys=True).encode()
+        ).hexdigest()
+        with sqlite3.connect(f"file:{complete}?mode=ro", uri=True) as con:
+            config = dict(con.execute("SELECT key,value FROM scan_state"))
+            if config.get("imaging_protocol") != protocol:
+                raise ValueError("Cannot reuse imaging database after CPT/window rules changed")
         return {"stage": "imaging", "reused_complete": True}
     with sqlite3.connect(f"file:{cohort_file}?mode=ro", uri=True) as eligible:
         index_dates = {pid: date for pid, date in eligible.execute(
@@ -325,6 +339,11 @@ def build_imaging(zip_path: Path, cohort_file: Path, base: Path, chunk_rows: int
         saved_events = conn.execute("SELECT COUNT(*) FROM imaging_event").fetchone()[0]
         with sqlite3.connect(f"file:{cohort_file}?mode=ro", uri=True) as eligible:
             overview = imaging_counts(conn, eligible)
+        import hashlib
+        protocol = hashlib.sha256(
+            json.dumps({"cpt": CPT, "window": [-7, 7]}, sort_keys=True).encode()
+        ).hexdigest()
+        conn.execute("INSERT INTO scan_state VALUES ('imaging_protocol',?)", (protocol,))
         finalize_db(conn, partial, complete)
     except Exception:
         conn.close()
