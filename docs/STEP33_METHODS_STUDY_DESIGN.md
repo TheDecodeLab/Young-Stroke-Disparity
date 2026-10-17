@@ -20,26 +20,27 @@ The rate numerator is presence of at least one of 14 reviewed
 imaging CPT codes (CT brain, MRI brain, CTA/MRA head/neck) within
 +/-1 calendar day. Age comes from birth year only.
 
-| One-dimensional stratum | Denominator | With a matching included code | Matching-code percentage |
+| One-dimensional stratum | Denominator | Head-only matching-code rate (working primary) | Head + neck matching-code rate (sensitivity) |
 | --- | ---: | ---: | ---: |
-| Age 19-29 | 7,456 | 3,922 | 52.60% |
-| Age 30-39 | 20,051 | 9,761 | 48.68% |
-| Age 40-50 | 59,395 | 26,266 | 44.22% |
-| Recorded female | 49,074 | 23,411 | 47.71% |
-| Recorded male | 37,828 | 16,538 | 43.72% |
-| Index year 2018 | 48,706 | 21,283 | 43.70% |
-| Index year 2019 | 38,196 | 18,666 | 48.87% |
+| Age 19-29 | 7,456 | 52.35% | 52.60% |
+| Age 30-39 | 20,051 | 48.50% | 48.68% |
+| Age 40-50 | 59,395 | 44.09% | 44.22% |
+| Recorded female | 49,074 | 47.56% | 47.71% |
+| Recorded male | 37,828 | 43.55% | 43.72% |
+| Index year 2018 | 48,706 | 43.53% | 43.70% |
+| Index year 2019 | 38,196 | 48.73% | 48.87% |
 
 Each dimension sums independently to 86,902 and the common
-39,949 people with any matching included code. Age, recorded sex
+39,949 people with a head+neck match or 39,815 with a head-only match. Age, recorded sex
 and index year results are **separate marginal views**, not mutually
 exclusive rows across the entire table; do not sum all seven rows.
 
 Approximate unadjusted percentage-point differences in
-matching-code frequency:
-- Age 19-29 versus 40-50: +8.38 points.
-- Recorded female versus male: +3.99 points.
-- 2019 versus 2018: +5.17 points.
+matching-code frequency (head-only working primary; head+neck
+sensitivity in parentheses):
+- Age 19-29 versus 40-50: +8.26 (+8.38) points.
+- Recorded female versus male: +4.01 (+3.99) points.
+- 2019 versus 2018: +5.20 (+5.17) points.
 
 These contrasts have **no adjustment, confidence intervals or
 claim about imaging receipt**. They can arise from patient
@@ -50,14 +51,18 @@ Do not label any difference a clinical disparity.
 ## Relating heterogeneity to code-list and window sensitivity
 
 A uniform 86,902-person denominator yields:
-- Same-day 14-code match: 37,379 / 86,902 (43.01%).
-- +/-1 day: 39,949 / 86,902 (45.97%).
-- +/-3 day: 41,097 / 86,902 (47.29%).
-- +/-7 day: 42,300 / 86,902 (48.68%).
+
+| Window | Head-only working primary | Expanded head+neck sensitivity |
+| --- | ---: | ---: |
+| Same day | 37,239 (42.85%) | 37,379 (43.01%) |
+| +/-1 day | 39,815 (45.82%) | 39,949 (45.97%) |
+| +/-3 days | 40,973 (47.15%) | 41,097 (47.29%) |
+| +/-7 days | 42,176 (48.53%) | 42,300 (48.68%) |
 
 Changing the acceptable time window from same-day to +/-7
-days changes *any-match* recorded-code ascertainment by
-**5.66 percentage points**, while expanding the original
+days changes *any-match* recorded-code ascertainment under the
+expanded head+neck definition by **5.67 percentage points**,
+while expanding the original
 nine-code definition to 14 codes changes it by only **0.20
 percentage points** at +/-1 day. These changes are
 **measurement-definition sensitivity**, not verified biases in
