@@ -137,10 +137,13 @@ def compare(step31: dict, step32: dict) -> dict:
             metrics.append({
                 "stratum": row["stratum"],
                 "denominator": row["denominator"],
-                "any_matching_code_n": d["any_head_or_neck_n"],
-                "any_matching_code_percent": percentage(
+                "head_only_any_code_n": d["any_head_n"],
+                "head_only_any_code_percent": percentage(
+                    d["any_head_n"], row["denominator"]),
+                "expanded_head_plus_neck_any_code_n": d["any_head_or_neck_n"],
+                "expanded_head_plus_neck_any_code_percent": percentage(
                     d["any_head_or_neck_n"], row["denominator"]),
-                "no_matching_included_code_percent": percentage(
+                "expanded_no_matching_included_code_percent": percentage(
                     d["none_head_or_neck_n"], row["denominator"]),
                 "head_CT_code_percent": percentage(
                     d["head_CT_n"], row["denominator"]),
@@ -157,18 +160,20 @@ def compare(step31: dict, step32: dict) -> dict:
     # not causal, population or clinical-care differences.
     lookups = {dim: {row["stratum"]: row for row in rows}
                for dim, rows in result.items() if dim in STRATA}
-    def pp(dim: str, a: str, b: str) -> float:
-        return round(lookups[dim][a]["any_matching_code_percent"] -
-                     lookups[dim][b]["any_matching_code_percent"], 2)
-    differences = {
-        "age_19_29_minus_age_40_50_pp":
-            pp("age_band", "19-29", "40-50"),
-        "female_minus_male_pp":
-            pp("recorded_sex", "Female", "Male"),
-        "year_2019_minus_2018_pp":
-            pp("index_year", "2019", "2018"),
-    }
-    coverage = {w: percentage(reference[w][0], n) for w in WINDOWS}
+    def pp(dim: str, a: str, b: str, measure: str) -> float:
+        return round(lookups[dim][a][measure] -
+                     lookups[dim][b][measure], 2)
+    def contrasts(measure: str) -> dict:
+        return {
+            "age_19_29_minus_age_40_50_pp":
+                pp("age_band", "19-29", "40-50", measure),
+            "female_minus_male_pp":
+                pp("recorded_sex", "Female", "Male", measure),
+            "year_2019_minus_2018_pp":
+                pp("index_year", "2019", "2018", measure),
+        }
+    head_coverage = {w: percentage(reference[w][2], n) for w in WINDOWS}
+    expanded_coverage = {w: percentage(reference[w][0], n) for w in WINDOWS}
     catalog_increment = round(
         step31["per_window"]["1"]["expanded_minus_historical_coverage_percent_points"], 3)
     return {
@@ -179,14 +184,19 @@ def compare(step31: dict, step32: dict) -> dict:
         "all_three_dimensions_reconciled": True,
         "denominator": n,
         "primary_window": "index date +/-1 calendar day",
-        "primary_expanded_head_and_neck_any_code_rates_by_group": {
+        "working_primary_anatomy": "Head/brain CT MRI CTA MRA",
+        "anatomic_sensitivity": "Head/brain plus cervical CTA MRA",
+        "code_match_rates_by_group_head_only_and_expanded": {
             key: result[key] for key in STRATA
         },
-        "unadjusted_code_frequency_differences_percentage_points":
-            differences,
-        "window_any_matching_code_percent": coverage,
-        "any_code_percent_change_day0_to_plusminus7":
-            round(coverage["7"] - coverage["0"], 2),
+        "unadjusted_head_only_differences_percentage_points":
+            contrasts("head_only_any_code_percent"),
+        "unadjusted_expanded_differences_percentage_points":
+            contrasts("expanded_head_plus_neck_any_code_percent"),
+        "window_head_only_any_code_percent": head_coverage,
+        "window_expanded_any_code_percent": expanded_coverage,
+        "expanded_any_code_percent_change_day0_to_plusminus7":
+            round(expanded_coverage["7"] - expanded_coverage["0"], 2),
         "codebook_expansion_any_code_gain_at_plusminus1_pp": catalog_increment,
         "interpretation": (
             "Descriptive administrative code-frequency patterns; differences "
