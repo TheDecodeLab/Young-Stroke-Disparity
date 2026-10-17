@@ -58,6 +58,13 @@ def codebook(path: Path) -> tuple[dict, str, list[dict]]:
             raise ValueError("Unknown code system or invalid procedure code")
         if modality not in MODALITIES:
             raise ValueError("Unsupported imaging modality")
+        valid_anatomy = {
+            ("CT", "head"), ("MRI", "brain"),
+            ("CTA", "head"), ("CTA", "neck"),
+            ("MRA", "head"), ("MRA", "neck"),
+        }
+        if (modality, fields["anatomy"].lower()) not in valid_anatomy:
+            raise ValueError("Unrecognized anatomical mapping in codebook")
         if fields["clinical_review"] not in {"pending", "approved"}:
             raise ValueError("Unrecognized clinical-review status")
         if fields["source_status"] not in {"historical", "review_candidate"}:
@@ -150,7 +157,10 @@ def plan(zip_file: Path, private_dir: Path, codebook_file: Path) -> dict:
 def check_approval(approval_file: Path, manifest: dict) -> None:
     if approval_file is None:
         raise ValueError("--execute requires --approval with investigator and clinician decisions")
-    approval = json.loads(approval_file.read_text(encoding="utf-8"))
+    resolved = approval_file.expanduser().resolve()
+    if resolved == ROOT.resolve() or ROOT.resolve() in resolved.parents:
+        raise ValueError("Approval file must remain outside the Git repository")
+    approval = json.loads(resolved.read_text(encoding="utf-8"))
     required = {
         "decision": "approved",
         "codebook_sha256": manifest["codebook_sha256"],
