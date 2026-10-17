@@ -45,7 +45,18 @@ SAMPLE_FIELDS = {
     "procedures": ("code_system", "code", "date"),
     "demographics": ("sex", "race", "ethnicity", "year_of_birth"),
 }
-KEY_TERMS = ("encounter", "admission", "visit", "hospitalization", "hospital_stay", "visit_occurrence")
+ENCOUNTER_IDENTIFIER_FIELDS = {
+    "encounter_id", "encounterid", "encounter_number", "encounter_num",
+    "visit_id", "visitid", "visit_number", "visit_num",
+    "visit_occurrence_id", "admission_id", "admission_number",
+    "hospitalization_id", "hospital_stay_id",
+}
+
+
+def is_encounter_identifier(name: str) -> bool:
+    """Distinguish linkage IDs from descriptive fields like reason_for_visit."""
+    value = name.strip().lower()
+    return value in ENCOUNTER_IDENTIFIER_FIELDS
 
 
 def _date_patterns(col: pd.Series) -> dict:
@@ -111,7 +122,7 @@ def preflight(zip_path: Path, sample_rows: int = 10000, max_members: int = 2000)
         for info in members[:max_members]:
             extension = PurePosixPath(info.filename).suffix.lower()
             fields = safe_member_header(zf, info) if extension in (".csv", ".tsv") else None
-            matches = [f for f in (fields or []) if any(t in f.lower() for t in KEY_TERMS)]
+            matches = [f for f in (fields or []) if is_encounter_identifier(f)]
             headers.append({
                 "member": info.filename,
                 "format": extension,
