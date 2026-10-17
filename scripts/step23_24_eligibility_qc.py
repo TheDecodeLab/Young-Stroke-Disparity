@@ -72,20 +72,29 @@ def analyze_codes(dx: pd.DataFrame, eligible: pd.DataFrame, events: pd.DataFrame
     code = x["dx_code"].astype("string").str.strip().str.upper()
     if not code.str.fullmatch(r"I63(?:\.[0-9A-Z]+)?").fillna(False).all():
         raise ValueError("Unexpected code in diagnosis index")
-    digit = code.str.extract(r"^I63\.(\d)", expand=False)
-    x["family"] = ("I63." + digit).where(digit.notna(), "I63 stem")
-    families = []
-    for family, part in x.groupby("family", sort=True, observed=True):
+    # Coarse groups avoid a single suppressed rare subtype becoming
+    # reconstructable by subtracting detailed subgroups from the total.
+    # Entire two-group table is suppressed if ANY cell is below 11.
+    x["code_group"] = code.str.startswith("I63.9").map(
+        {True: "I63.9 family", False: "Other I63 codes"})
+    group_rows = []
+    for label, part in x.groupby("code_group", sort=True, observed=True):
         ct = part["imaging_class"].value_counts().to_dict()
-        n = len(part)
-        # Suppress the whole group when ANY class count is a small cell.
-        small = 0 < n < 11 or any(0 < ct.get(cls, 0) < 11 for cls in CLASSES)
-        if small:
-            families.append({"icd10_family": str(family), "suppressed": True})
-        else:
-            families.append({"icd10_family": str(family), "suppressed": False,
-                             "eligible_total": n,
-                             "imaging_groups": {cls: int(ct.get(cls, 0)) for cls in CLASSES}})
+        group_rows.append({
+            "icd10_group": str(label),
+            "eligible_total": int(len(part)),
+            "imaging_groups": {cls: int(ct.get(cls, 0)) for cls in CLASSES},
+        })
+    risk = (
+        len(group_rows) != 2 or
+        any(0 < value < 11 for entry in group_rows
+            for value in [entry["eligible_total"], *entry["imaging_groups"].values()])
+    )
+    if risk:
+        groups = [{"icd10_group": name, "suppressed": True}
+                  for name in ("I63.9 family", "Other I63 codes")]
+    else:
+        groups = [dict(entry, suppressed=False) for entry in group_rows]
     def unknown(series: pd.Series) -> pd.Series:
         s = series.astype("string").str.strip().str.lower()
         return s.isna() | s.isin(["", "unknown", "nan", "null", "xxx",
@@ -95,9 +104,13 @@ def analyze_codes(dx: pd.DataFrame, eligible: pd.DataFrame, events: pd.DataFrame
         missing.append({"imaging_class": str(label), "patients": int(len(group)),
                         "race_unknown_or_missing_n": masked(unknown(group["race"]).sum()),
                         "ethnicity_unknown_or_missing_n": masked(unknown(group["ethnicity"]).sum())})
-    return {"first_decimal_digit_audit_by_imaging": families,
+    return {"coarse_icd10_group_by_imaging": groups,
             "missing_race_ethnicity_by_imaging_group": missing,
-            "disclosure_note": "Small families fully withheld; complementary disclosures must still be reviewed."}
+            "disclosure_note": (
+                "Coarse I63.9 versus Other I63 groups; if any nonzero cell is below 11, "
+                "both groups are withheld to reduce complementary disclosure. "
+                "Prior fine-grained reports must NOT be shared without disclosure review."
+            )}
 
 
 def count_demographic_chunk(frame: pd.DataFrame, index: dict, saved_ids: set
