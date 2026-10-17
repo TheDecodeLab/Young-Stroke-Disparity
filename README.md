@@ -27,6 +27,35 @@ If encounter-linkage cannot be established, the original admission
 study remains blocked and a distinct research question must be
 formally approved.
 
+## Step 33 validated; Step 34 internal manuscript work
+
+The study-team uploaded `step33_recording_pattern_descriptives.json`
+with `all_three_dimensions_reconciled=true`,
+`aggregate_inputs_only=true`, denominator **86,902**,
+and no private SQLite or original ZIP record reads.
+Each age/recorded-sex/index-year breakdown sums to
+**39,815 head-only matches** and **39,949 head+neck matches**
+for the working +/-1-day window.
+
+A [working methodological manuscript draft](docs/METHODS_MANUSCRIPT_DRAFT_v0.1.md)
+and [Step34 internal exhibit instructions](docs/STEP34_INTERNAL_MANUSCRIPT_PACKAGE.md)
+are now available. The aggregate-only
+[Step34 script](scripts/step34_manuscript_exhibits.py)
+creates internal vector SVG/high-resolution PNG plots,
+descriptive CSV tables and a source SHA256 manifest
+under gitignored owner-only results/ paths. It
+requires matplotlib; eight new synthetic tests
+still need to pass on the study workstation.
+Outputs remain unapproved for external disclosure.
+
+The methodological focus is selection on historical
+MRI/CTA/MRA coding, comparison to an imaging-independent
+diagnosis-first denominator, procedure vocabulary
+sensitivity, calendar-date matching assumptions and
+high demographic missingness. No true encounter,
+imaging receipt or racial access disparities are
+inferred; no additional billion-row scan is needed.
+
 ## Step 32 passed; Step 33 methods research preparation
 
 The study team confirmed **157 passed, 2 nonblocking warnings**
