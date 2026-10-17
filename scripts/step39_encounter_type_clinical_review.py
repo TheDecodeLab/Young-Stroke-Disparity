@@ -21,11 +21,19 @@ import zipfile
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from scripts.step38_encounter_type_terminology import (
-    PHASE1, STEP36, STEP37, category_from_text, member_paths,
-    normalize_type, read_encounter_types, secure_directory,
-    save_private_json,
-)
+# Support both python scripts/step39_....py and pytest package imports.
+if __package__:
+    from .step38_encounter_type_terminology import (
+        PHASE1, STEP36, STEP37, category_from_text, member_paths,
+        normalize_type, read_encounter_types, secure_directory,
+        save_private_json,
+    )
+else:
+    from step38_encounter_type_terminology import (
+        PHASE1, STEP36, STEP37, category_from_text, member_paths,
+        normalize_type, read_encounter_types, secure_directory,
+        save_private_json,
+    )
 
 STEP38 = PHASE1 / "step38_encounter_type_terminology.json"
 WORKSHEET = "step39_encounter_type_clinical_review_LOCAL_ONLY.csv"
@@ -59,7 +67,7 @@ def read_reference(archive, member, wanted, maximum):
             encounter_reference_n += 1
             code = normalize_type(row["code"])
             if code in wanted:
-                matched[code].add((row["code_description"].strip(), row["path"].strip()))
+                matched[code].add(((row.get("code_description") or "").strip(), (row.get("path") or "").strip()))
     return matched, seen, encounter_reference_n
 
 
