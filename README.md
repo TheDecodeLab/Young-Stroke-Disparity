@@ -27,6 +27,25 @@ If encounter-linkage cannot be established, the original admission
 study remains blocked and a distinct research question must be
 formally approved.
 
+## Data availability constraint and study redesign
+
+**Investigator confirmation (2026-10-17): No additional TriNetX data
+can be obtained.** The current Diamond ZIP and completed private
+SQLite indexes are the data ceiling. Do not propose an encounter-linked
+TriNetX export as the next step. The existing ZIP has no verified
+encounter or admission identifier; therefore the original hospitalized
+ischemic-stroke imaging-utilization estimand is **not identifiable**
+from these source tables.
+
+See [Step 27 fixed-data salvage protocol](docs/STEP27_FIXED_DATA_SALVAGE_PLAN.md).
+The proposed fallback question is **recorded imaging procedure codes
+within a prespecified temporal window of the first observed 2018–19
+principal I63 diagnosis**, NOT imaging during a verified admission or
+access-to-care disparities. This redesign still requires investigator
+and clinical sign-off, source capture/codebook validation, disclosure
+review, and a deliberate go/no-go decision before any further
+billion-row procedure scans or models.
+
 ## Latest validation: Step 25 reconciled, clinical inference BLOCKED
 
 The study team's `step25_readiness_gate.json` reports **all prior
