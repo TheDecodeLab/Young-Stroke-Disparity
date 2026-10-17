@@ -22,7 +22,7 @@ def ensure(ok: bool, label: str) -> None:
 
 
 def _partition(counts: dict, n: int, name: str) -> None:
-    ensure(counts.get("total") == n and counts.get("suppressed") is False,
+    ensure(counts.get("total") == n and counts.get("suppressed", False) is False,
            name + ": denominator or suppression")
     ensure(all(isinstance(counts.get(k), int) and 0 <= counts[k] <= n
                for k in (*CLASS_KEYS, *MODALITIES)), name + ": missing/invalid counts")
