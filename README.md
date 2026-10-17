@@ -5,6 +5,21 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current path: Research Network feasibility (Step 36)
+
+The locally held Research Network stroke export has encounter-key columns,
+but their completeness, linkage and inpatient meaning remain unverified.
+Run the [Step 36 metadata-only preflight](docs/STEP36_RESEARCH_NETWORK_PREFLIGHT.md)
+before any encounter-level clinical reconstruction. Its generated JSON and
+review ZIP stay **only** under the clone's gitignored `results/phase1/`.
+The source TriNetX ZIP stays at its original external location; do not
+copy patient-level files into this public repository.
+
+The Step 36 report is a **schema check**, not evidence of verified admissions
+or imaging receipt. Do not run a billion-row source scan merely to repeat
+the preflight. The original disparities question remains conditional on
+clinically valid encounter and imaging ascertainment.
+
 ## Selected next path: preserve original hospitalization question (Step 27)
 
 The research team chose to **seek an encounter-linked inpatient source**
