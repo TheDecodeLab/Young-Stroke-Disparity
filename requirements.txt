@@ -3,3 +3,6 @@ numpy>=1.26,<3
 pyarrow>=14,<24
 pytest>=8,<10
 statsmodels>=0.14,<1
+
+# Local, internal aggregate-only manuscript figures (Step 34)
+matplotlib>=3.7,<4
