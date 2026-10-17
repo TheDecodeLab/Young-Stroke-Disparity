@@ -15,7 +15,7 @@ Therefore Steps 2-7 currently describe an imaging-selected subset
 and MUST NOT be used to estimate population MRI/vascular imaging rates
 or clinical disparities. Reconstruct the index stroke cohort using the
 upstream diagnosis, encounter and procedure data while retaining CT-only
-patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md), and [Step 22 temporal validation](docs/STEP22_TEMPORAL_QC.md), and [Steps 23–24 exclusion and code audit](docs/STEP23_24_ELIGIBILITY_CODE_QC.md).
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md), and [Step 22 temporal validation](docs/STEP22_TEMPORAL_QC.md), and [Steps 23–24 exclusion and code audit](docs/STEP23_24_ELIGIBILITY_CODE_QC.md), and [Step 25 readiness and disclosure review](docs/STEP25_READINESS_GATE.md).
 
 
 
@@ -106,6 +106,15 @@ python scripts/step23_24_eligibility_qc.py \
 Do not treat the output as encounter-verified admissions or manuscript rates.
 Review the aggregate report for small-cell and complementary disclosure.
 
+**Step 23-24 disclosure correction:** A rare I63 code group in the
+initial fine-grained JSON was withheld, but its size can be inferred
+by subtracting other visible groups from the total. Do not redistribute
+the earlier report without disclosure review. The revised script reports
+only `I63.9 family` vs `Other I63 codes`, with all-or-none suppression.
+Step 25 checks cross-report consistency using only aggregate JSONs;
+it does not scan patient records or certify that manuscript modeling is
+ready.
+
 ## Step-by-step execution
 
 ```bash
@@ -170,6 +179,7 @@ python scripts/step17_zip_provenance.py --zip "$TRINETX_ZIP"
 | `step19_21_reconstruct.py` | **Chained** demographic eligibility, original CPT date linkage and CT-only integrity audit using approved private SQLite indexes | `results/phase1/chained_reconstruction_audit.json` (aggregate only) |
 | `step22_temporal_qc.py` | Read-only QC of completed reconstruction: ±0/1/3/7-day windows, CT-only partition, missingness and broad strata | `results/phase1/step22_temporal_qc.json` (aggregate only) |
 | `step23_24_eligibility_qc.py` | Check reason for diagnosis-index exclusion and I63 code patterns across imaging classifications; scan only original `patient.csv` | `results/phase1/step23_24_eligibility_qc.json` (aggregate only) |
+| `step25_readiness_gate.py` | Reconcile Steps 18–24 from aggregate JSON alone and list scientific gates blocking publication | `results/phase1/step25_readiness_gate.json` (aggregate only) |
 | `step13_source_inventory.py` | Inspect original diagnosis, procedure and demographic source schemas and provisional code coverage (audit only) | `results/phase1/source_readiness.json` |
 
 ### How to interpret
