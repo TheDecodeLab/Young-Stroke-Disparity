@@ -5,6 +5,25 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Latest validation: Step 25 reconciled, clinical inference BLOCKED
+
+The study team's `step25_readiness_gate.json` reports **all prior
+aggregate counts reconciled**, with no clinical ZIP or patient-level
+SQLite records reread. The provisional diagnosis-first cohort has
+962,351 principal I63 index patients and 86,902 age-eligible
+patients. Of these, 8,713 have a CT-only code and 44,760 have none
+of the historical nine-code matched modalities. Race missingness
+is 77.9% and ethnicity missingness is 75.39%.
+
+**Stop before additional billion-row rescans or demographic modeling.**
+See [Step 26 protocol decisions](docs/STEP26_CLINICAL_PROTOCOL_DECISIONS.md)
+for the study-denominator and encounter-validation alternatives,
+original sex-specific age cutoffs (54 women / 52 men), incomplete
+modality codebook, missingness and governance blockers. This is a
+**review proposal, not approved methods**. A previous fine-grained
+I63 subgroup report remains subject to disclosure review even though
+its repaired replacement uses coarser groups.
+
 ## Status
 
 **CRITICAL SCIENTIFIC STOP: The current derived cohort omits CT-only
@@ -15,7 +34,7 @@ Therefore Steps 2-7 currently describe an imaging-selected subset
 and MUST NOT be used to estimate population MRI/vascular imaging rates
 or clinical disparities. Reconstruct the index stroke cohort using the
 upstream diagnosis, encounter and procedure data while retaining CT-only
-patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md), and [Step 22 temporal validation](docs/STEP22_TEMPORAL_QC.md), and [Steps 23–24 exclusion and code audit](docs/STEP23_24_ELIGIBILITY_CODE_QC.md), and [Step 25 readiness and disclosure review](docs/STEP25_READINESS_GATE.md).
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md), and [Step 22 temporal validation](docs/STEP22_TEMPORAL_QC.md), and [Steps 23–24 exclusion and code audit](docs/STEP23_24_ELIGIBILITY_CODE_QC.md), and [Step 25 readiness and disclosure review](docs/STEP25_READINESS_GATE.md), and [Step 26 clinical protocol decisions](docs/STEP26_CLINICAL_PROTOCOL_DECISIONS.md).
 
 
 
