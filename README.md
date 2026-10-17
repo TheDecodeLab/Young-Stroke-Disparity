@@ -15,7 +15,7 @@ Therefore Steps 2-7 currently describe an imaging-selected subset
 and MUST NOT be used to estimate population MRI/vascular imaging rates
 or clinical disparities. Reconstruct the index stroke cohort using the
 upstream diagnosis, encounter and procedure data while retaining CT-only
-patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md).
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md), and [Step 22 temporal validation](docs/STEP22_TEMPORAL_QC.md).
 
 
 
@@ -47,6 +47,16 @@ scans alone do not validate hospital admissions or clinical coding. The study re
 publication inference until codebook, age, admission and temporal
 imaging-linkage rules are validated.
 
+**Original source scan completed, provisional cohort only.** The 2018–19
+principal I63 diagnosis index has 962,351 patients; 86,902 meet approximate
+age 19–50 and recognized-sex eligibility. Within a ±7 day window,
+8,713 have CT only, 24,074 CT plus additional imaging,
+9,355 additional imaging without CT, and 44,760 none of the four
+historically coded imaging groups. These are *not hospital utilization
+rates* because source encounter IDs and a complete imaging codebook
+are absent. Step 22 can audit time-window sensitivity by reading
+only the completed private SQLite files and does NOT rescan the ZIP.
+
 **Phase 1: data provenance and baseline audit (in progress).**
 No new adjusted association or manuscript finding has been validated.
 Do not interpret imaging frequency as quality or equity of clinical care.
@@ -61,6 +71,20 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 python -m pytest -q
 ```
+
+## Fast post-scan quality checks (no ZIP scan)
+
+After the full chain has successfully completed, use the same
+owner-only private storage directory for read-only temporal validation:
+
+```bash
+python scripts/step22_temporal_qc.py \
+  --private-dir "$TRINETX_PRIVATE" \
+  --compare-audit results/phase1/chained_reconstruction_audit.json
+```
+
+See [Step 22](docs/STEP22_TEMPORAL_QC.md). This does not construct
+a validated admission cohort, and published rates/models remain blocked.
 
 ## Step-by-step execution
 
@@ -124,6 +148,7 @@ python scripts/step17_zip_provenance.py --zip "$TRINETX_ZIP"
 | `step17_zip_provenance.py` | Check ZIP manifest, dataset and cohort metadata without reading clinical rows | `results/phase1/zip_provenance.json` |
 | `step18_diagnosis_index.py` | Build local private SQLite index of earliest 2018–19 principal I63 diagnosis directly from ZIP, independently of imaging; supports safe smoke mode | `results/phase1/step18_smoke_audit.json` or `step18_diagnosis_index_audit.json` (aggregate only) |
 | `step19_21_reconstruct.py` | **Chained** demographic eligibility, original CPT date linkage and CT-only integrity audit using approved private SQLite indexes | `results/phase1/chained_reconstruction_audit.json` (aggregate only) |
+| `step22_temporal_qc.py` | Read-only QC of completed reconstruction: ±0/1/3/7-day windows, CT-only partition, missingness and broad strata | `results/phase1/step22_temporal_qc.json` (aggregate only) |
 | `step13_source_inventory.py` | Inspect original diagnosis, procedure and demographic source schemas and provisional code coverage (audit only) | `results/phase1/source_readiness.json` |
 
 ### How to interpret
