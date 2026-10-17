@@ -4,7 +4,7 @@
 
 From the cloned repository root, the existing approved local export is at:
 
-`../../../../datasets/TriNetX/dataset_64b01b62c6dca15375ae9828_stroke.zip`
+`$TRINETX_ZIP`
 
 This ZIP may contain the source diagnosis, procedure, demographic and
 encounter tables referenced in the historical notebook. The ZIP's internal
@@ -17,7 +17,7 @@ exports were deleted to save storage space.
 git pull origin analysis-rebuild-phase1-audit
 python -m pytest -q
 python scripts/step15_zip_inventory.py \
-  --zip ../../../../datasets/TriNetX/dataset_64b01b62c6dca15375ae9828_stroke.zip
+  --zip $TRINETX_ZIP
 ```
 
 The script does NOT extract the archive. It examines the ZIP directory
