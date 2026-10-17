@@ -17,12 +17,10 @@ From the repository root, after pulling the draft branch:
 ```bash
 python -m pytest -q tests/test_step36_research_zip_preflight.py
 python scripts/step36_research_zip_preflight.py \
-  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip" \
-  --output "$HOME/datasets/TriNetX/young_stroke_private/step36_research_metadata_preflight.json" \
-  --output-zip "$HOME/datasets/TriNetX/young_stroke_private/step36_research_metadata_preflight_review.zip"
+  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip"
 ```
 
-The output JSON and optional ZIP are owner-readable/writable (0600); an existing parent directory's permissions are left unchanged. The ZIP has exactly one file: `step36_research_metadata_preflight.json`. The script refuses to save outputs under a tracked repository path, except the already-ignored `results/` directory. No third-party Python packages are needed for the script.
+The output JSON and ZIP are created by default under the cloned repository `results/phase1/`, which is Git-ignored. Outputs are owner-readable/writable (0600); existing parent directory permissions are unchanged. The ZIP contains exactly one file: `step36_research_metadata_preflight.json`. Any explicit output path outside the repository `results/phase1/` is rejected. The input source ZIP remains in its original location and is never copied into the repository. No third-party Python packages are needed for the script.
 
 Review the metadata ZIP locally before sharing. If institutional rules permit it, upload **only** the review ZIP and the test summary. Do **not** include the original dataset ZIP, private SQLite, row-level subsets, ZIP members beyond the metadata JSON, or other source files.
 
