@@ -138,7 +138,15 @@ def gate(reconstruction: dict, temporal: dict, eligibility: dict) -> dict:
             "none_of_four_historical_imaging_groups": percent(
                 counts["none_of_four_imaging_n"], eligible),
         },
-        "historical_fine_diagnosis_group_report_requires_disclosure_review": bool(risk),
+        # This project previously generated a fine-grained I63 table with
+        # one suppressed subgroup whose size can be recovered by subtraction.
+        # The CURRENT repaired input cannot cancel the historical release risk.
+        "historical_fine_diagnosis_group_report_requires_disclosure_review": True,
+        "current_input_has_suppressed_fine_group": bool(risk),
+        "disclosure_warning": (
+            "Earlier fine-grained I63 report was not complementary-suppression-safe. "
+            "Review and restrict prior copies; a safe new report does not erase old releases."
+        ),
         "ready_for_manuscript_inference": False,
         "unresolved_approval_gates": [
             "Define denominator: date-linked principal diagnosis versus confirmed hospitalization; no encounter ID in the export.",
