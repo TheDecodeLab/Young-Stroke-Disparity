@@ -5,6 +5,28 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Selected next path: preserve original hospitalization question (Step 27)
+
+The research team chose to **seek an encounter-linked inpatient source**
+rather than silently relabel diagnosis-date matches as hospital admissions.
+No suitable common encounter key has been established in the original
+Diamond ZIP. The 123-test Step 25 v2 run validated only aggregate
+reconciliation and retained the historical disclosure warning.
+
+Read these **review-only** documents, in order:
+1. [Admission-level feasibility and episode-first protocol](docs/STEP27_HOSPITALIZATION_FEASIBILITY.md)
+2. [Ready-to-edit data-steward request](docs/STEP27_ENCOUNTER_DATA_REQUEST.md)
+3. [Approval and GO/STOP decision record](docs/STEP27_APPROVAL_RECORD_TEMPLATE.md)
+
+**Do not start another billion-row ZIP scan or fit disparity models.**
+First ask the authorized data steward whether shared admission keys,
+episode dates, inpatient status, encounter-linked diagnoses/procedures
+and reliable imaging capture are available. Request **schema and
+field definitions only**, never private clinical data through email.
+If encounter-linkage cannot be established, the original admission
+study remains blocked and a distinct research question must be
+formally approved.
+
 ## Latest validation: Step 25 reconciled, clinical inference BLOCKED
 
 The study team's `step25_readiness_gate.json` reports **all prior
@@ -34,7 +56,7 @@ Therefore Steps 2-7 currently describe an imaging-selected subset
 and MUST NOT be used to estimate population MRI/vascular imaging rates
 or clinical disparities. Reconstruct the index stroke cohort using the
 upstream diagnosis, encounter and procedure data while retaining CT-only
-patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md), and [Step 22 temporal validation](docs/STEP22_TEMPORAL_QC.md), and [Steps 23–24 exclusion and code audit](docs/STEP23_24_ELIGIBILITY_CODE_QC.md), and [Step 25 readiness and disclosure review](docs/STEP25_READINESS_GATE.md), and [Step 26 clinical protocol decisions](docs/STEP26_CLINICAL_PROTOCOL_DECISIONS.md).
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md), and [Step 22 temporal validation](docs/STEP22_TEMPORAL_QC.md), and [Steps 23–24 exclusion and code audit](docs/STEP23_24_ELIGIBILITY_CODE_QC.md), and [Step 25 readiness and disclosure review](docs/STEP25_READINESS_GATE.md), and [Step 26 clinical protocol decisions](docs/STEP26_CLINICAL_PROTOCOL_DECISIONS.md), and [Step 27 hospitalization feasibility](docs/STEP27_HOSPITALIZATION_FEASIBILITY.md).
 
 
 
