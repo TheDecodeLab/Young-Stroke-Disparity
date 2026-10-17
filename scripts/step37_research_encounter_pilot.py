@@ -103,7 +103,21 @@ def date_profile(raw):
                 elif re.fullmatch(r"\d{10}|\d{13}", value):
                     return "unix_epoch_candidate_unverified", "unparseable", False
                 else:
-                    return "unrecognized", "unparseable", False
+                    # Report only broad, allowlisted shape categories.
+                    # Never expose source strings, examples, or patient-specific dates.
+                    if re.fullmatch(r"[0-9]+", value):
+                        shape = "other_numeric_unrecognized"
+                    elif re.search(r"[A-Za-z]", value):
+                        shape = "textual_or_complex_unrecognized"
+                    elif "/" in value:
+                        shape = "other_slash_unrecognized"
+                    elif "-" in value:
+                        shape = "other_dash_unrecognized"
+                    elif "." in value:
+                        shape = "other_dot_unrecognized"
+                    else:
+                        shape = "other_unrecognized"
+                    return shape, "unparseable", False
     try:
         datetime.date(year, month, day)
     except (ValueError, TypeError):
