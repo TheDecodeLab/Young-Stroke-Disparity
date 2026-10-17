@@ -1,5 +1,31 @@
 # Steps 23–25: eligibility, disclosure repair and readiness decisions
 
+## Executed Step 25 result and important disclosure clarification
+
+The study team ran the aggregate readiness gate and returned
+`all_prior_aggregate_counts_reconciled: true`,
+`ready_for_manuscript_inference: false`, zero ZIP records read,
+and zero patient-level SQLite records read. The 962,351 diagnosis-index
+and 86,902 age-eligible totals reconcile. This does **not** lift the
+clinical/methodological hold.
+
+The first version of Step 25 incorrectly returned
+`historical_fine_diagnosis_group_report_requires_disclosure_review: false`
+when the **current** Step 23-24 input was the repaired coarse report.
+That boolean confused current reporting with the **earlier** report,
+which suppressed a small I63 category without sufficient complementary
+suppression. This has now been fixed to retain a persistent historical
+review warning and separately expose the current input's suppression
+status. The earlier Step 25 JSON should not be construed as authorizing
+release of the old fine-grained report.
+
+The actual scientific decisions are summarized in
+[Step 26 clinical protocol review](STEP26_CLINICAL_PROTOCOL_DECISIONS.md).
+Please do not launch additional billion-row scans or statistical models
+before reviewing the study denominator, encounter availability,
+clinical codebooks and missingness with collaborators.
+
+
 ## Validated aggregate findings
 
 The local Steps 23–24 audit reconciles all **962,351** patients in the
