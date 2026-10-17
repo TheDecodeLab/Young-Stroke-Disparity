@@ -25,7 +25,7 @@ def sandbox():
 
 def csv_content(headers, rows):
     stream = io.StringIO()
-    writer = csv.DictWriter(stream, fieldnames=headers, lineterminator="\n")
+    writer = csv.DictWriter(stream, fieldnames=headers, lineterminator="\n", extrasaction="ignore")
     writer.writeheader()
     writer.writerows(rows)
     return stream.getvalue()
