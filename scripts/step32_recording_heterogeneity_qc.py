@@ -81,10 +81,12 @@ def build_flags(cohort_rows: list[tuple], events: list[tuple],
         key = (system.upper(), code.upper())
         bit = mapping.get(key)
         require(bit is not None, "unknown procedure code")
-        require(bit in (
-            (CT, MRI, CTA_H, CTA_N) if modality in ("CT", "MRI", "CTA")
-            else (MRA_H, MRA_N)
-        ), "event modality mapping disagreement")
+        valid_bits = {
+            "CT": {CT}, "MRI": {MRI},
+            "CTA": {CTA_H, CTA_N}, "MRA": {MRA_H, MRA_N},
+        }
+        require(bit in valid_bits.get(modality, set()),
+                "event modality mapping disagreement")
         require(abs(int(offset)) <= 7, "event outside extraction window")
         date = datetime.strptime(procedure_date, "%Y%m%d")
         index_date = datetime.strptime(ids[pid][0], "%Y%m%d")
@@ -199,8 +201,12 @@ def run(private_dir: Path, expansion_report: Path) -> dict:
             and r.get("encounter_validated") is False, "Step30 source provenance")
     require(status.get("codebook_sha256") == digest
             == r.get("approved_codebook_sha256"), "codebook digest mismatch")
-    require(status.get("archive_members_sha256")
-            and status["archive_members_sha256"] != "", "missing source signature")
+    signature_file = private / "source_signature.json"
+    require(signature_file.is_file(), "missing original ZIP source signature")
+    signature = json.loads(signature_file.read_text(encoding="utf-8"))
+    require(status.get("archive_members_sha256") ==
+            signature.get("archive_members_sha256"),
+            "expanded scan source fingerprint differs from original")
     require(status.get("source_rows_scanned") ==
             str(r.get("source_procedure_rows_scanned")),
             "procedure source count mismatch")
@@ -210,11 +216,11 @@ def run(private_dir: Path, expansion_report: Path) -> dict:
     n = len(ids)
     require(n == r.get("eligible_diagnosis_first_patients"),
             "eligible denominator mismatch")
+    overall_windows = _summary_for(list(ids), flags)
     for w in WINDOWS:
         expected = r["anatomic_profiles_by_window"][str(w)]
         require(not expected.get("suppressed"), "reference summary suppressed")
-        total = _summary_for(list(ids), flags)["PLACEHOLDER"] if False else None
-        actual = _summary_for(list(ids), flags)[str(w)]
+        actual = overall_windows[str(w)]
         head = expected["head_only_primary"]
         wide = expected["head_plus_neck_sensitivity"]
         require(actual["any_head_n"] == n - head["None of four"]
