@@ -1,5 +1,18 @@
 # Step 26: clinical protocol and data-feasibility decision memo
 
+**Fixed-data constraint update (October 17, 2026):** The investigator
+confirmed that **NO additional data can be obtained from TriNetX**.
+The encounter-linked export option discussed below is unavailable and
+must not be treated as an actionable prerequisite. Because no
+encounter/admission identifier was found in the existing source,
+the original confirmed-hospitalization estimand cannot currently be
+supported. The practical path is the explicitly reframed
+**recorded-imaging-code near diagnosis** study described in
+[Step 27 fixed-data salvage plan](STEP27_FIXED_DATA_SALVAGE_PLAN.md),
+subject to clinical approval and code/source validation. An honest
+methods/data-quality analysis or stopping the manuscript remain
+alternatives if recording completeness is inadequate.
+
 **Status:** Proposed specifications for review, **NOT clinical approval**. No new
 clinical data scan, encounter validation, modeling, or manuscript rewrite is
 authorized by this document.
@@ -165,8 +178,10 @@ the coarser repaired report does **not** cancel earlier release risks.
 Do not upload clinical ZIP/SQLite or publish additional tables without
 approved release review.
 
-**Recommended next handoff:** Have the clinical and data teams decide
-whether encounter-linked data are available and sign off on the
-study target and age/codebook specifications. In parallel, request
-source documentation on the meaning of `principal_diagnosis_indicator`
-and demographic missingness, without launching additional massive scans.
+**Recommended next handoff (updated):** The investigator has ruled out
+additional TriNetX extracts. Ask the clinical team to sign off on
+the reframed fixed-data estimand and complete codebook, and inspect
+the source documentation and fields already available locally.
+Do not request another TriNetX extract. Do not launch an additional
+full procedure scan until codebook and data-governance review are
+complete. See [Step 27](STEP27_FIXED_DATA_SALVAGE_PLAN.md).
