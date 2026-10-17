@@ -15,7 +15,7 @@ Therefore Steps 2-7 currently describe an imaging-selected subset
 and MUST NOT be used to estimate population MRI/vascular imaging rates
 or clinical disparities. Reconstruct the index stroke cohort using the
 upstream diagnosis, encounter and procedure data while retaining CT-only
-patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md).
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md), and [Step 18 diagnosis-first indexing](docs/STEP18_DIAGNOSIS_INDEX.md), and [the chained Steps 18–21 workflow](docs/STEP19_21_CHAINED_RECONSTRUCTION.md).
 
 
 
@@ -40,8 +40,10 @@ Step 17 verified Diamond-wide export provenance (4.29 million
 patients, 92 HCOs, 1.43 billion diagnoses and 1.17 billion procedures).
 Step 18 begins a *staged*, imaging-independent principal I63
 diagnosis index directly from the ZIP in an owner-only SQLite
-directory outside Git. Run a limited smoke test before considering
-the lengthy full diagnosis scan. The study remains blocked for
+directory outside Git. Run synthetic tests and a limited smoke test before starting the
+large full scan. The new staged workflow chains diagnosis,
+demographics, imaging and CT-only QC with checkpointing; complete
+scans alone do not validate hospital admissions or clinical coding. The study remains blocked for
 publication inference until codebook, age, admission and temporal
 imaging-linkage rules are validated.
 
@@ -87,10 +89,15 @@ python scripts/step15_zip_inventory.py --zip "$TRINETX_ZIP"
 python scripts/step16_zip_preflight.py --zip "$TRINETX_ZIP" --sample-rows 10000
 # Confirm archive metadata and cohort scope before costly full scans:
 python scripts/step17_zip_provenance.py --zip "$TRINETX_ZIP"
-# Step 18: smoke-test diagnosis-first scan. Set a private directory OUTSIDE this repo.
-# python scripts/step18_diagnosis_index.py --zip "$TRINETX_ZIP" \
-#   --private-dir "$TRINETX_PRIVATE/smoke18" --limit-rows 100000 \
-#   --output results/phase1/step18_smoke_audit.json
+# Steps 18-21: set TRINETX_PRIVATE to owner-only approved storage OUTSIDE this repo.
+# The following explicitly runs a smoke test THEN the large full scans.
+# python -m pytest -q && \
+# python scripts/step19_21_reconstruct.py --zip "$TRINETX_ZIP" \
+#   --private-dir "$TRINETX_PRIVATE" --smoke \
+#   --output results/phase1/chained_smoke_audit.json && \
+# python scripts/step19_21_reconstruct.py --zip "$TRINETX_ZIP" \
+#   --private-dir "$TRINETX_PRIVATE" --full --min-age 19 --max-age 50 \
+#   --output results/phase1/chained_reconstruction_audit.json
 # Step 13 requires original secure source paths (not intermediate cohorts):
 # python scripts/step13_source_inventory.py --diagnoses PATH --procedures PATH --demographics PATH
 ```
@@ -116,6 +123,7 @@ python scripts/step17_zip_provenance.py --zip "$TRINETX_ZIP"
 | `step16_zip_preflight.py` | Inspect ZIP member headers and **first 10,000 rows only** of diagnosis, procedure and patient tables to validate formats | `results/phase1/zip_preflight.json` |
 | `step17_zip_provenance.py` | Check ZIP manifest, dataset and cohort metadata without reading clinical rows | `results/phase1/zip_provenance.json` |
 | `step18_diagnosis_index.py` | Build local private SQLite index of earliest 2018–19 principal I63 diagnosis directly from ZIP, independently of imaging; supports safe smoke mode | `results/phase1/step18_smoke_audit.json` or `step18_diagnosis_index_audit.json` (aggregate only) |
+| `step19_21_reconstruct.py` | **Chained** demographic eligibility, original CPT date linkage and CT-only integrity audit using approved private SQLite indexes | `results/phase1/chained_reconstruction_audit.json` (aggregate only) |
 | `step13_source_inventory.py` | Inspect original diagnosis, procedure and demographic source schemas and provisional code coverage (audit only) | `results/phase1/source_readiness.json` |
 
 ### How to interpret
