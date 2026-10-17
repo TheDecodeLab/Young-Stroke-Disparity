@@ -27,6 +27,27 @@ If encounter-linkage cannot be established, the original admission
 study remains blocked and a distinct research question must be
 formally approved.
 
+## Step 28 preflight completed; Step 29 clinical codebook review
+
+The study-team `step28_codebook_plan.json` confirms the original
+archive fingerprint, **86,902** eligible diagnosis-index patients,
+**1,166,493,611** declared procedure rows and **14 candidate CPT
+codes**, all pending clinical review. **Zero source clinical rows were
+scanned; no expanded extraction has started.**
+
+[Step 29 clinical review memo](docs/STEP29_CLINICAL_CODEBOOK_REVIEW.md)
+separates CTA/MRA head from CTA/MRA neck and asks the clinical team
+to agree whether head-only or head-plus-neck should be the primary
+recorded-code endpoint. The exact code is retained in any future
+approved extraction, allowing both anatomical summaries without
+a second scan. Missing encounter identifiers, >75% race/ethnicity
+missingness and old public data-sharing artifacts remain blockers
+to population disparity claims.
+
+Do NOT use --execute until the exact clinical codebook, protocol,
+source-capture meaning and data-use review are approved. No additional
+TriNetX source access is available.
+
 ## Next local step: safe candidate imaging-codebook preflight
 
 The fixed-data plan now has a **14-code, clinically unapproved**
