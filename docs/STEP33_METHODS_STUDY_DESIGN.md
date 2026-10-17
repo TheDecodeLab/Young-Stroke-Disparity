@@ -61,7 +61,7 @@ A uniform 86,902-person denominator yields:
 
 Changing the acceptable time window from same-day to +/-7
 days changes *any-match* recorded-code ascertainment under the
-expanded head+neck definition by **5.67 percentage points**,
+expanded head+neck definition by **5.66 percentage points**,
 while expanding the original
 nine-code definition to 14 codes changes it by only **0.20
 percentage points** at +/-1 day. These changes are
