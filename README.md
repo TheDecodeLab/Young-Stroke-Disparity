@@ -31,6 +31,7 @@ python scripts/step03_describe.py
 python scripts/step04_audit_nis.py
 python scripts/step05_missingness.py
 python scripts/step06_minimal_models.py
+python scripts/step07_modality_patterns.py
 ```
 
 ### What each script does
@@ -43,14 +44,14 @@ python scripts/step06_minimal_models.py
 | `step04_audit_nis.py` | Inspect previously published NIS summary CSV strata against manuscript values | `results/phase1/nis_stratum_audit.csv` and `.json` |
 | `step05_missingness.py` | Evaluate selection associated with known/unknown race and ethnicity by sex/year | `results/phase1/missingness_age50.csv` |
 | `step06_minimal_models.py` | **Preliminary** age/year-only binomial GLM and standardized sex risk differences | `results/phase1/minimal_models_age50.csv` |
+| `step07_modality_patterns.py` | Descriptive, mutually exclusive CTA/MRA pathways by sex, year, and age bands | `results/phase1/modality_patterns_age50.csv` |
 
 ### How to interpret
 
 These steps provide descriptive checks only. They **do not**
 verify the original diagnosis date linkage, principal-diagnosis
 eligibility, CT restriction, CPT code completeness, hospitalization
-structure or NIS survey design. See [the Phase 1 audit guide](docs/PHASE1_AUDIT.md) , [the initial results review](docs/PHASE1_RESULTS.md), and [the missingness review](docs/MISSINGNESS_RESULTS.md)
-for discrepancies, unresolved questions and stop conditions.
+structure or NIS survey design. See [the Phase 1 audit guide](docs/PHASE1_AUDIT.md), [the initial results review](docs/PHASE1_RESULTS.md), [the missingness review](docs/MISSINGNESS_RESULTS.md), and [the preliminary model review](docs/STEP06_RESULTS.md) for discrepancies, unresolved questions and stop conditions.
 
 The original sample used sex-specific <=52/<=54 age limits.
 This saved derived dataset cannot support a true common <=55 analysis
