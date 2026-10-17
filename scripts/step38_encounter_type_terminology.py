@@ -12,6 +12,7 @@ import argparse
 import csv
 import hashlib
 import io
+import itertools
 import json
 import os
 import re
@@ -84,9 +85,7 @@ def read_encounter_types(archive, member, limit):
             reader = csv.DictReader(f)
             if not REQUIRED_ENCOUNTERS.issubset(reader.fieldnames or []):
                 raise ValueError("encounter.csv is missing type header")
-            for row in reader:
-                if total >= limit:
-                    break
+            for row in itertools.islice(reader, limit):
                 counts[normalize_type(row.get("type"))] += 1
                 total += 1
     return counts, total
