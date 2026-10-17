@@ -27,6 +27,28 @@ If encounter-linkage cannot be established, the original admission
 study remains blocked and a distinct research question must be
 formally approved.
 
+## Step 32: Study-team read-only code-recording QC
+
+The uploaded `step31_expanded_reconciliation.json` reports
+**all aggregate checks passed** over 0, +/-1, +/-3 and +/-7-day
+windows, with **zero original ZIP or patient-level SQLite
+records read** by that aggregate script. Expanded CPT code matching
+adds only 175 patients to the any-code category at +/-1 day and
+158 at +/-7 days, leaving **54.03%** and **51.32%** without a
+matching included CPT code respectively. This is source-code
+recording, not proof of absent imaging.
+
+A new [Step 32 read-only private-index audit](docs/STEP32_RECORDING_HETEROGENEITY_QC.md)
+checks whether recorded-code coverage varies by broad index year,
+recorded sex and approximate age band. It opens only the already
+completed small PRIVATE SQLite indexes and cross-checks their
+aggregate counts against Step30; **it does not open the original
+1.17-billion-row procedure source**. No regression, p-values,
+causal or demographic disparities conclusions are produced.
+The script has synthetic tests that still require a study-team
+pytest run. New subgroup aggregates should not be released
+without cumulative small-cell disclosure review.
+
 ## Step 31: Expanded 14-CPT procedure scan completed; inference still blocked
 
 Study-team full extraction from the existing ZIP completed with
