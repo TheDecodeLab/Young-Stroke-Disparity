@@ -5,6 +5,29 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current action: encounter-type terminology reference (Step 38)
+
+The corrected Step37 bounded pilot recognized compact YYYYMMDD date codes
+in all sampled encounter, diagnosis, and procedure records. Sample-level
+patient IDs agreed in observed encounter links, although some source_id
+values differed; source provenance remains to be investigated.
+Most encounter type values were **not recognized by a lexical-only rule**.
+
+Run the [Step38 terminology-mapping audit](docs/STEP38_ENCOUNTER_TYPE_TERMINOLOGY.md)
+to match the bounded encounter prefix with the local
+`standardized_terminology.csv` **Encounter Type** reference table. This
+reads only a 50k encounter prefix plus one streaming *reference metadata*
+pass, and outputs aggregate JSON/review ZIP exclusively inside gitignored
+`results/phase1/`. It does not validate admissions or any clinical
+imaging disparity, and it never publishes the source type codes.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step38_encounter_type_terminology.py \
+  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip"
+```
+
 ## Next action: bounded Research Network encounter pilot (Step 37)
 
 Step 36 metadata preflight completed with required Research Network tables and
