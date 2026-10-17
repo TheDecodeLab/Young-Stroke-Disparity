@@ -34,6 +34,7 @@ except ModuleNotFoundError:
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CODEBOOK = ROOT / "dataset/imaging_codebook_candidate_v1.csv"
+LITERATURE_CODEBOOK = ROOT / "dataset/imaging_codebook_literature_review_v1.csv"
 STUDY_COHORT = "principal_I63_2018_2019_approx_age19_50_recognized_sex"
 OLD = "imaging/step20_imaging_events.sqlite"
 TARGET = "imaging_expanded/step28_imaging_events.sqlite"
@@ -65,7 +66,7 @@ def codebook(path: Path) -> tuple[dict, str, list[dict]]:
         }
         if (modality, fields["anatomy"].lower()) not in valid_anatomy:
             raise ValueError("Unrecognized anatomical mapping in codebook")
-        if fields["clinical_review"] not in {"pending", "approved"}:
+        if fields["clinical_review"] not in {"pending", "approved", "evidence_reviewed"}:
             raise ValueError("Unrecognized clinical-review status")
         if fields["source_status"] not in {"historical", "review_candidate"}:
             raise ValueError("Unrecognized code provenance")
@@ -343,11 +344,26 @@ def aggregate_anatomic_window(
 
 
 def execute(zip_file: Path, private_dir: Path, codebook_file: Path,
-            approval_file: Path, chunk_rows: int = 150000) -> dict:
+            approval_file: Path | None, chunk_rows: int = 150000,
+            *, literature_research: bool = False,
+            confirm_existing_data_use: bool = False) -> dict:
     if not 100 <= chunk_rows <= 2000000:
         raise ValueError("Chunk size outside supported range")
     manifest = plan(zip_file, private_dir, codebook_file)
-    check_approval(approval_file, manifest)
+    if literature_research:
+        # The investigator requested a published-evidence review and authorized
+        # exploratory re-extraction of the source already in their possession.
+        # Clinical reviewer approval must NEVER be fabricated by the assistant.
+        # Permission to use clinical records locally is a separate USER attestation.
+        if not confirm_existing_data_use:
+            raise ValueError("Literature-only scan requires explicit local data-use attestation")
+        if not all(row["clinical_review"] == "evidence_reviewed"
+                   for row in manifest["candidate_codes"]):
+            raise ValueError("Evidence-review scan requires all codes evidence_reviewed")
+        if codebook_file.resolve() != LITERATURE_CODEBOOK.resolve():
+            raise ValueError("Literature scan must use the versioned evidence-reviewed catalog")
+    else:
+        check_approval(approval_file, manifest)
     private = ensure_private_dir(private_dir)
     output_dir = ensure_private_dir(private / "imaging_expanded")
     target = private / TARGET
@@ -407,6 +423,14 @@ def execute(zip_file: Path, private_dir: Path, codebook_file: Path,
         raise
     return {
         "stage": "STEP28_EXPANDED_CODE_EXTRACTION_TEMPORAL_PROXY",
+        "review_basis": (
+            "published_evidence_only_no_independent_clinician_signoff"
+            if literature_research else "clinician_and_investigator_review"
+        ),
+        "existing_data_use_permission_attested_by_local_operator": bool(
+            literature_research and confirm_existing_data_use
+        ),
+        "scientific_inference_and_publication_approved": False,
         "source_procedure_rows_scanned": scanned,
         "manifest_row_count_verified": True,
         "approved_codebook_sha256": digest,
@@ -431,11 +455,15 @@ def main():
     mode.add_argument("--plan", action="store_true",
                       help="Safe default: inspect metadata and proposed codes; scan zero clinical rows")
     mode.add_argument("--execute", action="store_true",
-                      help="Full billion-row scan: requires formal matching clinical/data-use approval")
+                      help="Full scan with documented investigator, clinical, and data-use signoff")
+    mode.add_argument("--execute-literature", action="store_true",
+                      help="Research-only full scan: literature-review codebook; no clinician approval claimed")
     p.add_argument("--zip", type=Path, required=True)
     p.add_argument("--private-dir", type=Path, required=True)
     p.add_argument("--codebook", type=Path, default=DEFAULT_CODEBOOK)
     p.add_argument("--approval", type=Path)
+    p.add_argument("--confirm-existing-data-use-permitted", action="store_true",
+                   help="Local operator attests that the existing data agreement and institutional policy permit this private re-extraction")
     p.add_argument("--chunk-rows", type=int, default=150000)
     p.add_argument("--output", type=Path,
                    default=ROOT / "results/phase1/step28_codebook_plan.json")
@@ -443,8 +471,12 @@ def main():
     if args.plan:
         report = plan(args.zip, args.private_dir, args.codebook)
     else:
-        report = execute(args.zip, args.private_dir, args.codebook,
-                         args.approval, args.chunk_rows)
+        report = execute(
+            args.zip, args.private_dir, args.codebook,
+            args.approval, args.chunk_rows,
+            literature_research=args.execute_literature,
+            confirm_existing_data_use=args.confirm_existing_data_use_permitted,
+        )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n",
                            encoding="utf-8")
