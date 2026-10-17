@@ -71,7 +71,7 @@ python scripts/step12_index_sensitivity.py
 # Locate actual local source files before Step 13:
 python scripts/step14_discover_sources.py --root .. --max-depth 4
 # Better: original TriNetX archive is available; inspect it without extraction:
-python scripts/step15_zip_inventory.py --zip $TRINETX_ZIP
+python scripts/step15_zip_inventory.py --zip "$TRINETX_ZIP"
 # Step 13 requires original secure source paths (not intermediate cohorts):
 # python scripts/step13_source_inventory.py --diagnoses PATH --procedures PATH --demographics PATH
 ```
