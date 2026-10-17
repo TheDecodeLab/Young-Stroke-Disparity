@@ -170,7 +170,7 @@ def scan(zip_path: Path, private_dir: Path, *, chunk_rows: int = 150000,
             with zf.open(SOURCE, "r") as f:
                 reader = pd.read_csv(f, usecols=COLUMNS, dtype="string", chunksize=chunk_rows,
                                      keep_default_na=False, low_memory=False)
-                for chunk in reader:
+                for chunk_number, chunk in enumerate(reader, start=1):
                     if limit_rows is not None:
                         remaining = limit_rows - counters["rows_scanned"]
                         if remaining <= 0:
@@ -181,6 +181,8 @@ def scan(zip_path: Path, private_dir: Path, *, chunk_rows: int = 150000,
                         counters[name] += int(info[name])
                     save_chunk(conn, selected)
                     conn.commit()
+                    if chunk_number % 100 == 0:
+                        print(f"Step 18: scanned {counters['rows_scanned']:,} diagnosis rows", flush=True)
                     if limit_rows is not None and counters["rows_scanned"] >= limit_rows:
                         break
             if limit_rows is None and declared is not None and counters["rows_scanned"] != declared:
