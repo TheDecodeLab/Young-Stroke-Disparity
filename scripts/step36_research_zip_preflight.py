@@ -16,6 +16,11 @@ import stat
 import zipfile
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+PHASE1_RESULTS = REPO_ROOT / "results" / "phase1"
+DEFAULT_OUTPUT = PHASE1_RESULTS / "step36_research_metadata_preflight.json"
+DEFAULT_REVIEW_ZIP = PHASE1_RESULTS / "step36_research_metadata_preflight_review.zip"
+
 CLINICAL_TABLES = (
     "patient.csv", "patient_cohort.csv", "encounter.csv", "diagnosis.csv", "procedure.csv"
 )
@@ -70,8 +75,10 @@ def positive_int(value):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--zip", dest="archive_path", type=Path, required=True)
-    ap.add_argument("--output", type=Path, required=True)
-    ap.add_argument("--output-zip", type=Path, help="Optional metadata-only ZIP for review")
+    ap.add_argument("--output", type=Path, default=DEFAULT_OUTPUT,
+                    help="Aggregate JSON (must be within repo results/phase1/)")
+    ap.add_argument("--output-zip", type=Path, default=DEFAULT_REVIEW_ZIP,
+                    help="Metadata-only ZIP (must be within repo results/phase1/)")
     args = ap.parse_args()
     warnings = []
     result = {"stage": "STEP36_RESEARCH_METADATA_PREFLIGHT", "clinical_rows_read": 0,
@@ -132,16 +139,22 @@ def main():
         for name in ("patient.csv", "encounter.csv", "diagnosis.csv", "procedure.csv")
     )
     # Schema support does NOT establish event linkage, clinical completeness or valid inpatient labels.
-    # Prevent accidental writing of review outputs into tracked repository paths.
-    root = Path(__file__).resolve().parents[1]
-    allowed = root / "results"
+    # All generated files stay in the clone's gitignored results/phase1/.
+    # Resolve paths to reject symlink escapes and accidental writes elsewhere.
+    allowed = PHASE1_RESULTS.resolve()
     paths = [args.output, *([args.output_zip] if args.output_zip else [])]
     for path in paths:
         resolved = path.expanduser().resolve()
-        if root in resolved.parents and resolved != allowed and allowed not in resolved.parents:
-            raise ValueError("Output inside repository must be under ignored results/")
-    if args.output_zip and args.output_zip.resolve() == args.output.resolve():
-        raise ValueError("--output and --output-zip must differ")
+        if allowed not in resolved.parents:
+            raise ValueError("All outputs must be inside the repository results/phase1/ directory")
+    resolved_output = args.output.expanduser().resolve()
+    resolved_source = args.archive_path.expanduser().resolve()
+    if resolved_output == resolved_source:
+        raise ValueError("Output must not overwrite the input ZIP")
+    if args.output_zip:
+        resolved_zip = args.output_zip.expanduser().resolve()
+        if resolved_zip in (resolved_output, resolved_source):
+            raise ValueError("--output-zip must differ from --output and the input ZIP")
     # Preserve permissions on any existing parent directory.
     # Private workspace access is the local data steward's responsibility.
     args.output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
