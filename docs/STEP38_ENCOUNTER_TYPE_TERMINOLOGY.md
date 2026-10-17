@@ -4,11 +4,11 @@
 can be interpreted using the original Research Network
 \`standardized_terminology.csv\` reference table.
 
-The uploaded Step 37 report showed all 150,000 sampled clinical-event dates
-in compact YYYYMMDD form. The parser now recognizes that format. In a
-nonrandom prefix of 50,000 encounters, only 1,120 had an obvious lexical
-inpatient candidate label, while 48,880 remained unclassified. This does
-**not** mean those 48,880 encounters were non-inpatient.
+The Step 37 report showed that compact YYYYMMDD dates are recognized.
+In the bounded, nonrandom encounter prefix, the lexical-only
+type classifier left most encounter codes unclassified. This
+does **not** mean those encounters were non-inpatient. Exact
+aggregate findings remain within private, gitignored results.
 
 The Step 37 encounter-prefix matches had consistent patient identifiers
 between event and encounter rows, but some \`source_id\` values differed
