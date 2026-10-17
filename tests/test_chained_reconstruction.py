@@ -158,3 +158,24 @@ def test_original_cpt_scope_is_explicit():
     assert len(CPT) == 9
     assert "70498" not in CPT  # CTA neck requires separately reviewed codebook
     assert "70546" not in CPT  # MRA head with/without contrast absent historically
+
+
+def test_reused_age_cohort_requires_same_age_bounds(tmp_path):
+    z = tmp_path / "raw.zip"
+    make_zip(z)
+    private = tmp_path / "private"
+    run_full(z, private, min_age=19, max_age=50, chunk_rows=100)
+    with pytest.raises(ValueError, match="different age interval"):
+        run_full(z, private, min_age=19, max_age=55, chunk_rows=100)
+
+
+def test_interrupted_imaging_stage_not_silently_reused(tmp_path):
+    z = tmp_path / "raw.zip"
+    make_zip(z)
+    private = tmp_path / "private"
+    run_full(z, private, chunk_rows=100)
+    completed = private / "imaging" / "step20_imaging_events.sqlite"
+    partial = private / "imaging" / "step20_imaging_events.partial.sqlite"
+    completed.replace(partial)
+    with pytest.raises(FileExistsError, match="Incomplete imaging"):
+        run_full(z, private, chunk_rows=100)
