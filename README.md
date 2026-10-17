@@ -15,7 +15,7 @@ Therefore Steps 2-7 currently describe an imaging-selected subset
 and MUST NOT be used to estimate population MRI/vascular imaging rates
 or clinical disparities. Reconstruct the index stroke cohort using the
 upstream diagnosis, encounter and procedure data while retaining CT-only
-patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md).
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md), and [Step 11 event-linkage findings](docs/STEP11_EVENT_LINKAGE.md), and [Step 12 index-sensitivity audit](docs/STEP12_INDEX_SENSITIVITY.md), and [Step 13 source readiness](docs/STEP13_SOURCE_READINESS.md), [Step 14 source discovery](docs/STEP14_SOURCE_DISCOVERY.md), and [Step 15 original ZIP inventory](docs/STEP15_ZIP_SOURCE.md), and [Step 16 ZIP preflight](docs/STEP16_ZIP_PREFLIGHT.md), and [Step 17 provenance review](docs/STEP17_PROVENANCE.md).
 
 
 
@@ -31,11 +31,13 @@ run the Step 13 source readiness audit before reconstruction.
 procedure and demographic example paths. The study team subsequently
 identified the original TriNetX ZIP archive in local approved storage.
 Step 15 identified original `diagnosis.csv`, `procedure.csv`, and
-`patient.csv` archive members. The diagnosis and procedure headers
-lack an obvious encounter ID. Run Step 16 to inspect **all** member
-headers for other linkage keys and check source code/date formats
-in a bounded, nonrepresentative sample. The study remains blocked
-until index-event rules and cohort linkage can be validated.
+`patient.csv` archive members. Step 16 confirmed YYYYMMDD source dates,
+ICD-9/ICD-10 and CPT/HCPCS code systems, and no identifiable
+encounter ID anywhere in the ZIP headers. The `reason_for_visit`
+field is descriptive, not an encounter ID. Run Step 17 to review
+archive cohort and dataset metadata before attempting a full scan.
+The study remains blocked until index-event rules and temporal
+linkage are reviewed; the patient/date proxy is not an admission ID.
 
 **Phase 1: data provenance and baseline audit (in progress).**
 No new adjusted association or manuscript finding has been validated.
@@ -77,6 +79,8 @@ python scripts/step14_discover_sources.py --root .. --max-depth 4
 python scripts/step15_zip_inventory.py --zip "$TRINETX_ZIP"
 # Step 16: inspect all ZIP headers and a bounded first-row sample:
 python scripts/step16_zip_preflight.py --zip "$TRINETX_ZIP" --sample-rows 10000
+# Confirm archive metadata and cohort scope before costly full scans:
+python scripts/step17_zip_provenance.py --zip "$TRINETX_ZIP"
 # Step 13 requires original secure source paths (not intermediate cohorts):
 # python scripts/step13_source_inventory.py --diagnoses PATH --procedures PATH --demographics PATH
 ```
@@ -100,6 +104,7 @@ python scripts/step16_zip_preflight.py --zip "$TRINETX_ZIP" --sample-rows 10000
 | `step14_discover_sources.py` | Identify likely original-source exports using only local CSV headers and Parquet metadata | `results/phase1/source_candidates.json` |
 | `step15_zip_inventory.py` | Inventory an original local TriNetX ZIP from its central directory and CSV/TSV headers without extraction | `results/phase1/zip_source_inventory.json` |
 | `step16_zip_preflight.py` | Inspect ZIP member headers and **first 10,000 rows only** of diagnosis, procedure and patient tables to validate formats | `results/phase1/zip_preflight.json` |
+| `step17_zip_provenance.py` | Check ZIP manifest, dataset and cohort metadata without reading clinical rows | `results/phase1/zip_provenance.json` |
 | `step13_source_inventory.py` | Inspect original diagnosis, procedure and demographic source schemas and provisional code coverage (audit only) | `results/phase1/source_readiness.json` |
 
 ### How to interpret
