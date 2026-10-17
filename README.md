@@ -5,6 +5,32 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Next action: bounded Research Network encounter pilot (Step 37)
+
+Step 36 metadata preflight completed with required Research Network tables and
+encounter-link fields present; structural readiness **does not** verify
+inpatient admissions or imaging receipt. The [Step 37 pilot
+protocol](docs/STEP37_RESEARCH_NETWORK_ENCOUNTER_PILOT.md) is now implemented
+at `scripts/step37_research_encounter_pilot.py` with synthetic-only tests.
+It reads at most 50,000 *nonrandom prefix rows* from each of encounter,
+diagnosis, and procedure tables by default, with no full clinical scan.
+The code checks sample-level encounter/patient/source key consistency
+and label patterns without producing patient-level output.
+
+From the cloned repository:
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step37_research_encounter_pilot.py \
+  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip"
+```
+
+Generated JSON and review ZIP exist **only** in gitignored
+`results/phase1/`. Do not upload patient-level data or infer
+population-wide linkage rates from file-prefix matches. The draft PR
+remains unmerged pending institution-level data governance.
+
 ## Current path: Research Network feasibility (Step 36)
 
 The locally held Research Network stroke export has encounter-key columns,
