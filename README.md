@@ -27,6 +27,33 @@ If encounter-linkage cannot be established, the original admission
 study remains blocked and a distinct research question must be
 formally approved.
 
+## Step 30: evidence-based imaging code review, existing data only
+
+The investigator explicitly authorized one additional scan of the
+original local procedure table if permitted by the current data-use
+agreement. The imaging definitions have been appraised against
+**2013 ASNR/ACR/SNIS stroke imaging guidance, 2019 AHA/ASA
+ischemic stroke guidance, and historical CMS code listings**.
+See [Step 30 scientific evidence review](docs/STEP30_EVIDENCE_REVIEW_AND_AUTHORIZATION.md).
+
+The 14-code
+[evidence-reviewed CPT catalog](dataset/imaging_codebook_literature_review_v1.csv)
+is **NOT a physician sign-off**. Head CT, brain MRI, CTA head and
+MRA head remain separate primary code outcomes; CTA/MRA neck is a
+distinct expanded sensitivity. No hospital admission, completed
+imaging, stroke incidentness, data-capture completeness or
+clinical inequity may be inferred just from code proximity.
+
+The extractor has an additional **--execute-literature** path that
+requires the local operator's explicit
+**--confirm-existing-data-use-permitted** attestation. It never
+falsifies an institutional or clinical approval. Run the
+metadata preflight and full tests first; see
+[Step 28 local commands](docs/STEP28_IMAGING_CODEBOOK_PREFLIGHT.md).
+Use the full scan only if the existing TriNetX agreement and
+institutional rules allow this private research extraction. The
+assistant cannot trigger the workstation scan from this chat.
+
 ## Step 28 preflight completed; Step 29 clinical codebook review
 
 The study-team `step28_codebook_plan.json` confirms the original
