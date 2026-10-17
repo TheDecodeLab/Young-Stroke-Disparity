@@ -21,10 +21,13 @@ that people without CPT records did not undergo imaging.
 
 ## Manuscript source
 
-See [internal manuscript draft v0.1](METHODS_MANUSCRIPT_DRAFT_v0.1.md),
-covering: proposed abstract, introduction, methods, descriptive
-results, limitations, discussion, figure/table specifications and
-verified supporting biomedical references.
+The full internal manuscript draft has been moved outside this
+PUBLIC repository to a conversation-local artifact. It covers
+abstract, introduction, methods, descriptive results, limitations,
+discussion, figures/tables and supporting references. It is not
+available as a public repository document. IMPORTANT: prior commits
+still retain the initial draft until an authorized Git-history
+remediation; deleting a file from the branch does not erase that history.
 
 This manuscript has **not** been accepted by clinical coauthors,
 data governance, an IRB or a journal. It is a planning draft;
