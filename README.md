@@ -15,7 +15,7 @@ Therefore Steps 2-7 currently describe an imaging-selected subset
 and MUST NOT be used to estimate population MRI/vascular imaging rates
 or clinical disparities. Reconstruct the index stroke cohort using the
 upstream diagnosis, encounter and procedure data while retaining CT-only
-patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) and [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md).
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md) [Step 9 recovery instructions](docs/STEP09_RECOVERY_PLAN.md), and [Step 10 reconciliation](docs/STEP10_RECONCILIATION.md).
 
 
 **Phase 1: data provenance and baseline audit (in progress).**
@@ -46,6 +46,8 @@ python scripts/step07_modality_patterns.py
 python scripts/step08_cohort_integrity.py
 # Local recovery audit; source files are stored one directory above repo:
 python scripts/step09_audit_recovery.py --files ../df_merged_age.parquet ../df_trinetx_total_young_wCT.parquet
+# Reconcile the CT-retaining and legacy young-stroke tables:
+python scripts/step10_reconcile_cohorts.py
 ```
 
 ### What each script does
@@ -61,6 +63,7 @@ python scripts/step09_audit_recovery.py --files ../df_merged_age.parquet ../df_t
 | `step07_modality_patterns.py` | Descriptive, mutually exclusive CTA/MRA pathways by sex, year, and age bands | `results/phase1/modality_patterns_age50.csv` |
 | `step08_cohort_integrity.py` | Critical selection check: detect absence of CT-only patients | `results/phase1/cohort_integrity_age50.json` |
 | `step09_audit_recovery.py` | Audit local pre-exclusion Parquet candidates without sharing record-level data | `results/phase1/recovery_candidate_audit.json` |
+| `step10_reconcile_cohorts.py` | Reconcile CT-inclusive and legacy derived young-stroke tables by aggregate patient overlap and imaging-count concordance | `results/phase1/cohort_reconciliation.json` |
 
 ### How to interpret
 
