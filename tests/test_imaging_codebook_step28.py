@@ -189,7 +189,7 @@ def test_source_signature_drift_fails(tmp_path):
 
 
 def test_legacy_code_unmapped_rejected(tmp_path):
-    content=DEFAULT_CODEBOOK.read_text().replace("CPT,70450,CT,", "CPT,70450,MRI,")
+    content=DEFAULT_CODEBOOK.read_text().replace("CPT,70450,CT,head,", "CPT,70450,MRI,brain,")
     broken=tmp_path/"broken.csv"
     broken.write_text(content)
     with pytest.raises(ValueError,match="missing or changed"):
