@@ -242,6 +242,96 @@ def aggregate_window(con: sqlite3.Connection, index_n: int, days: int) -> dict:
     return result
 
 
+
+def aggregate_anatomic_window(
+    con: sqlite3.Connection, index_n: int, days: int, code_rows: list[dict]
+) -> dict:
+    """Head-only primary versus head+neck sensitivity, using saved exact codes.
+
+    Internal aggregate only. Suppresses the ENTIRE comparison when rare
+    positive cells or small differences between nested endpoint choices
+    could reveal an otherwise suppressed count. A release still needs
+    cross-table disclosure review.
+    """
+    lookup = {
+        (item["code_system"].upper(), item["code"].upper()):
+        (item["modality"].upper(), item["anatomy"].lower())
+        for item in code_rows
+    }
+    allowed = {
+        ("CT", "head"), ("MRI", "brain"), ("CTA", "head"), ("CTA", "neck"),
+        ("MRA", "head"), ("MRA", "neck"),
+    }
+    if any(entry not in allowed for entry in lookup.values()):
+        raise ValueError("Anatomical modality assignment is not approved by the schema")
+
+    rows = con.execute(
+        "SELECT patient_id,code_system,code,modality FROM event "
+        "WHERE offset_days BETWEEN ? AND ? GROUP BY patient_id,code_system,code,modality",
+        (-days, days),
+    )
+    anatomy_by_patient = {}
+    for pid, system, code, modality in rows:
+        canonical = lookup.get((system.upper(), code.upper()))
+        if canonical is None or canonical[0] != modality.upper():
+            raise ValueError("Extracted event does not match approved codebook")
+        anatomy_by_patient.setdefault(pid, set()).add(canonical)
+    head_counts = {"total": index_n, "CT": 0, "MRI": 0, "CTA": 0, "MRA": 0}
+    wide_counts = dict(head_counts)
+    head_classes = {"CT only": 0, "CT + additional": 0,
+                    "Additional without CT": 0, "None of four": 0}
+    wide_classes = dict(head_classes)
+    neck_only = {"CTA neck without CTA head": 0,
+                 "MRA neck without MRA head": 0}
+
+    def category(present: set) -> str:
+        ct = "CT" in present
+        advanced = bool(present & {"MRI", "CTA", "MRA"})
+        if ct and not advanced:
+            return "CT only"
+        if ct and advanced:
+            return "CT + additional"
+        if advanced:
+            return "Additional without CT"
+        return "None of four"
+
+    for events in anatomy_by_patient.values():
+        head = {mod for mod, anatomy in events
+                if (mod, anatomy) in {("CT", "head"), ("MRI", "brain"),
+                                      ("CTA", "head"), ("MRA", "head")}}
+        wide = {mod for mod, _ in events}
+        for name, present, classes in (
+            ("head", head, head_classes), ("wide", wide, wide_classes)
+        ):
+            for modality in MODALITIES:
+                if modality in present:
+                    (head_counts if name == "head" else wide_counts)[modality] += 1
+            classes[category(present)] += 1
+        if ("CTA", "neck") in events and ("CTA", "head") not in events:
+            neck_only["CTA neck without CTA head"] += 1
+        if ("MRA", "neck") in events and ("MRA", "head") not in events:
+            neck_only["MRA neck without MRA head"] += 1
+
+    # An individual with no saved matched code belongs to both 'none' groups.
+    head_classes["None of four"] += index_n - len(anatomy_by_patient)
+    wide_classes["None of four"] += index_n - len(anatomy_by_patient)
+    for counts, classes in ((head_counts, head_classes), (wide_counts, wide_classes)):
+        counts.update(classes)
+        if sum(classes.values()) != index_n:
+            raise ValueError("Anatomic categories do not reconcile")
+    all_cells = [*head_counts.values(), *wide_counts.values(), *neck_only.values()]
+    all_cells += [abs(head_counts[k] - wide_counts[k])
+                  for k in ("CT", "MRI", "CTA", "MRA", *head_classes.keys())]
+    if any(0 < int(v) < 11 for v in all_cells):
+        return {"total": index_n, "suppressed": True}
+    return {
+        "total": index_n, "suppressed": False,
+        "head_only_primary": head_counts,
+        "head_plus_neck_sensitivity": wide_counts,
+        "neck_without_head_cta_mra": neck_only,
+    }
+
+
 def execute(zip_file: Path, private_dir: Path, codebook_file: Path,
             approval_file: Path, chunk_rows: int = 150000) -> dict:
     if not 100 <= chunk_rows <= 2000000:
@@ -255,7 +345,7 @@ def execute(zip_file: Path, private_dir: Path, codebook_file: Path,
     if target.exists() or partial.exists():
         raise FileExistsError("Refuse to overwrite previous or incomplete expanded index")
     index = load_index(private)
-    mapping, digest, _ = codebook(codebook_file)
+    mapping, digest, code_rows = codebook(codebook_file)
     connection = sqlite3.connect(partial)
     os.chmod(partial, 0o600)
     connection.execute("PRAGMA synchronous=FULL")
@@ -289,6 +379,8 @@ def execute(zip_file: Path, private_dir: Path, codebook_file: Path,
         retained_legacy = compare_legacy(private, connection)
         report_windows = {str(d): aggregate_window(connection, len(index), d)
                           for d in (0, 1, 3, 7)}
+        anatomic_windows = {str(d): aggregate_anatomic_window(
+            connection, len(index), d, code_rows) for d in (0, 1, 3, 7)}
         n = connection.execute("SELECT COUNT(*) FROM event").fetchone()[0]
         connection.execute("INSERT INTO scan_state VALUES('source_rows_scanned',?)",
                            (str(scanned),))
@@ -312,6 +404,10 @@ def execute(zip_file: Path, private_dir: Path, codebook_file: Path,
         "retained_legacy_patient_modality_days": retained_legacy,
         "matched_code_specific_patient_days": n,
         "windows_inclusive_days_each_side": report_windows,
+        "anatomic_profiles_by_window": anatomic_windows,
+        "aggregate_disclosure_review_required": True,
+        "primary_recorded_vascular_endpoint": "CTA/MRA head only",
+        "sensitivity_vascular_endpoint": "CTA/MRA head or neck",
         "eligible_diagnosis_first_patients": len(index),
         "encounter_validated": False,
         "ready_for_manuscript_inference": False,
