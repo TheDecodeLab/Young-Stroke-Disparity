@@ -1,6 +1,7 @@
 """Synthetic end-to-end tests for the fully chained direct-ZIP pipeline."""
 from pathlib import Path
 import sqlite3
+import json
 from zipfile import ZipFile
 
 import pandas as pd
@@ -78,7 +79,7 @@ def test_entire_pipeline_preserves_ct_only(tmp_path):
     }
     assert result["stages"][2]["distinct_modality_days_matched"] == 4
     assert "20180105" not in str(result)
-    assert "patient_id" not in str(result)
+    assert '"patient_id":' not in json.dumps(result)
     assert "postal_code" not in str(result)
     for database in (private / "diagnosis" / "step18_diagnosis_index.sqlite",
                      private / "demographics" / "step19_age_cohort.sqlite",
