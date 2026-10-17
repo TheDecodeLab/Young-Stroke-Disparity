@@ -267,3 +267,26 @@ def test_anatomic_mapping_error_fails_closed():
         db.execute("INSERT INTO event VALUES ('p1','CPT','70498','MRI',0)")
         with pytest.raises(ValueError, match="approved codebook"):
             aggregate_anatomic_window(db, 100, 1, code_rows)
+
+
+
+def test_invalid_anatomy_rejected_before_procedure_scan(tmp_path):
+    raw = DEFAULT_CODEBOOK.read_text(encoding="utf-8")
+    broken = tmp_path / "bad_anatomy.csv"
+    broken.write_text(raw.replace(
+        "CPT,70498,CTA,neck,", "CPT,70498,CTA,brain,"))
+    with pytest.raises(ValueError, match="Unrecognized anatomical mapping"):
+        codebook(broken)
+
+
+def test_approval_file_in_repository_is_not_accepted(tmp_path):
+    # An actual signed-off approval belongs in institutional private storage.
+    repo = Path(__file__).resolve().parents[1]
+    manifest = {
+        "codebook_sha256": "a" * 64,
+        "archive_members_sha256": "b" * 64,
+        "candidate_codes": [],
+    }
+    local_file = repo / "docs" / "STEP28_APPROVAL_TEMPLATE.json"
+    with pytest.raises(ValueError, match="outside the Git repository"):
+        check_approval(local_file, manifest)
