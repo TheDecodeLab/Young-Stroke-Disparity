@@ -9,7 +9,7 @@ from scripts.step33_aggregate_patterns import compare
 WINDOWS = ("0", "1", "3", "7")
 
 
-def fake_reports():
+def fake_reports(*, neck_extra: bool = False):
     # Dimensions all cover the same 600 synthetic patients.
     # Window-specific matched totals: 200,240,270,300 respectively.
     matched = {
@@ -27,15 +27,15 @@ def fake_reports():
             "2019": (300, (115, 135, 150, 160)),
         },
     }
-    def record(matched_count, denominator):
+    def record(matched_count, denominator, head_offset):
         return {
-            "any_head_n": matched_count,
+            "any_head_n": matched_count-head_offset,
             "any_head_or_neck_n": matched_count,
             "brain_MRI_n": 0,
             "head_CTA_n": 0,
-            "head_CT_n": matched_count,
+            "head_CT_n": matched_count-head_offset,
             "head_MRA_n": 0,
-            "head_or_neck_CTA_n": 0,
+            "head_or_neck_CTA_n": head_offset,
             "head_or_neck_MRA_n": 0,
             "none_head_or_neck_n": denominator-matched_count,
         }
@@ -47,7 +47,9 @@ def fake_reports():
                 "stratum": label,
                 "denominator": denominator,
                 "windows": {
-                    w: record(sequence[i], denominator)
+                    w: record(sequence[i], denominator,
+                              (10 if dimension == "age_band" else 15)
+                              if neck_extra else 0)
                     for i, w in enumerate(WINDOWS)
                 },
             })
@@ -67,7 +69,8 @@ def fake_reports():
                 "expanded_with_any_included_code_n": matched_totals[i],
                 "expanded_without_matching_included_code_n":
                     600-matched_totals[i],
-                "head_only_with_any_included_code_n": matched_totals[i],
+                "head_only_with_any_included_code_n": matched_totals[i] -
+                    (30 if neck_extra else 0),
                 "expanded_minus_historical_coverage_percent_points": 0.2,
             } for i, w in enumerate(WINDOWS)
         }
@@ -151,3 +154,15 @@ def test_unexpected_stratum_rejected():
         "stratum"] = "2017"
     with pytest.raises(ValueError, match="missing or extra strata"):
         compare(*args)
+
+
+
+def test_head_only_primary_and_head_neck_sensitivity_remain_distinct():
+    report = compare(*fake_reports(neck_extra=True))
+    assert report["window_expanded_any_code_percent"]["1"] == 40.0
+    assert report["window_head_only_any_code_percent"]["1"] == 35.0
+    age = report["code_match_rates_by_group_head_only_and_expanded"]["age_band"]
+    assert age[0]["head_only_any_code_percent"] == 55.0
+    assert age[0]["expanded_head_plus_neck_any_code_percent"] == 65.0
+    assert report["working_primary_anatomy"] == "Head/brain CT MRI CTA MRA"
+    assert report["clinical_inference_allowed"] is False
