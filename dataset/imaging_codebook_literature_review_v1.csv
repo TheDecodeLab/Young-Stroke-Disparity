@@ -1,0 +1,15 @@
+code_system,code,modality,anatomy,source_status,short_label,clinical_review
+CPT,70450,CT,head,historical,CT head without contrast,evidence_reviewed
+CPT,70460,CT,head,historical,CT head with contrast,evidence_reviewed
+CPT,70470,CT,head,historical,CT head without and with contrast,evidence_reviewed
+CPT,70496,CTA,head,historical,CTA head,evidence_reviewed
+CPT,70498,CTA,neck,review_candidate,CTA neck,evidence_reviewed
+CPT,70544,MRA,head,historical,MRA head without contrast,evidence_reviewed
+CPT,70545,MRA,head,historical,MRA head with contrast,evidence_reviewed
+CPT,70546,MRA,head,review_candidate,MRA head without and with contrast,evidence_reviewed
+CPT,70547,MRA,neck,review_candidate,MRA neck without contrast,evidence_reviewed
+CPT,70548,MRA,neck,review_candidate,MRA neck with contrast,evidence_reviewed
+CPT,70549,MRA,neck,review_candidate,MRA neck without and with contrast,evidence_reviewed
+CPT,70551,MRI,brain,historical,MRI brain without contrast,evidence_reviewed
+CPT,70552,MRI,brain,historical,MRI brain with contrast,evidence_reviewed
+CPT,70553,MRI,brain,historical,MRI brain without and with contrast,evidence_reviewed
