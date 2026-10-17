@@ -70,6 +70,65 @@ approval_status: NOT_APPROVED. It performs **no 1.17 billion-row scan**.
 Review the aggregate JSON for metadata disclosure before sharing.
 Never upload the original ZIP, private SQLite or patient-level data.
 
+## Investigator-authorized literature-review research pathway (Step 30)
+
+The investigator has explicitly authorized one re-extraction of the
+**existing original ZIP**, provided local use is permitted by the
+existing data agreement. They asked for an evidence-based clinical
+review instead of obtaining a physician's sign-off. See
+[Step 30 literature and coding assessment](STEP30_EVIDENCE_REVIEW_AND_AUTHORIZATION.md).
+The separate
+[literature-reviewed CPT catalog](../dataset/imaging_codebook_literature_review_v1.csv)
+includes the same 14 exact CPT codes. It is explicitly labeled
+**evidence_reviewed, NOT clinician-approved**.
+
+This is a distinct research-only execution path. The local operator
+must affirm that the private derived SQLite extraction is covered
+by existing TriNetX/institutional data-use permissions. It must NEVER
+be used to claim a clinician approved this project, that the source
+has verified admissions, or that the resulting counts can be
+published as clinical disparities.
+
+First pull, test and run the metadata-only preflight using the
+literature-reviewed version:
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q && \
+python scripts/step28_imaging_extract.py --plan \
+  --zip "$TRINETX_ZIP" \
+  --private-dir "$TRINETX_PRIVATE" \
+  --codebook dataset/imaging_codebook_literature_review_v1.csv \
+  --output results/phase1/step30_literature_codebook_preflight.json
+```
+
+If tests and preflight pass and actual existing data-use permissions
+allow the private extraction, the **local workstation operator**
+can execute exactly one full source scan:
+
+```bash
+python scripts/step28_imaging_extract.py \
+  --execute-literature \
+  --confirm-existing-data-use-permitted \
+  --zip "$TRINETX_ZIP" \
+  --private-dir "$TRINETX_PRIVATE" \
+  --codebook dataset/imaging_codebook_literature_review_v1.csv \
+  --output results/phase1/step30_literature_imaging_audit.json
+```
+
+The confirm flag is an explicit **local operator attestation**
+about lawful, permitted use of existing restricted data. It is not
+an automatic or inferred compliance decision by the assistant.
+**Do not include the flag if the permission status is uncertain.**
+No original ZIP data or private patient-level SQLite is to be
+uploaded. Upload only an aggregate report after small-cell review.
+
+The previous **--execute** path below remains a separate route
+requiring actual investigator, independent clinical and data-use
+review and an approval record. The evidence-based research route
+does not populate or impersonate these approvals. Neither path
+authorizes inferential manuscript conclusions.
+
 ## Full extraction design: DO NOT RUN before actual sign-off
 
 The script includes an --execute mode for ONE future sequential
