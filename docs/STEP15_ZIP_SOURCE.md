@@ -2,9 +2,13 @@
 
 ## Location supplied by study team
 
-From the cloned repository root, the existing approved local export is at:
+Before running the command, set the local environment variable to the ZIP's actual path on your approved workstation:
 
-`$TRINETX_ZIP`
+```bash
+export TRINETX_ZIP="/path/to/approved/local/trinetx_source.zip"
+```
+
+Keep the real archive name and directory location out of public GitHub.
 
 This ZIP may contain the source diagnosis, procedure, demographic and
 encounter tables referenced in the historical notebook. The ZIP's internal
@@ -17,7 +21,7 @@ exports were deleted to save storage space.
 git pull origin analysis-rebuild-phase1-audit
 python -m pytest -q
 python scripts/step15_zip_inventory.py \
-  --zip $TRINETX_ZIP
+  --zip "$TRINETX_ZIP"
 ```
 
 The script does NOT extract the archive. It examines the ZIP directory
