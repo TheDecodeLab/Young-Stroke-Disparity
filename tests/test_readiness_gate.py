@@ -98,6 +98,8 @@ def test_validated_aggregate_fixture():
     assert report["zip_records_read"] == 0
     assert report["ready_for_manuscript_inference"] is False
     assert report["principal_I63_index_patients"] == 150
+    assert report["historical_fine_diagnosis_group_report_requires_disclosure_review"] is True
+    assert report["current_input_has_suppressed_fine_group"] is False
 
 
 def test_attrition_tampering_rejected():
@@ -144,4 +146,5 @@ def test_legacy_fine_group_risk_flag_without_exposing_cell():
     ]
     report = gate(*x)
     assert report["historical_fine_diagnosis_group_report_requires_disclosure_review"]
+    assert report["current_input_has_suppressed_fine_group"] is True
     assert "small_group_count" not in report
