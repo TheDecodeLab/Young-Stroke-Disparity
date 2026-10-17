@@ -9,9 +9,9 @@ legacy reference**. New work uses documented, tested Python scripts.
 
 The uploaded Step38 report successfully matched **all five** sampled
 encounter-type codes to the Research Network Encounter Type terminology.
-The automated description classifier left one code's meaning unresolved
-(13,241 of the nonrandom 50,000 encountered records). That group
-should not be interpreted as missing encounters or as non-inpatient.
+The automated description classifier left one reference-matched type
+unresolved. That group should not be interpreted as missing encounters
+or as non-inpatient. The aggregate counts remain in the private report.
 
 Run [Step39](docs/STEP39_ENCOUNTER_TYPE_CLINICAL_REVIEW.md) to create
 a **local-only private clinical-review worksheet** (five type codes,
