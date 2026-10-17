@@ -27,6 +27,44 @@ If encounter-linkage cannot be established, the original admission
 study remains blocked and a distinct research question must be
 formally approved.
 
+## Step 32 passed; Step 33 methods research preparation
+
+The study team confirmed **157 passed, 2 nonblocking warnings**
+for the repository suite and ran Step32 successfully. Its output
+reconciles all age, recorded sex and index-year marginal counts
+to the same 86,902 patients and 121,033 code-specific events
+without rescanning the original Diamond ZIP or exporting patient
+records.
+
+Within +/-1 day, the **head+neck sensitivity** any-included-CPT
+code match varies descriptively by age band (52.60% at 19-29;
+44.22% at 40-50), recorded sex (47.71% Female; 43.72% Male),
+and year (43.70% in 2018; 48.87% in 2019).
+The **working primary head-only** any-code definition is
+52.35% versus 44.09%, 47.56% versus 43.55%, and
+43.53% versus 48.73%, respectively. These are UNADJUSTED
+administrative code-matching frequencies and must not be
+interpreted as actual imaging receipt or access inequalities.
+
+A new [Step33 methods study and evidence-based figure/table plan](docs/STEP33_METHODS_STUDY_DESIGN.md)
+documents descriptive results and a potential publishable
+source-data methods audit. The
+[Step33 aggregate-only script](scripts/step33_aggregate_patterns.py)
+reconciles the Step31 and Step32 JSONs, outputs exact
+head-only and head+neck percentage rates, and does not open
+either the clinical source ZIP or private SQLite. Its new
+synthetic tests still need to run on the user's workstation.
+No further original billion-row source scan is justified.
+
+```bash
+python -m pytest -q && python scripts/step33_aggregate_patterns.py   --step31 results/phase1/step31_expanded_reconciliation.json   --step32 results/phase1/step32_recording_heterogeneity_qc.json   --output results/phase1/step33_recording_pattern_descriptives.json
+```
+
+Even broad aggregate counts require institutionally approved
+cumulative disclosure review before public release. No clinical
+disparity modeling, admission-level imaging claims, or manuscript
+publication is authorized by a passing technical audit.
+
 ## Step 32: Study-team read-only code-recording QC
 
 The uploaded `step31_expanded_reconciliation.json` reports
