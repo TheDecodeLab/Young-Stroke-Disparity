@@ -167,6 +167,9 @@ def test_patient_date_linkage_and_full_synthetic_extraction(tmp_path):
     assert result["encounter_validated"] is False
     assert result["ready_for_manuscript_inference"] is False
     assert result["windows_inclusive_days_each_side"]["7"]["total"]==2
+    assert result["anatomic_profiles_by_window"]["7"] == {"total":2,"suppressed":True}
+    assert result["aggregate_disclosure_review_required"] is True
+    assert result["primary_recorded_vascular_endpoint"] == "CTA/MRA head only"
     private_db=private/"imaging_expanded/step28_imaging_events.sqlite"
     complete_db(private_db)
     with sqlite3.connect(private_db) as conn:
@@ -204,3 +207,63 @@ def test_unexpected_code_system_not_matched():
     rows=select_codes(frame,{"p":"20180101"},mapping)
     assert len(rows)==2
     assert {r[1] for r in rows}=={"CTA","MRA"}
+
+
+
+def test_anatomic_profiles_separate_head_and_neck():
+    from scripts.step28_imaging_extract import aggregate_anatomic_window
+    mapping, sha, code_rows = codebook(DEFAULT_CODEBOOK)
+    events = []
+    for i in range(120):
+        if i < 30:
+            code, modality = "70450", "CT"
+        elif i < 60:
+            code, modality = "70496", "CTA"
+        elif i < 90:
+            code, modality = "70498", "CTA"
+        else:
+            code, modality = "70548", "MRA"
+        events.append((f"p{i}", "CPT", code, modality, 0))
+    with sqlite3.connect(":memory:") as db:
+        db.execute("CREATE TABLE event("
+                   "patient_id TEXT,code_system TEXT,code TEXT,"
+                   "modality TEXT,offset_days INTEGER)")
+        db.executemany("INSERT INTO event VALUES (?,?,?,?,?)", events)
+        result = aggregate_anatomic_window(db, 120, 1, code_rows)
+    assert result["suppressed"] is False
+    assert result["head_only_primary"]["CTA"] == 30
+    assert result["head_plus_neck_sensitivity"]["CTA"] == 60
+    assert result["head_only_primary"]["MRA"] == 0
+    assert result["head_plus_neck_sensitivity"]["MRA"] == 30
+    assert result["head_only_primary"]["None of four"] == 60
+    assert result["head_plus_neck_sensitivity"]["None of four"] == 0
+    assert result["neck_without_head_cta_mra"]["CTA neck without CTA head"] == 30
+
+
+def test_anatomic_rare_difference_is_fully_suppressed():
+    from scripts.step28_imaging_extract import aggregate_anatomic_window
+    mapping, sha, code_rows = codebook(DEFAULT_CODEBOOK)
+    events = [
+        (f"p{i}", "CPT", "70496" if i < 15 else (
+            "70498" if i < 20 else "70450"),
+         "CTA" if i < 20 else "CT", 0) for i in range(120)
+    ]
+    with sqlite3.connect(":memory:") as db:
+        db.execute("CREATE TABLE event("
+                   "patient_id TEXT,code_system TEXT,code TEXT,"
+                   "modality TEXT,offset_days INTEGER)")
+        db.executemany("INSERT INTO event VALUES (?,?,?,?,?)", events)
+        result = aggregate_anatomic_window(db, 120, 1, code_rows)
+    assert result == {"total":120, "suppressed":True}
+
+
+def test_anatomic_mapping_error_fails_closed():
+    from scripts.step28_imaging_extract import aggregate_anatomic_window
+    mapping, sha, code_rows = codebook(DEFAULT_CODEBOOK)
+    with sqlite3.connect(":memory:") as db:
+        db.execute("CREATE TABLE event("
+                   "patient_id TEXT,code_system TEXT,code TEXT,"
+                   "modality TEXT,offset_days INTEGER)")
+        db.execute("INSERT INTO event VALUES ('p1','CPT','70498','MRI',0)")
+        with pytest.raises(ValueError, match="approved codebook"):
+            aggregate_anatomic_window(db, 100, 1, code_rows)
