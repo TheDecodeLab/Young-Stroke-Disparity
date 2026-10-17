@@ -5,6 +5,31 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current action: local encounter-type codebook review (Step 39)
+
+The uploaded Step38 report successfully matched **all five** sampled
+encounter-type codes to the Research Network Encounter Type terminology.
+The automated description classifier left one code's meaning unresolved
+(13,241 of the nonrandom 50,000 encountered records). That group
+should not be interpreted as missing encounters or as non-inpatient.
+
+Run [Step39](docs/STEP39_ENCOUNTER_TYPE_CLINICAL_REVIEW.md) to create
+a **local-only private clinical-review worksheet** (five type codes,
+their descriptions and prefix counts) plus a **separate aggregate-only
+review ZIP**. Neither source codes nor their definitions enter the ZIP.
+All generated outputs remain in the clone's gitignored
+`results/phase1/`. Do not commit or upload the local worksheet.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step39_encounter_type_clinical_review.py \
+  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip"
+```
+
+A clinician/data steward still needs to approve the inpatient code
+definition before we start a full linked-cohort reconstruction.
+
 ## Current action: encounter-type terminology reference (Step 38)
 
 The corrected Step37 bounded pilot recognized compact YYYYMMDD date codes
