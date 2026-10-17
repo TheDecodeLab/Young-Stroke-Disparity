@@ -97,6 +97,7 @@ def test_rerun_reuses_completed_stages(tmp_path):
     run_full(z, private, chunk_rows=100)
     outcome = run_full(z, private, chunk_rows=100)
     assert all(stage["reused_complete"] for stage in outcome["stages"])
+    assert outcome["stages"][2]["aggregate_cohort_integrity"]["ct_only_n"] == 1
 
 
 def test_sampled_sex_and_age_rules():
