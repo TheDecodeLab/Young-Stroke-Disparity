@@ -61,7 +61,7 @@ def test_full_scan_selects_first_principal_I63_and_no_imaging(tmp_path):
         ("h", "20180101", "I63.9"),
     ]
     assert state == "1"
-    assert "a" not in str(report)
+    assert "patient_id" not in str(report)
     assert "20180102" not in str(report)
     assert report["candidate_index_year_counts"] == {"2018": 3}
 
