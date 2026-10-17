@@ -38,11 +38,11 @@ def make_source(folder, *, n=40, omit_procedure_code=False):
             "encounter_id", "patient_id", "start_date", "end_date", "type", "source_id",
         ],
         "diagnosis.csv": [
-            "patient_id", "encounter_id", "code_system", "code", "date", "source_id",
+            "patient_id", "encounter_id", "code_system", "code", "date",
             "principal_diagnosis_indicator", "source_id",
         ],
         "procedure.csv": [
-            "patient_id", "encounter_id", "code_system", "code", "date",
+            "patient_id", "encounter_id", "code_system", "code", "date", "source_id",
         ],
     }
     if omit_procedure_code:
