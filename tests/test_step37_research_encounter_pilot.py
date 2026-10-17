@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 from scripts.step37_research_encounter_pilot import (
-    PHASE1, REPORT_NAME, ZIP_NAME, REDACTED, coarse_year, private_count,
+    PHASE1, REPORT_NAME, ZIP_NAME, REDACTED, coarse_year, date_profile, private_count,
     run, type_group, output_dir_guard, sample_overlap,
 )
 
@@ -96,6 +96,8 @@ def test_pilot_output_is_aggregate_only(sandbox):
     assert report["sample_overlap"]["procedure.csv"]["matching_patient_id_when_observed_n"] == 20
     assert report["sample_overlap"]["procedure.csv"]["agreeing_nonblank_source_id_when_observed_n"] == 20
     assert report["source_tables"]["procedure.csv"]["restricted_characteristic_counts"]["CPT_14_catalog_code"] == 20
+    assert report["source_tables"]["encounter.csv"]["date_shape_category_counts"]["year_first_dash"] == 20
+    assert report["source_tables"]["encounter.csv"]["coarse_date_bucket_counts"]["2018_2019"] == 20
     payload = (sandbox / REPORT_NAME).read_text(encoding="utf-8")
     assert "PRIVATE_PERSON" not in payload
     assert "enc_19" not in payload
@@ -105,6 +107,18 @@ def test_pilot_output_is_aggregate_only(sandbox):
     with zipfile.ZipFile(sandbox / ZIP_NAME) as z:
         assert z.namelist() == [REPORT_NAME]
         assert json.loads(z.read(REPORT_NAME)) == report
+
+
+def test_date_shape_diagnostic_preserves_only_coarse_classes():
+    assert date_profile("2018-11-07") == ("year_first_dash", "2018_2019", False)
+    assert date_profile("2019/02/27") == ("year_first_slash", "2018_2019", False)
+    assert date_profile("20180721") == ("compact_yyyymmdd", "2018_2019", False)
+    assert date_profile("07/21/2018") == ("year_last_slash", "2018_2019", False)
+    assert date_profile("03/04/2019") == ("year_last_slash", "2018_2019", True)
+    assert date_profile("02/30/2019") == ("year_last_slash", "unparseable", False)
+    assert date_profile("1514764800") == ("unix_epoch_candidate_unverified", "unparseable", False)
+    assert date_profile("unrecognized-private-date") == ("unrecognized", "unparseable", False)
+    assert date_profile("") == ("missing", "missing", False)
 
 
 def test_empty_date_and_type_are_not_inferred():
