@@ -315,7 +315,10 @@ def build_imaging(zip_path: Path, cohort_file: Path, base: Path, chunk_rows: int
             config = dict(con.execute("SELECT key,value FROM scan_state"))
             if config.get("imaging_protocol") != protocol:
                 raise ValueError("Cannot reuse imaging database after CPT/window rules changed")
-        return {"stage": "imaging", "reused_complete": True}
+            with sqlite3.connect(f"file:{cohort_file}?mode=ro", uri=True) as age:
+                counts = imaging_counts(con, age)
+        return {"stage": "imaging", "reused_complete": True,
+                "aggregate_cohort_integrity": counts}
     with sqlite3.connect(f"file:{cohort_file}?mode=ro", uri=True) as eligible:
         index_dates = {pid: date for pid, date in eligible.execute(
             "SELECT patient_id,index_date FROM eligible")}
