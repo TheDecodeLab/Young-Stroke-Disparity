@@ -1,11 +1,17 @@
 """Synthetic-only Step36 tests: no private data access."""
 import json
+import tempfile
+
+import pytest
 import subprocess
 import sys
 import zipfile
 from pathlib import Path
 
-from scripts.step36_research_zip_preflight import positive_int, find_csv_files
+from scripts.step36_research_zip_preflight import (
+    DEFAULT_OUTPUT, DEFAULT_REVIEW_ZIP, PHASE1_RESULTS,
+    positive_int, find_csv_files,
+)
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "step36_research_zip_preflight.py"
 HEADERS = {
@@ -15,6 +21,27 @@ HEADERS = {
     "diagnosis.csv": "patient_id,encounter_id,code_system,code,date,principal_diagnosis_indicator\n",
     "procedure.csv": "patient_id,encounter_id,code_system,code,date\n",
 }
+
+
+@pytest.fixture
+def output_dir():
+    PHASE1_RESULTS.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="step36_test_", dir=PHASE1_RESULTS) as folder:
+        yield Path(folder)
+
+
+def test_default_outputs_inside_clone():
+    assert DEFAULT_OUTPUT.parent == PHASE1_RESULTS
+    assert DEFAULT_REVIEW_ZIP.parent == PHASE1_RESULTS
+
+
+def test_reject_output_outside_clone(tmp_path):
+    source = tmp_path / "source.zip"
+    make_zip(source)
+    run = run_cli(source, tmp_path / "outside.json")
+    assert run.returncode != 0
+    assert "results/phase1/" in run.stderr
+    assert not (tmp_path / "outside.json").exists()
 
 
 def make_zip(path, *, encounter=True, duplicate=False):
@@ -37,13 +64,13 @@ def make_zip(path, *, encounter=True, duplicate=False):
 
 def run_cli(source, output, bundle=None):
     cmd = [sys.executable, str(SCRIPT), "--zip", str(source), "--output", str(output)]
-    if bundle is not None:
-        cmd += ["--output-zip", str(bundle)]
+    cmd += ["--output-zip", str(bundle if bundle is not None else output.with_suffix(".zip"))]
     return subprocess.run(cmd, capture_output=True, text=True, check=False)
 
 
-def test_metadata_only_and_bundle(tmp_path):
-    source, output, bundle = (tmp_path / s for s in ("source.zip", "report.json", "review.zip"))
+def test_metadata_only_and_bundle(tmp_path, output_dir):
+    source = tmp_path / "source.zip"
+    output, bundle = output_dir / "report.json", output_dir / "review.zip"
     make_zip(source)
     run = run_cli(source, output, bundle)
     assert run.returncode == 0, run.stderr
@@ -61,8 +88,8 @@ def test_metadata_only_and_bundle(tmp_path):
         assert json.loads(z.read(z.namelist()[0])) == obj
 
 
-def test_missing_encounter_blocks_readiness(tmp_path):
-    source, output = tmp_path / "source.zip", tmp_path / "report.json"
+def test_missing_encounter_blocks_readiness(tmp_path, output_dir):
+    source, output = tmp_path / "source.zip", output_dir / "report.json"
     make_zip(source, encounter=False)
     run = run_cli(source, output)
     assert run.returncode == 0, run.stderr
@@ -71,8 +98,8 @@ def test_missing_encounter_blocks_readiness(tmp_path):
     assert "missing required table: encounter.csv" in obj["warnings"]
 
 
-def test_duplicate_basename_blocks_readiness(tmp_path):
-    source, output = tmp_path / "source.zip", tmp_path / "report.json"
+def test_duplicate_basename_blocks_readiness(tmp_path, output_dir):
+    source, output = tmp_path / "source.zip", output_dir / "report.json"
     make_zip(source, duplicate=True)
     run = run_cli(source, output)
     assert run.returncode == 0, run.stderr
@@ -86,8 +113,8 @@ def test_numeric_parser():
     assert positive_int("2.4") is None
 
 
-def test_output_collision_is_rejected(tmp_path):
-    source, output = tmp_path / "source.zip", tmp_path / "same"
+def test_output_collision_is_rejected(tmp_path, output_dir):
+    source, output = tmp_path / "source.zip", output_dir / "same"
     make_zip(source)
     result = run_cli(source, output, output)
     assert result.returncode != 0
