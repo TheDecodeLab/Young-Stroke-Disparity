@@ -117,7 +117,7 @@ def test_date_shape_diagnostic_preserves_only_coarse_classes():
     assert date_profile("03/04/2019") == ("year_last_slash", "2018_2019", True)
     assert date_profile("02/30/2019") == ("year_last_slash", "unparseable", False)
     assert date_profile("1514764800") == ("unix_epoch_candidate_unverified", "unparseable", False)
-    assert date_profile("unrecognized-private-date") == ("unrecognized", "unparseable", False)
+    assert date_profile("unrecognized-private-date") == ("textual_or_complex_unrecognized", "unparseable", False)
     assert date_profile("") == ("missing", "missing", False)
 
 
