@@ -7,6 +7,17 @@ legacy reference**. New work uses documented, tested Python scripts.
 
 ## Status
 
+**CRITICAL SCIENTIFIC STOP: The current derived cohort omits CT-only
+stroke patients.** The Step 7 results show that all 23,232 age 19-50
+patients received MRI, CTA or MRA. Review of the historical notebook
+shows CT rows are removed before aggregating patient imaging.
+Therefore Steps 2-7 currently describe an imaging-selected subset
+and MUST NOT be used to estimate population MRI/vascular imaging rates
+or clinical disparities. Reconstruct the index stroke cohort using the
+upstream diagnosis, encounter and procedure data while retaining CT-only
+patients. See [cohort selection audit](docs/COHORT_SELECTION_FINDING.md).
+
+
 **Phase 1: data provenance and baseline audit (in progress).**
 No new adjusted association or manuscript finding has been validated.
 Do not interpret imaging frequency as quality or equity of clinical care.
@@ -32,6 +43,7 @@ python scripts/step04_audit_nis.py
 python scripts/step05_missingness.py
 python scripts/step06_minimal_models.py
 python scripts/step07_modality_patterns.py
+python scripts/step08_cohort_integrity.py
 ```
 
 ### What each script does
@@ -45,6 +57,7 @@ python scripts/step07_modality_patterns.py
 | `step05_missingness.py` | Evaluate selection associated with known/unknown race and ethnicity by sex/year | `results/phase1/missingness_age50.csv` |
 | `step06_minimal_models.py` | **Preliminary** age/year-only binomial GLM and standardized sex risk differences | `results/phase1/minimal_models_age50.csv` |
 | `step07_modality_patterns.py` | Descriptive, mutually exclusive CTA/MRA pathways by sex, year, and age bands | `results/phase1/modality_patterns_age50.csv` |
+| `step08_cohort_integrity.py` | Critical selection check: detect absence of CT-only patients | `results/phase1/cohort_integrity_age50.json` |
 
 ### How to interpret
 
