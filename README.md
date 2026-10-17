@@ -27,6 +27,34 @@ If encounter-linkage cannot be established, the original admission
 study remains blocked and a distinct research question must be
 formally approved.
 
+## Step 31: Expanded 14-CPT procedure scan completed; inference still blocked
+
+Study-team full extraction from the existing ZIP completed with
+**1,166,493,611** manifest-verified procedure rows. The
+**86,902-person** principal-I63 diagnosis-first denominator is
+unchanged; all 97,872 prior unique modality-day matches were preserved.
+The completed private code-specific database stores 121,033 exact
+code-specific patient/day records outside Git. This was explicitly
+*evidence-reviewed exploratory extraction*, not clinician-approved
+imaging utilization or admission validation.
+
+At +/-1 calendar day, original 9-CPT coverage had 39,774 people
+with any matched imaging code; the 14-CPT head/neck expansion has
+39,949 (only **175 more**, +0.201 percentage points).
+**46,953 (54.03%)** still have none of the included procedure codes.
+At +/-7 days, 44,602 (51.32%) remain unmatched. This suggests
+source capture/observability limitations that additional neck codes
+do not resolve. Do not describe missing CPT codes as no clinical
+imaging, or code frequencies as hospital imaging utilization rates.
+
+See [Step 31 completed-scan findings](docs/STEP31_EXPANDED_SCAN_FINDINGS.md).
+A new [aggregate-only reconciliation](scripts/step31_expanded_reconciliation.py)
+checks the source, original Step22 and expanded Step30 reports
+without reading any original ZIP or private SQLite records.
+Full new tests still require execution on the study workstation.
+A **methods/measurement-bias** manuscript is now a more defensible
+candidate than unsupported access/clinical disparities inference.
+
 ## Step 30: evidence-based imaging code review, existing data only
 
 The investigator explicitly authorized one additional scan of the
