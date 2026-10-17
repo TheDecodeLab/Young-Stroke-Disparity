@@ -131,6 +131,7 @@ def test_new_small_delta_suppressed_entire_added_group():
         # A valid head panel, but only 2 additional MRA patients compared to old.
         h = x[1]["anatomic_profiles_by_window"][w]["head_only_primary"]
         h["MRA"] = 22
+        x[1]["anatomic_profiles_by_window"][w]["neck_without_head_cta_mra"]["MRA neck without MRA head"] = 28
     result = reconcile(*x)
     seven = result["per_window"]["7"]
     assert seven["small_delta_suppressed"] is True
