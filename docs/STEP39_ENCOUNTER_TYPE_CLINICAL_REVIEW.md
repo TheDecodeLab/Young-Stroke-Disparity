@@ -1,13 +1,11 @@
 # Step 39: Clinical review of Research Network encounter-type terminology
 
 **Status:** private codebook worksheet; clinical interpretation is NOT yet approved.
-This step follows the uploaded Step 38 report. The encounter prefix contained
-50,000 records and **all five observed type codes matched** entries in the
-`Encounter Type` reference vocabulary. The mapping assigned 33,040 records
-to an outpatient candidate, 2,179 emergency candidate, 1,120 inpatient
-candidate, 420 virtual candidate, and **13,241 to a terminology-matched code
-whose description was not classified**. All findings are from a **nonrandom
-50,000-row file prefix** and are not representative.
+This step follows the uploaded Step 38 report. The source-side Step 38 report showed that all encountered type codes
+matched entries in the `Encounter Type` reference vocabulary, but at least
+one terminology-matched type could not be interpreted from keywords.
+The exact nonrandom-prefix category counts remain solely in the private
+Step 38 report, not this public documentation.
 
 ## Goal
 
