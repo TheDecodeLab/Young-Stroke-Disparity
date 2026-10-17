@@ -85,11 +85,12 @@ def test_exclusive_demographic_attrition():
     assert counts["unrecognized_sex"] == 1
 
 
-def test_code_diagnostics_suppress_small_families():
+def test_code_diagnostics_suppress_all_groups_if_any_small():
     dx, cohort, imaging, source = dataframes()
     r = analyze_codes(dx, cohort, imaging)
-    assert r["first_decimal_digit_audit_by_imaging"]
-    assert all(f["suppressed"] for f in r["first_decimal_digit_audit_by_imaging"])
+    assert len(r["coarse_icd10_group_by_imaging"]) == 2
+    assert all(g["suppressed"] for g in r["coarse_icd10_group_by_imaging"])
+    assert all("eligible_total" not in g for g in r["coarse_icd10_group_by_imaging"])
     assert len(r["missing_race_ethnicity_by_imaging_group"]) == 2
     assert "patient_id" not in r
 
@@ -138,3 +139,30 @@ def test_wrong_archive_signature_rejected(tmp_path):
     (private / "source_signature.json").write_text(json.dumps({"changed": True}))
     with pytest.raises(ValueError, match="ZIP differs"):
         run(private, z, chunk_rows=100)
+
+
+def test_coarse_codes_reconcile_without_small_cells():
+    dx, cohort, imaging, source = dataframes()
+    # Generate a large synthetic cohort, preserving index/date consistency.
+    dx_records = []
+    cohort_records = []
+    imaging_records = []
+    for prefix, code in (("n", "I63.9"), ("o", "I63.4")):
+        for index in range(60):
+            patient = f"{prefix}{index}"
+            dx_records.append((patient, "20180105", code))
+            cohort_records.append((patient, "20180105", "Male", 35, "Unknown", "Unknown"))
+            modality = ("CT", "MRI", "CTA", "MRA")[index % 4]
+            imaging_records.append((patient, modality, "20180105"))
+    dx = pd.DataFrame(dx_records, columns=["patient_id", "index_date", "dx_code"])
+    cohort = pd.DataFrame(cohort_records, columns=[
+        "patient_id", "index_date", "sex", "age", "race", "ethnicity"])
+    imaging = pd.DataFrame(imaging_records, columns=[
+        "patient_id", "modality", "procedure_date"])
+    result = analyze_codes(dx, cohort, imaging)
+    coarse = result["coarse_icd10_group_by_imaging"]
+    assert len(coarse) == 2
+    assert all(not entry["suppressed"] for entry in coarse)
+    assert sum(entry["eligible_total"] for entry in coarse) == 120
+    assert sum(entry["imaging_groups"]["CT only"] for entry in coarse) == 30
+    assert "first_decimal_digit_audit_by_imaging" not in result
