@@ -55,6 +55,39 @@ private database, permitting both anatomical classifications after
 a single approved source scan. The historic limited SQLite cannot
 reconstruct missing neck events without reading the existing ZIP again.
 
+## Working analysis choices after investigator delegation
+
+The investigator asked to proceed with the research preparation using
+reasonable technical judgement. This authorizes drafting and testing,
+**not** a completed clinical codebook review or institutional data-use
+authorization.
+
+The working design is:
+
+- Primary population: earliest observed principal 2018-19 I63 diagnosis,
+  uniform approximate age 19-50, recorded sex Female/Male.
+- Primary vascular outcomes: **CTA head** (70496) and **MRA head**
+  (70544-70546). Brain CT/MRI reported separately.
+- Expanded sensitivity: head **or neck** CTA (70496/70498) and head
+  **or neck** MRA (70544-70549), reporting neck-only code recording
+  separately where disclosure checks allow.
+- Proposed primary temporal window: diagnosis day +/-1;
+  same-day, +/-3, +/-7 as sensitivity windows.
+- Data interpretation: *recorded procedure codes near a diagnosis*,
+  without claims about admission or imaging actually performed.
+
+These are **defaults for test implementation and review**. Final codebook
+clinical review and permission for the expensive 1.17-billion-row scan
+are explicit unresolved checkpoints. No automatic approval is assigned.
+
+The Step 28 extractor has been amended to compute both primary
+head-only and combined head/neck aggregate patterns from a **single**
+future approved procedure scan, using the exact saved CPT codes.
+Positive cells or head/neck differences smaller than 11 suppress
+the entire local anatomic comparison in that time window. The
+output is still for internal review until *cross-window/cross-report*
+disclosure risk is evaluated.
+
 ## Decisions to document before execution
 
 | Question | Current status |
