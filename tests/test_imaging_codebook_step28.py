@@ -290,3 +290,54 @@ def test_approval_file_in_repository_is_not_accepted(tmp_path):
     local_file = repo / "docs" / "STEP28_APPROVAL_TEMPLATE.json"
     with pytest.raises(ValueError, match="outside the Git repository"):
         check_approval(local_file, manifest)
+
+
+
+def test_literature_review_is_explicit_and_not_clinician_approval():
+    from scripts.step28_imaging_extract import LITERATURE_CODEBOOK
+    mapping, digest, rows = codebook(LITERATURE_CODEBOOK)
+    assert len(mapping) == 14
+    assert all(r["clinical_review"] == "evidence_reviewed" for r in rows)
+    assert not any(r["clinical_review"] == "approved" for r in rows)
+
+
+def test_evidence_scanned_cannot_run_without_explicit_data_use_attestation(tmp_path):
+    from scripts.step28_imaging_extract import LITERATURE_CODEBOOK
+    private, z, sig = fixture(tmp_path)
+    with pytest.raises(ValueError, match="data-use attestation"):
+        execute(z, private, LITERATURE_CODEBOOK, None, chunk_rows=100,
+                literature_research=True, confirm_existing_data_use=False)
+    assert not (private / "imaging_expanded").exists()
+
+
+def test_evidence_scan_rejects_unreviewed_candidate(tmp_path):
+    private, z, sig = fixture(tmp_path)
+    with pytest.raises(ValueError, match="evidence_reviewed"):
+        execute(z, private, DEFAULT_CODEBOOK, None, chunk_rows=100,
+                literature_research=True, confirm_existing_data_use=True)
+    assert not (private / "imaging_expanded").exists()
+
+
+def test_literature_research_mode_preserves_all_legacy_matches(tmp_path):
+    from scripts.step28_imaging_extract import LITERATURE_CODEBOOK
+    private, z, sig = fixture(tmp_path)
+    out = execute(z, private, LITERATURE_CODEBOOK, None, chunk_rows=100,
+                  literature_research=True, confirm_existing_data_use=True)
+    assert out["matched_code_specific_patient_days"] == 5
+    assert out["retained_legacy_patient_modality_days"] == 2
+    assert out["review_basis"] == "published_evidence_only_no_independent_clinician_signoff"
+    assert out["existing_data_use_permission_attested_by_local_operator"] is True
+    assert out["scientific_inference_and_publication_approved"] is False
+    assert out["ready_for_manuscript_inference"] is False
+    assert (private / "imaging_expanded/step28_imaging_events.sqlite").is_file()
+
+
+def test_literature_codebook_must_match_versioned_source(tmp_path):
+    from scripts.step28_imaging_extract import LITERATURE_CODEBOOK
+    private, z, sig = fixture(tmp_path)
+    duplicate = tmp_path / "locally_copied_evidence.csv"
+    duplicate.write_bytes(LITERATURE_CODEBOOK.read_bytes())
+    with pytest.raises(ValueError, match="versioned evidence-reviewed catalog"):
+        execute(z, private, duplicate, None, chunk_rows=100,
+                literature_research=True, confirm_existing_data_use=True)
+    assert not (private / "imaging_expanded").exists()
