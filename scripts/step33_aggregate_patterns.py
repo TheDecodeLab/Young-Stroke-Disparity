@@ -196,7 +196,7 @@ def compare(step31: dict, step32: dict) -> dict:
         "window_head_only_any_code_percent": head_coverage,
         "window_expanded_any_code_percent": expanded_coverage,
         "expanded_any_code_percent_change_day0_to_plusminus7":
-            round(expanded_coverage["7"] - expanded_coverage["0"], 2),
+            round(100.0 * (reference["7"][0] - reference["0"][0]) / n, 2),
         "codebook_expansion_any_code_gain_at_plusminus1_pp": catalog_increment,
         "interpretation": (
             "Descriptive administrative code-frequency patterns; differences "
