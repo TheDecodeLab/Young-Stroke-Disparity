@@ -26,6 +26,12 @@ export and completed SQLite indexes without reading source records:
 These are **code-matching counts**, not encounter-linked receipt,
 clinically adjudicated stroke diagnoses, or population imaging rates.
 
+The dataset's **Diamond Data** cohort label and 4.29 million source
+patients do not establish national representativeness or complete
+capture. Ask the source data steward how the exported cohort was
+assembled (including any stroke-related prefilter), what enrollment
+and service coverage applies, and whether claims are fully observable.
+
 ## 2. The most important scientific decision: population and outcome
 
 | Candidate study target | Required denominator | Can current Diamond export verify it? | Implication |
@@ -50,15 +56,15 @@ conclusions.
   identifier? These are **not** available as established linkage keys in
   the current CSV schemas. Ask TriNetX/data steward about an episode-level
   export or verified claims encounter reconstruction.
-- Define whether an ICD-10-CM \`I63.*\` **principal** diagnosis (indicator
-  \`P\`) is sufficient for case ascertainment; explain \`S\` and \`Unknown\`.
+- Define whether an ICD-10-CM `I63.*` **principal** diagnosis (indicator
+  `P`) is sufficient for case ascertainment; explain `S` and `Unknown`.
   The 2018–19 source contains many I63 rows with Unknown status. They
   were excluded from the current diagnosis index.
 - Review I63 subcodes, including **I63.6**, and choose whether to exclude
   nonarterial infarction phenotypes. The current script includes all
   syntactically matching I63 subcodes, with no event-level validation.
-- The legacy notebook additionally included ICD-9-CM \`433.x1/434.x1\`
-  codes and \`H34.1\`. Determine whether those belong in case definitions,
+- The legacy notebook additionally included ICD-9-CM `433.x1/434.x1`
+  codes and `H34.1`. Determine whether those belong in case definitions,
   prior-stroke lookback only, sensitivity cohorts, or neither.
 - First principal diagnosis *in 2018–19* is not first-ever stroke:
   agree an available lookback, washout rule, and index-event handling
@@ -68,32 +74,42 @@ conclusions.
 
 ### 3.2 Age and sex: a previously overlooked design mismatch
 
-The historical notebook declares **\`YOUNG_AGE_FEMALE = 54\`** and
-**\`YOUNG_AGE_MALE = 52\`**, requiring age **above 18**. The newer
-reconstruction uses the uniform range **19–50** to compare patients
-under the same age eligibility rule. These are *different source
-populations*. Their counts are **not** expected to agree.
+The historical notebook declares **`YOUNG_AGE_FEMALE = 54`** and
+**`YOUNG_AGE_MALE = 52`**, requiring age **above 18**. These were
+taken from Abedi et al., *Defining the Age of Young Ischemic Stroke
+Using Data-Driven Approaches* (J Clin Med 2023, PMID 37048683;
+DOI 10.3390/jcm12072600). The paper proposed sex-specific cutoffs
+from an EHR study of 13 Pennsylvania hospitals and noted that
+validation in more diverse populations is needed.
 
-**Proposed:** For sex comparisons, prefer a single prespecified
-age range (e.g. 19–50) and adjust for age. Show the original
-sex-specific 19–54/19–52 design only as a separately labeled
-sensitivity analysis if the clinical team considers its rationale
-valid. Do not pool original and new denominators.
+The newer reconstruction uses the uniform age range **19–50**.
+These are different populations. Their counts are **not** expected
+to agree.
+
+**Proposed protocol decision:** Prespecify the primary age definition
+based on the scientific question. To reproduce the original clinical
+young-stroke definition, the historical 19–54 for women and 19–52
+for men merits consideration, with age-standardized/common-support
+sensitivity analyses when comparing sexes. To compare all sexes under
+identical eligibility criteria, use uniform 19–50 as the primary
+analysis and the historical sex-specific cutoffs as a separately
+labeled sensitivity analysis. Both may be reported if approved, but
+**their denominators must not be pooled or equated**.
 
 Only year of birth is available, so year(index)−birth year can be one
 year different from actual age at the event, notably around cutoffs.
 
 ### 3.3 Imaging codebook, time and indication
 
-Historical manuscript definitions (from \`dataset/df_tot_CPT_codes.csv\`):
-- CT brain: \`70450\`, \`70460\`, \`70470\`
-- CTA head: \`70496\`
-- Brain MRI: \`70551\`, \`70552\`, \`70553\`
-- MRA head: \`70544\`, \`70545\`
+Historical manuscript definitions (from `dataset/df_tot_CPT_codes.csv`):
+- CT brain: `70450`, `70460`, `70470`
+- CTA head: `70496`
+- Brain MRI: `70551`, `70552`, `70553`
+- MRA head: `70544`, `70545`
 
 **Candidates for licensed-codebook / radiology review, not approved
-expansions:** CTA neck \`70498\`; MRA head \`70546\`; MRA neck
-\`70547\`–\`70549\`. Assess possible billed HCPCS and ICD-10-PCS
+expansions:** CTA neck `70498`; MRA head `70546`; MRA neck
+`70547`–`70549`. Assess possible billed HCPCS and ICD-10-PCS
 representations, bundling, professional/facility codes, head-vs-neck
 imaging, and any claim types not represented as CPT rows.
 
@@ -152,5 +168,5 @@ approved release review.
 **Recommended next handoff:** Have the clinical and data teams decide
 whether encounter-linked data are available and sign off on the
 study target and age/codebook specifications. In parallel, request
-source documentation on the meaning of \`principal_diagnosis_indicator\`
+source documentation on the meaning of `principal_diagnosis_indicator`
 and demographic missingness, without launching additional massive scans.
