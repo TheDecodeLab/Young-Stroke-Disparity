@@ -94,9 +94,10 @@ def test_step33_synthetic_matches_all_three_dimensions():
     assert r["private_sqlite_records_read"] == 0
     assert r["clinical_inference_allowed"] is False
     assert r["demographic_disparity_inference_allowed"] is False
-    assert r["window_any_matching_code_percent"]["1"] == 40.0
-    assert r["any_code_percent_change_day0_to_plusminus7"] == 16.67
-    assert r["unadjusted_code_frequency_differences_percentage_points"][
+    assert r["window_head_only_any_code_percent"]["1"] == 40.0
+    assert r["window_expanded_any_code_percent"]["1"] == 40.0
+    assert r["expanded_any_code_percent_change_day0_to_plusminus7"] == 16.67
+    assert r["unadjusted_head_only_differences_percentage_points"][
         "year_2019_minus_2018_pp"] == 10.0
 
 
