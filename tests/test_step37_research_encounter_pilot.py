@@ -12,7 +12,7 @@ import pytest
 
 from scripts.step37_research_encounter_pilot import (
     PHASE1, REPORT_NAME, ZIP_NAME, REDACTED, coarse_year, private_count,
-    run, type_group, output_dir_guard,
+    run, type_group, output_dir_guard, sample_overlap,
 )
 
 
@@ -35,11 +35,11 @@ def make_source(folder, *, n=40, omit_procedure_code=False):
     source = folder / "synthetic_source.zip"
     headers = {
         "encounter.csv": [
-            "encounter_id", "patient_id", "start_date", "end_date", "type",
+            "encounter_id", "patient_id", "start_date", "end_date", "type", "source_id",
         ],
         "diagnosis.csv": [
-            "patient_id", "encounter_id", "code_system", "code", "date",
-            "principal_diagnosis_indicator",
+            "patient_id", "encounter_id", "code_system", "code", "date", "source_id",
+            "principal_diagnosis_indicator", "source_id",
         ],
         "procedure.csv": [
             "patient_id", "encounter_id", "code_system", "code", "date",
@@ -53,15 +53,16 @@ def make_source(folder, *, n=40, omit_procedure_code=False):
         tables.setdefault("encounter.csv", []).append({
             "encounter_id": eid, "patient_id": pid, "start_date": "2018-06-02",
             "end_date": "2018-06-04", "type": "INPATIENT" if k < 25 else "EMERGENCY",
+            "source_id": "site_1",
         })
         tables.setdefault("diagnosis.csv", []).append({
             "patient_id": pid, "encounter_id": eid, "code_system": "ICD-10-CM",
             "code": "I63.9", "date": "2018-06-02",
-            "principal_diagnosis_indicator": "P",
+            "principal_diagnosis_indicator": "P", "source_id": "site_1",
         })
         tables.setdefault("procedure.csv", []).append({
             "patient_id": pid, "encounter_id": eid, "code_system": "CPT",
-            "code": "70551", "date": "2018-06-03",
+            "code": "70551", "date": "2018-06-03", "source_id": "site_1",
         })
     with zipfile.ZipFile(source, "w", compression=zipfile.ZIP_DEFLATED) as z:
         for name, rows in tables.items():
@@ -93,6 +94,7 @@ def test_pilot_output_is_aggregate_only(sandbox):
         assert report["source_tables"][table]["max_rows_exhausted_or_table_finished"] is True
     assert report["sample_overlap"]["diagnosis.csv"]["encounter_id_seen_in_encounter_prefix_n"] == 20
     assert report["sample_overlap"]["procedure.csv"]["matching_patient_id_when_observed_n"] == 20
+    assert report["sample_overlap"]["procedure.csv"]["agreeing_nonblank_source_id_when_observed_n"] == 20
     assert report["source_tables"]["procedure.csv"]["restricted_characteristic_counts"]["CPT_14_catalog_code"] == 20
     payload = (sandbox / REPORT_NAME).read_text(encoding="utf-8")
     assert "PRIVATE_PERSON" not in payload
@@ -160,3 +162,11 @@ def test_short_source_finishes_without_full_scan_claim(sandbox):
     assert report["source_tables"]["encounter.csv"]["rows_examined"] == 13
     assert report["source_tables"]["encounter.csv"]["max_rows_exhausted_or_table_finished"] is False
     assert report["exhaustive_clinical_scan"] is False
+
+
+def test_source_id_disagreement_is_reported_without_exposing_identifiers():
+    rows = [{"encounter_id": "SECRET_E", "patient_id": "SECRET_P", "source_id": "site_wrong"}]
+    result = sample_overlap(rows, {"SECRET_E": ("SECRET_P", "site_right")})
+    assert result["matching_patient_id_when_observed_n"] == REDACTED
+    assert result["differing_nonblank_source_id_when_observed_n"] == REDACTED
+    assert "SECRET_" not in json.dumps(result)
