@@ -5,7 +5,29 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## NEXT LOCAL SCIENTIFIC CHECK: User-attested approved Research Network access
+## NEXT RESEARCH EXECUTION STEP: Step59 whole-table aggregate QA
+
+The investigator reported that **Step58 succeeded on the approved Penn State
+workstation** and its private prefix report was saved locally; it was not
+uploaded or inspected by the assistant. We now have a **separate, explicit**
+[Step59 whole-table aggregate QA](docs/STEP59_LOCAL_FULL_SOURCE_AGGREGATE_QA.md)
+program ([source](scripts/step59_full_source_aggregate_qa.py),
+[synthetic tests](tests/test_step59_full_source_aggregate_qa.py)).
+The 12 new synthetic tests passed in isolation on the **exact bytes committed**
+to GitHub, verified by Git blob hashes. Run the full workstation suite before
+any source-wide stage; expected **581 tests** from the previous 569.
+
+Step59 processes **one selected clinical CSV member per explicit command**,
+starting with `encounter`, and writes private, identifier-free categorical
+counts only after a complete manifest-checked pass. It requires the existing
+protocol/DUA to permit such whole-table local aggregation and a deliberate
+command-line attestation. A large table may take hours/days and cannot resume
+mid-table. No private report may be uploaded without disclosure review.
+The old Step45 cohort reconstruction remains HARD-DISABLED; Step59 **does
+not** select a study end year, verify HCO linkage, or claim a recorded code
+proves an examination was completed. PR #1 remains draft/unmerged.
+
+## HISTORICAL CHECKPOINT: User-attested approved Research Network access
 
 The investigator confirmed on 2026-10-18 that the TriNetX Research Network
 dataset is already available under an **approved Penn State research protocol
