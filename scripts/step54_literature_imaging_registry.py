@@ -14,7 +14,7 @@ from datetime import date
 CPT_HISTORICAL = "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/downloads/r738otn.pdf"
 CPT_UPDATED = "https://www.cms.gov/files/document/09-chapter9-ncci-medicare-policy-manual-2026-final.pdf"
 CPT_2026_CHANGE = "https://www.cms.gov/files/document/annual-update-list-cpt-hcpcs-codes-effective-january-1-2026.pdf"
-CTP_2026_CHANGE = "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleId=58223&ver=19"
+CTP_2026_CHANGE = "https://www.govinfo.gov/content/pkg/FR-2025-11-25/pdf/2025-20907.pdf"
 
 # Exact-code matching only. 14 anatomically unambiguous historical CPT anchors.
 # All six categories are recorded IMAGE CODE families, never guaranteed exams.
