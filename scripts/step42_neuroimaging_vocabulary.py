@@ -182,12 +182,11 @@ def save_json(path, content):
 
 def save_csv(path, candidates):
     def writer(f):
-        with io.TextIOWrapper(f, encoding="utf-8", newline="", write_through=True) as stream:
-            w = csv.DictWriter(stream, FIELDS)
-            w.writeheader()
-            w.writerows(candidates)
-            stream.flush()
-            stream.detach()
+        text = io.StringIO(newline="")
+        w = csv.DictWriter(text, FIELDS, lineterminator="\n")
+        w.writeheader()
+        w.writerows(candidates)
+        f.write(text.getvalue().encode("utf-8"))
     atomic_file(path, writer)
 
 
