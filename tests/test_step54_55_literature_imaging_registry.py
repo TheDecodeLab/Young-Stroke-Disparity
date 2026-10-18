@@ -207,3 +207,18 @@ def test_prior_signed_or_clinical_rows_claim_fails(private_synthetic_workspace):
 def test_local_clinical_source_not_required_for_external_code_meaning():
     assert classify_imaging_code("CPT","70551")["source_semantics_verified"] is True
     assert classify_imaging_code("CPT","70551")["performed_procedure_verified"] is False
+
+
+def test_unknown_CPT_is_not_claimed_to_have_verified_external_meaning():
+    candidate=classify_imaging_code("CPT","99999")
+    assert candidate["status"]=="defer_CPT_not_in_literature_core"
+    assert candidate["source_semantics_verified"] is False
+    assert candidate["performed_procedure_verified"] is False
+
+
+def test_CMS_carotid_duplex_exclusion_has_specific_external_reference():
+    candidate=classify_imaging_code("CPT","93880")
+    assert candidate["category"] is None
+    assert candidate["status"]=="exclude_not_study_modality"
+    assert "cms.gov" in candidate["source_url"]
+    assert "2014-physician-fee-schedule" in candidate["source_url"]
