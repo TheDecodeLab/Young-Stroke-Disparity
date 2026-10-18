@@ -5,6 +5,34 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current local action: look for a site/episode key in OTHER tables (Step 51)
+
+The workstation confirmed **364 tests passed** and Step50's existing Step36
+encounter-table headers show **no explicit HCO/parent-episode field**.
+This does **not** mean ED→inpatient date matching is impossible, but it
+prevents claiming verified same-hospital episode linkage.
+
+[Step51](docs/STEP51_ALL_TABLE_HEADER_LINKAGE_SEARCH.md) inspects the CSV
+**header line only** from every table in the same existing local ZIP and
+compares core tables with the Step36 saved schema/size metadata. No
+clinical rows are parsed, extracted, linked or written to output.
+It creates one owner-only private status JSON in the cloned repository's
+ignored `results/phase1/full_reconstruction_private/site_linkage_review/`.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q && \
+python scripts/step51_all_csv_header_linkage_search.py \
+  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip"
+```
+
+This is header-only work with the ZIP, **not** a full clinical scan.
+No source `source_id` is presumed an HCO identifier. Any column-name hint
+requires clinical/data-steward semantics verification. If no useful
+column exists, consider a documented **date-only sensitivity** rather
+than automatically asserting same-hospital care. The original Step45
+full clinical scan is still blocked and PR #1 stays draft.
+
 ## Current local action: hospital/site-key structural review (Step 50)
 
 After the operator confirmed **352 passing tests**, the next blocker is not
