@@ -5,6 +5,43 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## CURRENT ACTION: Evidence-mapping coverage triage (Step 56)
+
+The workstation confirmed **481 passed, three nonblocking warnings**.
+Step55 classified **3,270 reference terminology candidates**:
+**14 exact CPT core codes (all 14 located)**, **13 other CPT codes**,
+**3,240 non-CPT/unverified entries**, **2 excluded terms**, and **1 separate
+CT-perfusion term**.
+
+These are **reference terminology counts, not procedure-record frequencies**.
+We cannot know whether CPT14 captures most or few recorded imaging events
+until an independent, institution-authorized procedure-row code-system and
+date-completeness assessment. Literature validates code *meaning*, not whether
+a given source record is a *performed examination*.
+
+[Step56](docs/STEP56_REFERENCE_CODE_SYSTEM_COVERAGE_TRIAGE.md) creates a
+small **private 13-CPT follow-up queue** and local aggregate reference
+system/status breakdown, reconciling Step46/55 source fingerprints.
+It neither opens the Research Network ZIP nor reads any patient-level
+clinical tables.
+
+```bash
+git pull --ff-only origin analysis-rebuild-phase1-audit
+python -m pytest -q && python scripts/step56_reference_vocabulary_coverage_triage.py prepare
+```
+
+It writes owner-only files under ignored
+`results/phase1/full_reconstruction_private/imaging_review/literature_adjudication/coverage_triage/`
+and does **not** rewrite any existing reviewer worksheets, approved codebook,
+institutional authorization or scan guards.
+
+The CPT14 historical code core remains high-specificity, but broader SNOMED,
+HCPCS and ICD-10-PCS reference code mappings are **deferred**, not asserted
+absent. Research Network's proposed **2016 onward** cohort period is
+coverage-dependent and does not inherit Diamond's fixed **2018–2019**
+interval. Primary A same-inpatient imaging and B date-only ED-inclusive
+sensitivity remain unchanged. Draft PR #1 remains unmerged.
+
 ## CURRENT ACTION: Literature-reviewed imaging code definitions (Steps 54–55)
 
 **Investigator correction:** **2018–2019 applies to Diamond, not the
