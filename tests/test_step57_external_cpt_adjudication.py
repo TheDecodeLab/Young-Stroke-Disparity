@@ -84,7 +84,7 @@ def private_workspace():
         base = Path(p)
         src, dest = base / "step56_synthetic", base / "step57_synthetic"
         src.mkdir(mode=0o700)
-        src_row = [local_record("0398T", 1), local_record("1010296", 2)]
+        src_row = [local_record("0398T", 1), local_record("9000001", 2)]
         buf = io.StringIO(newline="")
         writer = csv.DictWriter(buf, fieldnames=m.QUEUE_FIELDS, lineterminator="\n")
         writer.writeheader()
