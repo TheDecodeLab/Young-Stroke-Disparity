@@ -68,9 +68,9 @@ def _year(value):
         return None
 
 
-def _sample_table(source, member_name, required, max_rows):
+def _sample_table(source, zip_member, table_name, required, max_rows):
     """Returns aggregate-only counters; never preserves clinical input rows."""
-    missing=Counter()
+    if table_name not in MEMBERS:\n        raise ValueError("Unknown expected core table")\n    missing=Counter()
     bad_date=Counter()
     seen_years=set()
     systems=Counter()
@@ -79,24 +79,24 @@ def _sample_table(source, member_name, required, max_rows):
     core_cpt14=0
     rows=0
     # TextIOWrapper and csv.DictReader bounded read; no extraction to disk.
-    with source.open(member_name, "r") as raw:
+    with source.open(zip_member, "r") as raw:
         with io.TextIOWrapper(raw, encoding="utf-8-sig", errors="strict", newline="") as txt:
             reader=csv.DictReader(txt)
             columns=reader.fieldnames or []
             if len(columns)!=len(set(columns)):
-                raise ValueError("Duplicate CSV header names in "+member_name)
+                raise ValueError("Duplicate CSV header names in "+table_name)
             if len(columns)>150 or len(columns)==0:
                 raise ValueError("Core table header unexpectedly large or empty")
             if not set(required).issubset(columns):
-                raise ValueError("Core table missing expected columns in "+member_name)
+                raise ValueError("Core table missing expected columns in "+table_name)
             for row in islice(reader, max_rows):
                 if None in row or any(v is None for v in row.values()):
-                    raise ValueError("Malformed CSV row in "+member_name)
+                    raise ValueError("Malformed CSV row in "+table_name)
                 rows+=1
-                for key in CHECK_MISSING[member_name]:
+                for key in CHECK_MISSING[table_name]:
                     if not (row.get(key) or "").strip():
                         missing[key]+=1
-                for key in DATE_FIELDS.get(member_name, ()):
+                for key in DATE_FIELDS.get(table_name, ()):
                     val=(row.get(key) or "").strip()
                     if val:
                         y=_year(val)
@@ -104,16 +104,16 @@ def _sample_table(source, member_name, required, max_rows):
                             bad_date[key]+=1
                         elif key in ("date", "start_date"):
                             seen_years.add(y)
-                if member_name in ("procedure.csv","diagnosis.csv"):
+                if table_name in ("procedure.csv","diagnosis.csv"):
                     label=(row.get("code_system") or "").strip().upper()
                     systems[label if label in SYSTEMS else "OTHER_OR_EMPTY"]+=1
-                if member_name=="encounter.csv":
+                if table_name=="encounter.csv":
                     label=(row.get("type") or "").strip().upper()
                     visit_types[label if label in ("IMP","EMER") else "OTHER_OR_EMPTY"]+=1
-                if member_name=="diagnosis.csv":
+                if table_name=="diagnosis.csv":
                     label=(row.get("principal_diagnosis_indicator") or "").strip().upper()
                     principal["P" if label=="P" else "OTHER_OR_EMPTY"]+=1
-                if member_name=="procedure.csv" and (
+                if table_name=="procedure.csv" and (
                         (row.get("code_system") or "").strip().upper()=="CPT"
                         and (row.get("code") or "").strip() in CORE_CPT14):
                     core_cpt14+=1
@@ -171,7 +171,7 @@ def inspect(archive_path, preflight_path=PREFLIGHT, max_rows=500):
             observed=next(csv.reader([first.decode("utf-8-sig").rstrip("\r\n")]))
             if observed!=files[name]["headers"]:
                 raise ValueError("Changed table header since Step36")
-            tables[name]=_sample_table(archive,mapping[name],MEMBERS[name],max_rows)
+            tables[name]=_sample_table(archive,mapping[name],name,MEMBERS[name],max_rows)
     return {
         "stage":"STEP58_BOUNDED_CLINICAL_PREFIX_TECHNICAL_PILOT_LOCAL_ONLY",
         "source":"user_workstation_under_user_attested_existing_protocol",
