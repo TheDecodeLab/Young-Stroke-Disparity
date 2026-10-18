@@ -1,5 +1,7 @@
 # Steps 46–47: Chained clinical imaging-codebook review and validation
 
+> **Historical workflow only for year-specific local signoff.** The investigator clarified that **2018–2019 is Diamond's period, NOT an automatic Research Network restriction**. For Research Network, use the literature-reviewed exact CPT core and private adjudication in [Steps54–55](STEP54_55_LITERATURE_CODEBOOK_REVIEW_AND_RESEARCH_NETWORK_PERIOD.md). Do not use this workflow's hardcoded `valid_for_2018_2019_yes_no` as Research Network all-year evidence, and do not run Step47 `finalize` for the Research Network using this stale time assumption. Clinical coding meaning can be reviewed from literature, but TriNetX clinical event completion semantics remain unverified.
+
 **Status:** A safe reviewer-preparation workflow. **No clinical data read, no imaging codes auto-approved, and no full clinical scan started.** This follows the Step 45 plan-only validation (275 previously passing tests).
 
 The goal is to prepare **one clinician/data-steward handoff** for the manuscript's imaging definitions, then produce a Step45-compatible codebook **only after explicit documented clinical sign-off**. This eliminates repeated assistant/user exchanges for individual CPT codes.
