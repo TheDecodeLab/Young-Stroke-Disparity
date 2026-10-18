@@ -5,6 +5,30 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## NEXT GOVERNED MILESTONE: Source authorization and measurement validity
+
+The investigator workstation last confirmed **524 passed, 3 unchanged warnings**
+at `c50c528`. **No revised Research Network full-data scan has been run.**
+The next dependency is a real institutional decision about the source and
+approved local QA. We have prepared a single
+[pre-reconstruction evidence/acceptance gate](docs/RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md),
+a [data-steward/authorization request](docs/RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md),
+and a [pure planning-only gate](scripts/research_network_pre_reconstruction_gate.py)
+with [synthetic tests](tests/test_research_network_pre_reconstruction_gate.py).
+
+No tool can infer or grant authorization. The planning gate is hardcoded
+to return **clinical_scan_authorized = false**, even if a user supplies
+all evidence claims, and cannot enable old Step45. Year selection is
+*provisional* and requires reviewed full-calendar-year coverage; the
+Research Network end year remains **unknown**. Keep clinical records and
+actual decision IDs in institutionally approved storage, never GitHub.
+
+Do not rerun old Step46–57 `prepare` steps; their private outputs already
+exist and refuse overwrite. The main current scientific risks remain
+actual CPT-vs-other-system procedure coverage, the `IMP`/`EMER` label and
+patient/encounter ID scope, site/episode unknown, source procedure meaning
+and disclosure approval.
+
 ## CURRENT PLAN OF RECORD (2026-10-18)
 
 **The canonical active study decisions are in
