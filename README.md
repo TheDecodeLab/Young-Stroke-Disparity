@@ -5,6 +5,35 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current implementation: Step53 synthetic outcome routing
+
+The investigator's Step52 update has now been **validated locally** at
+`557a8ab`: **415 passed, three unchanged nonblocking warnings**.
+[Step53 reconstruction outcome contract](docs/STEP53_RECONSTRUCTION_OUTCOME_ROUTING_CONTRACT.md)
+and a [pure in-memory reference assembler](scripts/step53_outcome_reference_assembler.py)
+with [synthetic tests](tests/test_step53_outcome_reference_assembler.py)
+show how to preserve the agreed primary A same-inpatient-encounter
+outcome separately from provisional ED-inclusive sensitivity B at
+maximum ED→IP date gaps 0, 1 and 2 calendar days.
+
+**This is NOT a replacement full clinical-data extraction pipeline.**
+It takes already selected synthetic index admissions and events labeled
+reviewed-performed by a caller. It cannot approve source codes, dates,
+site identifiers or actual medical care. Both overlapping co-primary age
+definitions remain distinct, and the original Step45 full-source scan
+is still disabled.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+```
+
+Do not run real-data scans or set local approval flags. The next
+material dependency is **independent clinical imaging-codebook review
+and data-owner authorization**, followed by a governed implementation
+of the full bounded-memory reconstruction. PR #1 remains draft and
+unmerged pending the historical restricted-data review.
+
 ## Investigator-confirmed analysis priority (2026-10-18)
 
 The investigator approved the final **relative role** of the imaging definitions:
