@@ -5,6 +5,41 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current implementation: ED-end-date → inpatient-start-date candidates (Step 49)
+
+The study now has a [Step49 pure ED/IP encounter resolver](scripts/step49_ed_ip_episode_candidates.py),
+[synthetic-only tests](tests/test_step49_ed_ip_episode_candidates.py),
+and [complete safety/quality documentation](docs/STEP49_ED_IP_END_DATE_LINKAGE.md).
+The existing Step48 `ed_to_ip_candidate` helper delegates to this revised rule.
+
+**Proposed main temporal match:** same `patient_id`, independently
+verified same HCO/site, different ED (`EMER`) and inpatient (`IMP`)
+encounter IDs, and `IMP.start_date - ED.end_date` of **0–1 calendar days**.
+Compare **same-day (0)** and **0–2 days** as sensitivity scenarios.
+`ED.start_date` can be much earlier if the ED visit continues until
+admission. Day-only dates cannot prove the within-day order of care.
+
+Do **not** automatically attach multiple candidate EDs to an admission,
+assign one ED to multiple IP stays, impute HCO/site from `source_id`,
+or turn a candidate date match into a proven hospital transfer. The
+resolver holds these ambiguities, missing dates/site, cross-site
+transfers, and duplicate/colliding encounter IDs.
+
+The quality-summary function returns only in-memory aggregate counts
+for locally governed inspection, not disclosure-cleared outputs;
+no patient rows/identifiers are written to files.
+
+To verify this commit on the study workstation:
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+```
+
+**Step45 real-data execution REMAINS DISABLED.** A patient-level
+site/linkage validation using institutionally authorized data and
+a revised full-cohort algorithm are required before any source scan.
+
 ## Current study definition: literature-backed stroke and ED-to-IP reconstruction (Step 48)
 
 The investigator has clarified that neuroimaging code definitions should be
