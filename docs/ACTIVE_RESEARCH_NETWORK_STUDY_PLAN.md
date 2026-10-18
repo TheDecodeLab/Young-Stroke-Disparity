@@ -53,7 +53,26 @@ Step57 external review of 13 other **CPT-labelled reference entries**: eight def
 - ED sensitivity B can only measure change in *coded event capture under a provisional date-only association*, not validity of a hospital transfer. Describe limitations of missing ED imaging codes and incomplete network participation.
 - Manuscript citations: [Vagal2017_AJNR] and [Wang2024_JACR] for research framing; [CMS2010_MPPR] for CPT14 modalities; [CMS2026_MRIanalysis] and [CMS2025_MRgFUS] for exclusions; [HHS2025_OPPS2026] for future 2026 codes; [CMS2015_ICD10] for era transition. Those do NOT validate patient-level use in TriNetX. Reference metadata: `docs/references/imaging_references.csl.json`, `.ris`, `.bib`, plus full code-level crosswalk.
 
-## 6. Step58 completed; Step59 source-wide aggregate QA is next
+## 6. Step59 completed; Step60 private source-report reconciliation next
+
+On 2026-10-18, the investigator confirmed successful **separate full-source
+aggregate scans** of encounter, diagnosis and procedure tables under Step59
+on the approved Penn State workstation. The reports remain local-only, and
+their contents are not known to this assistant. The code/tests were previously
+confirmed by the user at **581 passed, 3 pre-existing warnings**. The source-wide
+aggregates quantify table-row coding and year buckets, **not patient cohort
+rates, validated source coverage, performed scans or site-adjusted disparities**.
+
+The next documented check is the
+[Step60 LOCAL-ONLY reconciliation of the three existing Step59 reports](STEP60_PRIVATE_SOURCE_QA_REVIEW.md).
+Its [code](../scripts/step60_local_aggregate_review.py) and
+[synthetic tests](../tests/test_step60_local_aggregate_review.py)
+do not touch the TriNetX ZIP, retrieve or display private outputs remotely,
+nor unblock Step45. It checks totals and categories before creating a private
+cross-table/year review with explicit unapproved year endpoint. Interpretation
+of procedure coding, HCO coverage and clinical meaning remains unresolved.
+
+## 7. Step58 completed; Step59 source-wide aggregate QA is next
 
 On 2026-10-18 the investigator successfully executed Step58's limited
 500-row-per-table **local technical pilot**, with its clinical-derived report
