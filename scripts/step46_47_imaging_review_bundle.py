@@ -259,6 +259,7 @@ def prepare(source=SOURCE_CSV, status=SOURCE_JSON, output=DEST,
     if not (1 <= per_category <= 20 and 1 <= ambiguous_limit <= 20):
         raise ValueError("Review sampling limits must be between 1 and 20")
     indexed, report_digest = load_source(source, status)
+    source_digest = hashlib.sha256(within(source).read_bytes()).hexdigest()
     out = within(output)
     output_names = [INVENTORY, PRIORITY, SIGNOFF, QUESTIONS, STATUS]
     if any((out / x).exists() for x in output_names):
@@ -276,6 +277,7 @@ def prepare(source=SOURCE_CSV, status=SOURCE_JSON, output=DEST,
         **{key: False for key in SIGNOFF_FIELDS},
         "reviewer_name": "", "review_date": "", "review_authority_reference": "",
         "source_step42_status_sha256": report_digest,
+        "source_step42_csv_sha256": source_digest,
         "scope_notes": "",
     }
     summary = {
@@ -287,6 +289,7 @@ def prepare(source=SOURCE_CSV, status=SOURCE_JSON, output=DEST,
             x["review_priority"] == "HISTORICAL_CPT_ANCHOR_VERIFY" for x in first
         ),
         "source_step42_status_sha256": report_digest,
+        "source_step42_csv_sha256": source_digest,
         "codebook_clinically_validated": False,
         "real_scan_approved": False,
     }
@@ -313,7 +316,9 @@ def finalize(source=SOURCE_CSV, status=SOURCE_JSON, output=DEST,
     signing = json.loads(signed_file.read_text(encoding="utf-8"))
     if any(signing.get(x) is not True for x in SIGNOFF_FIELDS):
         raise PermissionError("Clinical codebook finalization blocked: signed review gates incomplete")
-    if signing.get("source_step42_status_sha256") != report_digest:
+    if (signing.get("source_step42_status_sha256") != report_digest or
+            signing.get("source_step42_csv_sha256") !=
+            hashlib.sha256(within(source).read_bytes()).hexdigest()):
         raise PermissionError("Step42 source changed since the clinical review")
     for k in ("reviewer_name", "review_date", "review_authority_reference", "scope_notes"):
         if not (isinstance(signing.get(k), str) and signing[k].strip()):
@@ -365,9 +370,11 @@ def finalize(source=SOURCE_CSV, status=SOURCE_JSON, output=DEST,
         )):
             raise PermissionError("Included code needs clinician rationale, reference, reviewer and date")
         try:
-            date.fromisoformat(item["review_date"].strip())
+            row_review_date = date.fromisoformat(item["review_date"].strip())
         except ValueError:
             raise PermissionError("Included code review_date must be YYYY-MM-DD")
+        if row_review_date > date.fromisoformat(signing["review_date"]):
+            raise PermissionError("Included code review date cannot be after signed clinical review date")
         candidate = source_row["candidate_category_NOT_VALIDATED"].strip()
         if (candidate == "AMBIGUOUS_HEAD_AND_NECK" or cat != candidate):
             if len(item["clinical_rationale"].strip()) < 15:
