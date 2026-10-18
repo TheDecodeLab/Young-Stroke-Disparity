@@ -3,6 +3,26 @@
 
 ## 1. Current evidence and execution status
 
+**Date-format correction, 2026-10-18:** Investigator checked bounded
+local prefixes of `encounter.start_date`, `diagnosis.date`, and
+`procedure.date`: all sampled values have eight digits (no hyphens).
+The original Step59 code required `YYYY-MM-DD` and therefore classified
+**100% of source rows as INVALID dates** in each table; original Step60
+produced no calendar-year profiles. The totals and date-independent
+CPT/non-CPT source-row counts remain usable as descriptive counts; their
+year stratification is not. Do not interpret original Step60/Step61 as
+absence of calendar-year data. Root-cause and corrected bounded-probe,
+v2-scan and v2-reconciliation commands are in
+[DATEFIX_V2_RESEARCH_NETWORK_QA.md](DATEFIX_V2_RESEARCH_NETWORK_QA.md).
+
+**Next action:** run full synthetic tests then the three **1,000-row
+local-only date-format probes**. Only if probes verify valid
+`YYYYMMDD` calendar interpretation, recreate three source-wide
+aggregate year profiles in distinct `DATEFIX_V2` reports, sequentially,
+before executing matching Step60 v2 reconciliation. No approved study
+cutoff or clinical phenotype reconstruction is yet established.
+
+
 **Updated execution checkpoint, 2026-10-18:** Step58, Step59 (all
 three separate whole-source aggregate QA stages) and Step60 (private
 reconciliation of existing aggregate reports) each **completed locally**
