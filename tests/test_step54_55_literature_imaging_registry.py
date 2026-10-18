@@ -27,6 +27,8 @@ def test_all_historical_CPT14_anchors_match_official_modalities(code,expected):
     assert result["source_url"]==CPT_HISTORICAL
     assert result["performed_procedure_verified"] is False
     assert result["clinical_codebook_signed_off"] is False
+    assert result["external_code_meaning_supported"] is True
+    assert result["source_semantics_verified"] is False
 
 
 def test_all_categories_and_exact_code_count():
@@ -205,7 +207,8 @@ def test_prior_signed_or_clinical_rows_claim_fails(private_synthetic_workspace):
 
 
 def test_local_clinical_source_not_required_for_external_code_meaning():
-    assert classify_imaging_code("CPT","70551")["source_semantics_verified"] is True
+    assert classify_imaging_code("CPT","70551")["external_code_meaning_supported"] is True
+    assert classify_imaging_code("CPT","70551")["source_semantics_verified"] is False
     assert classify_imaging_code("CPT","70551")["performed_procedure_verified"] is False
 
 
@@ -213,6 +216,7 @@ def test_unknown_CPT_is_not_claimed_to_have_verified_external_meaning():
     candidate=classify_imaging_code("CPT","99999")
     assert candidate["status"]=="defer_CPT_not_in_literature_core"
     assert candidate["source_semantics_verified"] is False
+    assert candidate["external_code_meaning_supported"] is False
     assert candidate["performed_procedure_verified"] is False
 
 
