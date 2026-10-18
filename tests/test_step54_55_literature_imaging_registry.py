@@ -222,3 +222,20 @@ def test_CMS_carotid_duplex_exclusion_has_specific_external_reference():
     assert candidate["status"]=="exclude_not_study_modality"
     assert "cms.gov" in candidate["source_url"]
     assert "2014-physician-fee-schedule" in candidate["source_url"]
+
+
+def test_public_literature_code_meaning_table_matches_the_versioned_registry():
+    path=Path(__file__).resolve().parents[1] / (
+        "docs/STEP54_PUBLIC_CPT14_LITERATURE_CODE_MEANING_REVIEW.csv"
+    )
+    with path.open(newline="",encoding="utf-8") as stream:
+        rows=list(csv.DictReader(stream))
+    assert len(rows)==14
+    observed={(row["code_system"],row["code"]):row for row in rows}
+    assert set(observed)=={("CPT",code) for code in BASE_CPT}
+    for code, (category,meaning) in BASE_CPT.items():
+        row=observed[("CPT",code)]
+        assert row["modality_category"]==category
+        assert row["meaning_review_decision"]=="evidence_supported_exact_code"
+        assert row["source_event_performed_verification"]=="not_verified_locally"
+        assert row["external_evidence_url"]==CPT_HISTORICAL
