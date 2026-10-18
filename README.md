@@ -5,6 +5,34 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current action: prioritize neuroimaging reference code review (Step 43)
+
+The Step42 reference-only audit found a large candidate vocabulary,
+including ambiguous anatomy and potentially nonprocedure terms. Its
+results are **not evidence that the coded clinical procedure occurred**.
+Before another very large source scan, use the
+[Step43 triage guide](docs/STEP43_NEUROIMAGING_REVIEW_TRIAGE.md) to
+produce a complete PRIVATE candidate review list and a small,
+balanced first-review subset, with no automated inclusion decisions.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step43_neuroimaging_review_triage.py
+```
+
+This step reads only the existing local Step42 CSV and status report,
+**zero clinical records**. It stores all outputs in the cloned
+repository's ignored `results/phase1/`: two LOCAL-ONLY codebook CSVs
+and an aggregate-only status JSON/ZIP. **Do not upload the CSVs.**
+The command refuses to overwrite an existing review worksheet
+without explicit `--overwrite`.
+
+The encounter `IMP` meaning, diagnosis-first index, complete
+neuroimaging codebook, and site/source capture all still require
+clinical/data-steward validation before a single well-planned
+private inpatient stroke cohort extraction.
+
 ## Next step: neuroimaging vocabulary review (Step 42)
 
 The Step41 **nonrandom file-prefix** pilot found that encounter-link
