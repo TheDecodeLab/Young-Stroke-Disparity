@@ -5,6 +5,30 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current decision: finish protocol and prepare full-cohort extraction
+
+[Step 44](docs/STEP44_ANATOMY_AMBIGUITY_REVIEW.md) established that
+the unresolved mixed head/neck terminology is **mixed in the code
+descriptions themselves**, not an artifact of inherited reference paths.
+Additional keyword triage will not validate those clinical concepts.
+
+We are **stopping the repeated nonrepresentative sampling/terminology
+steps**. The next substantive work is the
+[Phase 1 full-cohort reconstruction specification
+(draft)](docs/PHASE1_FULL_COHORT_RECONSTRUCTION_SPEC_DRAFT.md):
+a diagnosis-first, imaging-independent I63 candidate set, validated
+inpatient encounter linkage, demographics/age eligibility and one
+controlled complete procedure scan using a clinician-reviewed codebook.
+It explicitly requires source-size/storage planning, disclosure-safe
+local staging, clinical meaning of inpatient/principal-diagnosis flags
+and local data-owner approval before execution.
+
+No further full-source clinical scan is authorized by the current
+prefix audits. All eventual generated stage files and aggregate reports
+must stay **inside this clone's ignored `results/phase1/`**; never
+commit or upload patient-level records. PR #1 remains draft pending
+governance review.
+
 ## Current action: distinguish terminology-path ambiguity (Step 44)
 
 The Step43 aggregate report preserved every candidate, but its
