@@ -13,7 +13,7 @@ import pytest
 
 from scripts.step43_neuroimaging_review_triage import (
     PHASE1, ROOT, STEP42_FIELDS, FULL, FIRST, REPORT, REVIEW,
-    triage_rows, review_first, run, private_path,
+    triage_rows, review_first, run, private_path, safe_spreadsheet_cell, csv_bytes,
 )
 
 
@@ -161,3 +161,19 @@ def test_invalid_review_batch_bound(workdir):
     for amount in (0, 51):
         with pytest.raises(ValueError, match="1..50"):
             run(src, meta, workdir, amount)
+
+def test_review_csv_neutralizes_spreadsheet_formulas():
+    assert safe_spreadsheet_cell('=HYPERLINK("malicious")') == '\'=HYPERLINK("malicious")'
+    assert safe_spreadsheet_cell(" +SUM(1,2)") == "' +SUM(1,2)"
+    assert safe_spreadsheet_cell("medical description") == "medical description"
+    text = csv_bytes([{
+        **{name: "" for name in STEP42_FIELDS},
+        **{name: "" for name in (
+            "triage_bucket_NOT_CLINICALLY_VALIDATED",
+            "description_only_modality_anatomy_match",
+            "suspected_nonprocedure_concept_FOR_REVIEW",
+            "code_has_multiple_candidate_categories_FOR_REVIEW",
+        )},
+        "code_description": "=1+1",
+    }]).decode("utf-8")
+    assert "'=1+1" in text
