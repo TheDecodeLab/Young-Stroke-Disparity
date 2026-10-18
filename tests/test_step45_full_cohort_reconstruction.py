@@ -154,6 +154,10 @@ def test_two_parallel_primary_definitions_and_imaging_independent_indexes(worksp
     result=json.loads(m.REPORT.read_text())
     assert result["co_primary_age_definitions"]==list(m.DEFINITIONS)
     assert result["full_source_table_passes_completed"] is True
+    assert result["overlap_people_in_both_primary_cohorts_n"]=="suppressed"
+    assert result["age_boundary_quality_distinct_people_LOCAL_ONLY"][m.DEFINITIONS[0]]["boundary_uncertain"]=="suppressed"
+    assert "recorded_any_CTA_head_neck_within_stay_n" in result["co_primary_aggregates_LOCAL_ONLY"][m.DEFINITIONS[0]]["overall"]["all"]
+    assert "no_recorded_MRI_or_vascular_within_stay_n" in result["co_primary_aggregates_LOCAL_ONLY"][m.DEFINITIONS[1]]["overall"]["all"]
     assert result["source_rows_read_by_stage"]["diagnosis"]==10
     assert result["source_rows_read_by_stage"]["encounter"]==10
     assert result["source_rows_read_by_stage"]["patient"]==8
