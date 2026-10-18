@@ -111,3 +111,28 @@ def test_nonclinical_sensitivity_names_are_not_codebook():
         "reviewed_CPT_imaging",
         "reviewed_CPT_plus_nonCPT_imaging",
     )
+
+
+
+def test_superseded_step45_cli_cannot_launch_real_scan(monkeypatch):
+    """Even an explicit old-style consent phrase must fail before clinical I/O."""
+    import sys
+    from scripts import step45_full_cohort_reconstruction as step45
+    monkeypatch.setattr(sys,"argv",[
+        "step45_full_cohort_reconstruction.py",
+        "--zip", "/must_not_access/clinical_stroke.zip",
+        "--stage", "diagnosis",
+        "--execute-full-scan",
+        "--confirm", step45.CONFIRM,
+    ])
+    with pytest.raises(SystemExit) as caught:
+        step45.main()
+    assert caught.value.code==2
+
+
+def test_old_step45_remains_metadata_plan_and_synthetic_only(monkeypatch):
+    from scripts import step45_full_cohort_reconstruction as step45
+    assert step45.DEFINITIONS==(
+        "uniform_18_50", "original_sex_specific_18_52_54"
+    )
+    assert step45.APPROVAL_KEYS
