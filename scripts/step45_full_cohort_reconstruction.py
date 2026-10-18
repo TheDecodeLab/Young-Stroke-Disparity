@@ -401,7 +401,7 @@ def staged_scan(z, members, db, stage, codebook, expected_rows):
                     start = date.fromisoformat(start_txt)
                     finish = date.fromisoformat(end_txt) if end_txt else start
                     if end_txt and start <= day <= finish:
-                        db.execute("INSERT OR IGNORE INTO observed VALUES (?,?,?,?)"
+                        db.execute("INSERT OR IGNORE INTO observed VALUES (?,?,?,?)",
                                    (cohort,pid,category,"within_stay"))
                         inserted += 1
                     if abs((day-start).days) <= 7:
