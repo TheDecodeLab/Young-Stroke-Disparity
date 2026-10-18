@@ -17,7 +17,8 @@ The previous 49-code priority sheet and the full 3,270-entry
 terminology inventory are **reference candidates**, not validated
 completed clinical imaging. I reviewed authoritative CMS coding sources
 and committed a [14-code exact-CPT evidence registry](scripts/step54_literature_imaging_registry.py)
-and [literature/period protocol](docs/STEP54_55_LITERATURE_CODEBOOK_REVIEW_AND_RESEARCH_NETWORK_PERIOD.md).
+and [literature/period protocol](docs/STEP54_55_LITERATURE_CODEBOOK_REVIEW_AND_RESEARCH_NETWORK_PERIOD.md),
+plus the [public evidence-coded 14-row CSV](docs/STEP54_PUBLIC_CPT14_LITERATURE_CODE_MEANING_REVIEW.csv).
 A [private reference-inventory matcher](scripts/step55_private_literature_codebook_review.py)
 classifies ALL locally prepared Step46 candidate rows against the evidence,
 without reading any patient/encounter/diagnosis/procedure rows and without
