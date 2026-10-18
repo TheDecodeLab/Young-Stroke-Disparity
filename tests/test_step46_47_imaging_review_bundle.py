@@ -238,3 +238,60 @@ def test_no_outputs_outside_ignored_results(sandbox):
         m.prepare(source,summary,Path("/tmp/step46_outside"))
     with pytest.raises(ValueError,match="results/phase1"):
         m.finalize(source,summary,review,target=Path("/tmp/step46_unapproved.csv"))
+
+
+
+def test_protected_reference_description_cannot_be_rewritten(sandbox):
+    _,source,summary,review,target=sandbox
+    build_source(source,summary)
+    m.prepare(source,summary,review)
+    rows=read_priority(review/m.PRIORITY)
+    rows[0]["reference_description"]="Misleading manually changed code description"
+    write_review(review/m.PRIORITY,rows)
+    sign(review)
+    with pytest.raises(ValueError,match="Protected reference metadata"):
+        m.finalize(source,summary,review,target=target)
+    assert not target.exists()
+
+
+def test_clinician_reviewer_formula_is_not_exported(sandbox):
+    _,source,summary,review,target=sandbox
+    build_source(source,summary)
+    m.prepare(source,summary,review)
+    rows=read_priority(review/m.PRIORITY)
+    included=next(r for r in rows if r["code"]=="70551")
+    mark_valid_review(included)
+    included["reviewer"]="=HYPERLINK('unsafe')"
+    write_review(review/m.PRIORITY,rows)
+    sign(review)
+    with pytest.raises(ValueError,match="Unsafe reviewer"):
+        m.finalize(source,summary,review,target=target)
+    assert not target.exists()
+
+
+def test_review_signoff_is_bound_to_source_status_digest(sandbox):
+    _,source,summary,review,target=sandbox
+    build_source(source,summary)
+    m.prepare(source,summary,review)
+    rows=read_priority(review/m.PRIORITY)
+    mark_valid_review(next(r for r in rows if r["code"]=="70551"))
+    write_review(review/m.PRIORITY,rows)
+    sign(review)
+    current=json.loads((review/m.SIGNOFF).read_text())
+    current["source_step42_status_sha256"]="mismatch"
+    (review/m.SIGNOFF).write_text(json.dumps(current))
+    with pytest.raises(PermissionError,match="source changed"):
+        m.finalize(source,summary,review,target=target)
+
+
+def test_complete_inventory_may_be_reviewed_without_auto_including_any_code(sandbox):
+    _,source,summary,review,target=sandbox
+    build_source(source,summary)
+    m.prepare(source,summary,review)
+    full=review/m.INVENTORY
+    rows=read_priority(full)
+    mark_valid_review(next(r for r in rows if r["code"]=="70551"))
+    write_review(full,rows)
+    sign(review)
+    result=m.finalize(source,summary,review, review=full, target=target)
+    assert result["included_code_entries"]==1
