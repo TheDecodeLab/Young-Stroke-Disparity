@@ -78,6 +78,9 @@ CREATE INDEX IF NOT EXISTS index_key ON index_encounter(patient_id,encounter_id)
 CREATE TABLE IF NOT EXISTS observed(
   cohort TEXT NOT NULL, patient_id TEXT NOT NULL, category TEXT NOT NULL,
   window TEXT NOT NULL, PRIMARY KEY(cohort,patient_id,category,window));
+CREATE TABLE IF NOT EXISTS age_audit(
+  cohort TEXT NOT NULL, patient_id TEXT NOT NULL, status TEXT NOT NULL,
+  PRIMARY KEY(cohort, patient_id));
 """
 
 
@@ -413,6 +416,7 @@ def make_index(db):
     counters = Counter()
     with db:
         db.execute("DELETE FROM index_encounter")
+        db.execute("DELETE FROM age_audit")
         query = """SELECT a.patient_id,a.encounter_id,a.start_day,a.end_day,
                           p.sex,p.race,p.yob FROM admission a
                    LEFT JOIN person p ON p.patient_id=a.patient_id
@@ -425,6 +429,16 @@ def make_index(db):
             for cohort in DEFINITIONS:
                 status = age_class(date.fromisoformat(start_txt),yob,sex,cohort)
                 counters[cohort+"_"+status+"_admission_candidates"] += 1
+                # Distinct-patient quality status: eligible > boundary > unknown > ineligible.
+                # Do not count one person multiple times due to recurrent admissions.
+                priority = {"ineligible":0,"unknown":1,"boundary_uncertain":2,"eligible":3}
+                old = db.execute(
+                    "SELECT status FROM age_audit WHERE cohort=? AND patient_id=?",
+                    (cohort,pid)).fetchone()
+                if not old or priority[status] > priority[old[0]]:
+                    db.execute(
+                        "INSERT OR REPLACE INTO age_audit VALUES (?,?,?)",
+                        (cohort,pid,status))
                 if status != "eligible": continue
                 db.execute("INSERT OR IGNORE INTO index_encounter VALUES (?,?,?,?,?,?,?,?,?)",
                            (cohort,pid,eid,start_txt,end_txt,sex,race,
@@ -497,6 +511,28 @@ def make_report(db, approvals, codebook_path):
         "diagnostic_reports_are_private_and_not_approved_for_external_disclosure": True,
         "needs_clinical_interpretation_and_disclosure_review": True,
         "co_primary_aggregates_LOCAL_ONLY": aggregate_report(db),
+        "age_boundary_quality_distinct_people_LOCAL_ONLY": {
+            cohort: {
+                status: suppress(n)
+                for status,n in db.execute(
+                    "SELECT status,COUNT(*) FROM age_audit WHERE cohort=? GROUP BY status",
+                    (cohort,)).fetchall()
+            }
+            for cohort in DEFINITIONS
+        },
+        "overlap_people_in_both_primary_cohorts_n": suppress(
+            db.execute(
+                "SELECT COUNT(*) FROM index_encounter a JOIN index_encounter b "
+                "ON a.patient_id=b.patient_id "
+                "WHERE a.cohort=? AND b.cohort=?", DEFINITIONS
+            ).fetchone()[0]
+        ),
+        "missing_end_date_in_eligible_indexes_n": {
+            cohort: suppress(db.execute(
+                "SELECT COUNT(*) FROM index_encounter WHERE cohort=? AND end_day IS NULL",
+                (cohort,)).fetchone()[0])
+            for cohort in DEFINITIONS
+        },
     }
     safe_save(REPORT,result)
     with db:
