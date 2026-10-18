@@ -5,7 +5,33 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## CURRENT STEP: Interpret all three completed Step59 reports privately
+## CURRENT STEP: Step61 local disclosure-candidate review
+
+**Workstation-confirmed (2026-10-18):** Step58, all three Step59
+source-wide aggregate QA stages and **Step60 local report reconciliation**
+completed successfully on the investigator's approved Penn State
+workstation. The workstation reported **599 passed, 3 unchanged warnings**
+at the Step60 checkpoint. No private research-derived aggregate report has
+been inspected in ChatGPT or uploaded to GitHub.
+
+Use the new [Step61 disclosure-candidate guide](docs/STEP61_LOCAL_DISCLOSURE_CANDIDATE.md)
+([source](scripts/step61_disclosure_candidate.py),
+[11 synthetic tests](tests/test_step61_disclosure_candidate.py)). It reads
+**only the existing Step60 private JSON** and prepares a **local private
+candidate** with very coarse annual row-volume trends and qualitative
+CPT/non-CPT procedure-system patterns, excluding exact counts and small
+subgroups by conservative thresholds. It **does not** scan source data,
+select a complete study end year or authorize external disclosure.
+
+The user has indicated that sharing appropriately approved aggregate
+summaries with external AI services is permitted; nevertheless, **human
+disclosure review of the specific Step61 candidate is mandatory before
+upload**, including restrictions on institutional information and prior
+public release. Previous source-derived reports (Step59/Step60), the TriNetX
+ZIP and patient records **remain private**. The old Step45 reconstructed
+clinical scanner stays disabled and PR #1 stays draft, unmerged.
+
+## HISTORICAL CHECKPOINT: Interpret all three completed Step59 reports privately
 
 **Investigator-confirmed (2026-10-18):** The approved Penn State workstation
 successfully completed **Step59 encounter, diagnosis and procedure** source-wide
