@@ -411,6 +411,11 @@ def staged_scan(z, members, db, stage, codebook, expected_rows):
             raise ValueError(
                 "Full source pass row count does not match approved Step36 manifest; stage not marked complete"
             )
+        if stage in ("diagnosis", "encounter", "patient"):
+            stage_table = {"diagnosis":"candidate", "encounter":"admission", "patient":"person"}[stage]
+            n_matched = db.execute("SELECT COUNT(*) FROM " + stage_table).fetchone()[0]
+            if n_matched == 0:
+                raise RuntimeError("No qualifying linked records: stop before next expensive full-table scan")
         db.execute("INSERT INTO stages(stage,records_read) VALUES (?,?)", (stage,scanned))
     return {"stage":stage, "records_read":scanned, "candidate_hits_in_memory_or_disk_private":inserted}
 
@@ -448,6 +453,8 @@ def make_index(db):
                            (cohort,pid,eid,start_txt,end_txt,sex,race,
                             date.fromisoformat(start_txt).year-yob-1,
                             date.fromisoformat(start_txt).year-yob))
+        if db.execute("SELECT COUNT(*) FROM index_encounter").fetchone()[0] == 0:
+            raise RuntimeError("No definitely eligible patients in either co-primary cohort; procedure full scan blocked")
         db.execute("INSERT INTO stages(stage,records_read) VALUES (?,?)", ("index",scanned))
     return {"index_candidate_admissions_examined":scanned, "age_quality_counts_private":dict(counters)}
 
