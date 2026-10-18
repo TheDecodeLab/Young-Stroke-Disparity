@@ -5,7 +5,33 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## NEXT GOVERNED MILESTONE: Source authorization and measurement validity
+## NEXT LOCAL SCIENTIFIC CHECK: User-attested approved Research Network access
+
+The investigator confirmed on 2026-10-18 that the TriNetX Research Network
+dataset is already available under an **approved Penn State research protocol
+or DUA covering this study**. This is the user's attestation, **not** an
+automatically verified institutional authorization or permission for public
+data release. **Do not request a duplicate generic approval by default.**
+
+We have prepared a small, separately implemented
+[Step58 local bounded technical pilot](docs/STEP58_AUTHORIZED_LOCAL_TECHNICAL_PILOT.md)
+with [Python source](scripts/step58_authorized_local_prefix_qa.py)
+and [synthetic tests](tests/test_step58_authorized_local_prefix_qa.py).
+The pilot reads at most 500 clinical CSV rows per table by default, on the
+**approved user's own workstation only**, with an explicit local-use
+acknowledgment and existing Step36 ZIP signature. It reports only private,
+aggregate technical parsing diagnostics, **not source-wide frequencies,
+year completeness or finished clinical outcomes**.
+
+The earlier [data-steward request](docs/RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md)
+is now a **reference for unresolved field meanings only**, not a mandatory
+new approval requirement. The actual next substantive task after a clean
+local pilot is a separate, properly engineered, protocol-compliant full-source
+**aggregate coverage/semantics QA**, not the old Step45 reconstruction.
+The old Step45 full clinical scanner stays HARD-BLOCKED; PR #1 stays draft
+pending historic Git-data governance.
+
+## HISTORICAL PREPARATION: Source authorization and measurement validity
 
 The investigator workstation last confirmed **524 passed, 3 unchanged warnings**
 at `c50c528`. **No revised Research Network full-data scan has been run.**
