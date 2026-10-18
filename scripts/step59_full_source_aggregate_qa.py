@@ -225,8 +225,9 @@ def probe_dates(archive_path, stage, max_rows=1000):
             field = "start_date" if stage == "encounter" else "date"
             if field not in (reader.fieldnames or []):
                 raise ValueError("Probe date column missing")
-            for i, row in enumerate(reader):
-                if i >= max_rows:
+            for _ in range(max_rows):
+                row = next(reader, None)
+                if row is None:
                     break
                 bucket = year_bucket(row.get(field))
                 if bucket in ("INVALID", "MISSING", "BEFORE_2016", "AFTER_CURRENT_YEAR"):
