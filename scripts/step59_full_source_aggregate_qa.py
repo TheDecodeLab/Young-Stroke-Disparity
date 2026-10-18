@@ -45,9 +45,14 @@ def year_bucket(text, current_year=None):
         return "MISSING"
     val = text.strip()
     try:
-        if len(val) < 10 or val[4] != "-" or val[7] != "-":
+        # TriNetX export uses unseparated calendar dates (YYYYMMDD).
+        # Confirm year-month-day semantics; do not infer from eight digits alone.
+        if len(val) == 8 and val.isascii() and val.isdigit():
+            day = date(int(val[:4]), int(val[4:6]), int(val[6:8]))
+        elif len(val) >= 10 and val[4] == "-" and val[7] == "-":
+            day = date.fromisoformat(val[:10])
+        else:
             return "INVALID"
-        day = date.fromisoformat(val[:10])
     except ValueError:
         return "INVALID"
     if day.year < 2016:
@@ -166,6 +171,7 @@ def inspect(archive_path, stage, preflight_path=PREFLIGHT, current_year=None):
             raise ValueError("Whole-member row count differs from Step36 manifest")
     return {
         "stage": "STEP59_FULL_SOURCE_AGGREGATE_QA_LOCAL_ONLY",
+        "date_parser_version": "YYYYMMDD_OR_ISO8601_VALIDATED_V2",
         "table": name,
         "source_clinical_table_scanned_completely": True,
         "full_cohort_reconstruction_performed": False,
@@ -201,17 +207,58 @@ def write_private(report, output, base=PRIVATE):
     return location
 
 
+
+def probe_dates(archive_path, stage, max_rows=1000):
+    """Small local format verification, never prints exact dates or raw rows."""
+    if stage not in FIELDS or not (1 <= max_rows <= 1000):
+        raise ValueError("Invalid probe stage or bounded row cap")
+    member_name = stage + ".csv"
+    summary = Counter()
+    with zipfile.ZipFile(archive_path, "r") as archive:
+        matches = [m for m in archive.infolist() if not m.is_dir()
+                   and m.filename.replace("\\", "/").rsplit("/", 1)[-1].lower() == member_name]
+        if len(matches) != 1:
+            raise ValueError("Probe expected one source member")
+        with archive.open(matches[0]) as raw, io.TextIOWrapper(
+                raw, encoding="utf-8-sig", newline="", errors="strict") as text:
+            reader = csv.DictReader(text)
+            field = "start_date" if stage == "encounter" else "date"
+            if field not in (reader.fieldnames or []):
+                raise ValueError("Probe date column missing")
+            for i, row in enumerate(reader):
+                if i >= max_rows:
+                    break
+                bucket = year_bucket(row.get(field))
+                if bucket in ("INVALID", "MISSING", "BEFORE_2016", "AFTER_CURRENT_YEAR"):
+                    summary[bucket] += 1
+                else:
+                    summary["PARSED_CALENDAR_DATE"] += 1
+    return {name: summary[name] for name in (
+        "PARSED_CALENDAR_DATE", "INVALID", "MISSING", "BEFORE_2016", "AFTER_CURRENT_YEAR")}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--zip", type=Path, required=True)
     parser.add_argument("--stage", choices=tuple(FIELDS), required=True)
     parser.add_argument("--acknowledge", required=True)
+    parser.add_argument("--datefix-v2", action="store_true",
+                        help="Write distinct v2 corrected-date private report")
+    parser.add_argument("--probe-dates", action="store_true",
+                        help="Validate at most 1000 date values without full scan or report")
     args = parser.parse_args(argv)
     if args.acknowledge != ACK:
         parser.error("Existing-protocol approval attestation required for source-wide scan")
-    outfile = PRIVATE / ("step59_" + args.stage + "_LOCAL_ONLY.json")
+    if args.probe_dates:
+        tally = probe_dates(args.zip, args.stage)
+        print("Bounded date-parser validation only; no source data values printed.")
+        print("Rows by parsing status:", tally)
+        return
+    if not args.datefix_v2:
+        parser.error("The YYYYMMDD date correction requires --datefix-v2; old reports remain untouched")
+    outfile = PRIVATE / ("step59_" + args.stage + "_DATEFIX_V2_LOCAL_ONLY.json")
     if outfile.exists():
-        parser.error("Private report exists; refusing repeat full-source pass")
+        parser.error("Corrected report exists; refusing repeat full-source pass")
     result = inspect(args.zip, args.stage)
     saved = write_private(result, outfile)
     print("Step59 completed full-source aggregate QA for one core table.")
