@@ -6,7 +6,6 @@ import hashlib
 import json
 import tempfile
 import zipfile
-from collections import Counter
 from pathlib import Path
 
 import pytest
