@@ -1,4 +1,14 @@
 # TriNetX Research Network Reconstruction: Data Access and Validation Gate
+
+> **Investigator access update, 2026-10-18:** The user confirmed this dataset
+> is already held under an approved Penn State protocol or DUA covering the
+> study. This matrix is a **scientific validation and audit checklist**, not a
+> request for redundant new authorization. Formal approval conditions,
+> retention, sharing and restricted repository-history governance remain
+> independent. For the next actual technical step, see
+> [Step58 local pilot](STEP58_AUTHORIZED_LOCAL_TECHNICAL_PILOT.md).
+> No script grants authority or re-enables the old Step45 scan.
+
 **Plan of record:** 2026-10-18. This is the **single pre-reconstruction handoff** for governance and methodological validation. It is NOT an authorization, results report, or instruction to run the old Step45 scan. Read alongside the [active study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md) and [manuscript coding evidence](references/IMAGING_CODE_CITATION_REGISTER.md).
 
 ## What is already established
