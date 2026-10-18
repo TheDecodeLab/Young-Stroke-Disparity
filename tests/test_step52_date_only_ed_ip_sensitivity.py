@@ -7,7 +7,7 @@ from scripts.step49_ed_ip_episode_candidates import pair_candidate
 from scripts.step52_date_only_ed_ip_sensitivity import (
     DATE_ONLY_PAIR, DATE_ONLY_UNIQUE, date_only_pair_candidate,
     resolve_date_only_candidates, date_only_window_summary,
-    outcome_definition_labels,
+    outcome_definition_labels, investigator_analysis_contract,
 )
 
 
@@ -178,3 +178,38 @@ def test_report_labels_never_claim_verified_hospital_episode():
     assert "REFERENCE" in labels[0]
     assert "PROVISIONAL_SENSITIVITY" in labels[1]
     assert not any("CONFIRMED" in label for label in labels)
+
+
+def test_investigator_freeze_primary_is_same_inpatient_encounter_only():
+    contract = investigator_analysis_contract()
+    assert contract["primary"]["key"] == "A_same_IMP_encounter"
+    assert contract["primary"]["role"] == "primary"
+    assert contract["primary"]["procedure_encounter_types"] == ("IMP",)
+    assert contract["primary"]["may_include_separate_ED_encounter"] is False
+    assert "PRIMARY_REFERENCE" in outcome_definition_labels()[0]
+
+
+def test_ED_inclusion_is_sensitivity_only_with_bidirectional_uniqueness():
+    contract = investigator_analysis_contract()
+    sensitivity = contract["sensitivity"]
+    assert sensitivity["role"] == "sensitivity"
+    assert sensitivity["procedure_encounter_types"] == ("IMP", "EMER")
+    assert sensitivity["ED_linkage_requires_reciprocal_uniqueness"] is True
+    assert sensitivity["ED_to_IP_main_gap_calendar_days"] == (0, 1)
+    assert sensitivity["ED_to_IP_window_sensitivity_max_gap_days"] == (0, 1, 2)
+    assert sensitivity["same_hospital_verified"] is False
+
+
+def test_same_policy_in_both_primary_age_cohorts_without_relabelling():
+    contract = investigator_analysis_contract()
+    assert contract["co_primary_age_cohorts"] == (
+        "uniform_18_50", "original_sex_specific_18_52_54"
+    )
+    assert contract["denominator_selected_independent_of_imaging"] is True
+    assert contract["study_outcome"] == "documented_imaging_codes_not_confirmed_receipt"
+
+
+def test_investigator_method_choice_cannot_authorize_clinical_scan():
+    contract = investigator_analysis_contract()
+    assert contract["clinical_codebook_review_complete"] is False
+    assert contract["institutional_full_scan_authorized_by_this_decision"] is False
