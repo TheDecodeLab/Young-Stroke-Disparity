@@ -164,8 +164,10 @@ def inspect_headers(archive_path, step36_path=PREFLIGHT):
         }
 
 
-def save_private(report, destination=OUTPUT):
-    path = owner_path(Path(destination))
+def save_private(report, destination=None):
+    # Resolve the default at call time; Python evaluates default arguments
+    # when the function is defined, before tests temporarily override OUTPUT.
+    path = owner_path(Path(OUTPUT if destination is None else destination))
     if path != owner_path(OUTPUT):
         raise ValueError("Step51 output must use the fixed private report filename")
     base = owner_path(PRIVATE)
