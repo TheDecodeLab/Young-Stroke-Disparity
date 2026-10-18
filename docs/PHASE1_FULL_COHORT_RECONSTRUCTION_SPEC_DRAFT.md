@@ -1,5 +1,14 @@
 # Phase 1 decision after Step 44: full-cohort reconstruction specification (draft)
 
+> **Superseded on 2026-10-17 for code and ED/inpatient definitions.**
+> See [Step48 diagnosis/ED bridge protocol](STEP48_STROKE_CODES_ED_TO_INPATIENT_PROTOCOL.md).
+> The initial Step45 full-scan CLI is now intentionally disabled because it
+> would undercapture ED-before-inpatient imaging and ignore the investigator's
+> additional stroke-code families. The historical 18–50 and sex-specific
+> 18–52/18–54 co-primary AGE definitions remain unchanged.
+> Treat the sections below as the earlier conservative plan, not an
+> instruction to execute or the final source-wide phenotype.
+>
 **Status:** Technical plan, not executed, not clinically approved. This document
 defines the next meaningful data-analysis step without creating another
 nonrepresentative file-prefix pilot.
