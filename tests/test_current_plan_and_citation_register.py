@@ -93,7 +93,7 @@ def test_active_plan_separates_research_network_and_diamond_and_alternative_outc
     plan=(ROOT/"docs/ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md").read_text("utf-8")
     assert "**Diamond**" in plan and "2018-01-01" in plan
     assert "**TriNetX Research Network**" in plan and "2016-01-01" in plan
-    assert "ending year **UNKNOWN" in plan
+    assert "End date unknown" in plan
     assert "Primary A" in plan and "Sensitivity B" in plan
     assert "18–50" in plan and "18–52" in plan and "18–54" in plan
     assert "511 passed" in plan
@@ -104,7 +104,7 @@ def test_no_claim_that_research_network_performed_care_was_validated():
     ledger=(REF/"IMAGING_CODE_CITATION_REGISTER.md").read_text("utf-8")
     assert "Source pages can change" in ledger
     assert "source-specific" in ledger or "source" in ledger
-    assert "NOT functioning Zotero Word citations" in ledger
+    assert "not functioning Zotero Word citations" in ledger
     assert "performed" in ledger.lower()
     plan=(ROOT/"docs/ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md").read_text("utf-8")
     assert "actual patient-event" not in plan or "unknown" in plan.lower()
