@@ -7,11 +7,11 @@ legacy reference**. New work uses documented, tested Python scripts.
 
 ## Next step: neuroimaging vocabulary review (Step 42)
 
-The Step41 **nonrandom file-prefix** pilot showed consistent patient identifiers
-for observed encounter-linked events, but no sampled inpatient candidate
-had both an I63 and a historical CPT14 imaging signal in the independently
-truncated files. This is **not an imaging-utilization estimate** or evidence
-that stroke patients went without neuroimaging.
+The Step41 **nonrandom file-prefix** pilot found that encounter-link
+checks are technically feasible, but independent diagnosis and procedure
+prefixes cannot establish actual stroke-neuroimaging co-occurrence.
+The pilot is **not an imaging-utilization estimate** or evidence that
+stroke patients went without neuroimaging.
 
 Before a huge encounter-linked source scan, use the [Step42
 reference-only vocabulary audit](docs/STEP42_NEUROIMAGING_VOCABULARY_DISCOVERY.md)
