@@ -162,11 +162,19 @@ def atomic_bytes(path, blob: bytes):
             os.unlink(temp)
 
 
+def safe_spreadsheet_cell(value):
+    """Avoid spreadsheet formula execution in generated review-only CSV cells."""
+    if isinstance(value, str) and value.lstrip().startswith(("=", "+", "-", "@")):
+        return "'" + value
+    return value
+
+
 def csv_bytes(rows):
     buffer = io.StringIO(newline="")
     writer = csv.DictWriter(buffer, fieldnames=FIELDS, lineterminator="\n")
     writer.writeheader()
-    writer.writerows(rows)
+    for row in rows:
+        writer.writerow({key: safe_spreadsheet_cell(value) for key, value in row.items()})
     return buffer.getvalue().encode("utf-8")
 
 
