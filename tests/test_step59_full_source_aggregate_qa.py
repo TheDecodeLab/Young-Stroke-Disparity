@@ -137,3 +137,93 @@ def test_ack_is_explicit_and_cannot_skip(tmp_path):
     with pytest.raises(SystemExit) as err:
         qa.main(["--zip",str(tmp_path/"fake.zip"),"--stage","procedure","--acknowledge","WRONG"])
     assert err.value.code==2
+
+
+@pytest.mark.parametrize("text, expected", [
+    ("20160101", "2016"),
+    ("20171231", "2017"),
+    ("20260228", "2026"),
+    ("20240229", "2024"),
+    ("2018-05-17", "2018"),
+    ("2018-05-17T19:01:00", "2018"),
+    ("20150101", "BEFORE_2016"),
+    ("20270101", "AFTER_CURRENT_YEAR"),
+    ("20260230", "INVALID"),
+    ("20261301", "INVALID"),
+    ("20260001", "INVALID"),
+    ("2024ABCD", "INVALID"),
+    ("01022018", "BEFORE_2016"),
+    ("", "MISSING"),
+])
+def test_unseparated_yyyymmdd_strict_calendar_date(text, expected):
+    assert qa.year_bucket(text, current_year=2026) == expected
+
+
+def test_bounded_probe_formats_without_exact_dates_or_identifiers(source):
+    z, preflight, root = source
+    assert qa.probe_dates(z, "encounter", max_rows=1000) == {
+        "PARSED_CALENDAR_DATE": 3,
+        "INVALID": 1,
+        "MISSING": 0,
+        "BEFORE_2016": 0,
+        "AFTER_CURRENT_YEAR": 0,
+    }
+    assert qa.probe_dates(z, "procedure", max_rows=3)["PARSED_CALENDAR_DATE"] == 3
+    assert "SYN_P" not in repr(qa.probe_dates(z, "encounter"))
+    with pytest.raises(ValueError, match="bounded row cap"):
+        qa.probe_dates(z, "encounter", max_rows=1001)
+
+
+def test_datefix_v2_source_report_provenance(source):
+    z, prior, root = source
+    r = qa.inspect(z, "procedure", prior, current_year=2026)
+    assert r["date_parser_version"] == "YYYYMMDD_OR_ISO8601_VALIDATED_V2"
+    assert r["final_study_end_year_approved"] is False
+    assert r["result"]["rows_scanned"] == 5
+
+
+def test_command_rejects_unversioned_rescan_without_touching_source(tmp_path):
+    with pytest.raises(SystemExit) as error:
+        qa.main(["--zip", str(tmp_path / "not_found.zip"),
+                 "--stage", "encounter", "--acknowledge", qa.ACK])
+    assert error.value.code == 2
+
+
+def test_command_probe_only_does_not_create_report(source, monkeypatch, capsys):
+    z, prior, root = source
+    # Probe reads bounded synthetic prefix and does not create any private report.
+    monkeypatch.setattr(qa, "PRIVATE", root / "NEVER_CREATED")
+    qa.main(["--zip", str(z), "--stage", "encounter",
+             "--acknowledge", qa.ACK, "--probe-dates"])
+    printed = capsys.readouterr().out
+    assert "PARSED_CALENDAR_DATE" in printed
+    assert "SYN_P1" not in printed
+    assert not (root / "NEVER_CREATED").exists()
+
+
+def test_compact_yyyymmdd_source_rows_group_into_valid_year(tmp_path):
+    import json as _json
+    z = tmp_path / "SYNTH_COMPACT.zip"
+    blob = (b"patient_id,encounter_id,type,start_date,end_date\\n"
+            b"SYNTH_PERSON_A,SYNTH_ENC_A,IMP,20160101,20160103\\n"
+            b"SYNTH_PERSON_B,SYNTH_ENC_B,EMER,20201010,20201011\\n"
+            b"SYNTH_PERSON_C,SYNTH_ENC_C,IMP,20260230,\\n")
+    # Bytes need genuine line separators, not literal backslash-n sequences.
+    blob = blob.replace(b"\\\\n", b"\\n")
+    with zipfile.ZipFile(z, "w") as ar:
+        ar.writestr("nested/encounter.csv", blob)
+    pre = tmp_path / "preflight.json"
+    headers = list(qa.FIELDS["encounter"])
+    pre.write_text(_json.dumps({
+        "stage": "STEP36_RESEARCH_METADATA_PREFLIGHT",
+        "clinical_rows_read": 0,
+        "full_clinical_tables_scanned": False,
+        "files": {"encounter.csv": {
+            "present": True, "headers": headers,
+            "uncompressed_bytes": len(blob)}},
+        "relevant_manifest_counts": {"encounter.csv": {"row_count": 3}},
+    }))
+    report = qa.inspect(z, "encounter", pre, current_year=2026)
+    assert report["result"]["rows_by_year_bucket_NOT_COVERAGE_VERIFIED"] == {
+        "2016": 1, "2020": 1, "INVALID": 1}
+    assert "SYNTH_PERSON_A" not in repr(report)
