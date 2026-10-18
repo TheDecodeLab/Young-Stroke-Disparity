@@ -5,6 +5,28 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current local action: hospital/site-key structural review (Step 50)
+
+After the operator confirmed **352 passing tests**, the next blocker is not
+date arithmetic but the meaning of HCO/site and episode identifiers in the
+export. [Step50](docs/STEP50_SITE_LINKAGE_METADATA_CHECK.md) uses the
+previously generated **Step36 metadata JSON** (column headers only) and
+creates a private site/episode field report and blank data-steward worksheet.
+It does **not** open the original ZIP, read patient/encounter/diagnosis or
+procedure rows, or assert that a `source_id` is a hospital key.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q && python scripts/step50_site_linkage_metadata_check.py
+```
+
+Outputs remain within the local cloned repository's Git-ignored
+`results/phase1/full_reconstruction_private/site_linkage_review/`.
+This is **not** a site-linkage validation, clinical sign-off or authorization
+for a source-wide scan. The original Step45 full clinical scan is still
+explicitly blocked. Keep draft PR #1 unmerged pending restricted-data
+governance review.
+
 ## Current implementation: ED-end-date → inpatient-start-date candidates (Step 49)
 
 The study now has a [Step49 pure ED/IP encounter resolver](scripts/step49_ed_ip_episode_candidates.py),
