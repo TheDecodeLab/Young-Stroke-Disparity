@@ -457,42 +457,52 @@ def suppress(n, successes=None):
 
 
 def aggregate_report(db):
+    """Private descriptive strata only; cross-stratum disclosure NOT approved."""
+    measures = {
+        "MRI_BRAIN": ("MRI_BRAIN",),
+        "CTA_HEAD": ("CTA_HEAD",),
+        "CTA_NECK": ("CTA_NECK",),
+        "MRA_HEAD": ("MRA_HEAD",),
+        "MRA_NECK": ("MRA_NECK",),
+        "any_CTA_head_neck": ("CTA_HEAD", "CTA_NECK"),
+        "any_MRA_head_neck": ("MRA_HEAD", "MRA_NECK"),
+        "any_vascular_CTA_or_MRA": ("CTA_HEAD","CTA_NECK","MRA_HEAD","MRA_NECK"),
+        "any_MRI_or_vascular": ("MRI_BRAIN","CTA_HEAD","CTA_NECK","MRA_HEAD","MRA_NECK"),
+    }
+    outcome_sql = """SELECT COUNT(DISTINCT i.patient_id)
+       FROM index_encounter i WHERE i.cohort=? {filter}
+       AND EXISTS (
+           SELECT 1 FROM observed o WHERE o.cohort=i.cohort
+           AND o.patient_id=i.patient_id AND o.window='within_stay'
+           AND o.category IN ({categories})
+       )"""
     result = {}
     for cohort in DEFINITIONS:
         cohorts = {}
-        for segment in ("overall","sex","race"):
+        for segment in ("overall", "sex", "race"):
             if segment == "overall":
-                group_sql = "SELECT 'all' AS grp, COUNT(*) FROM index_encounter WHERE cohort=?"
-                args = (cohort,)
+                group_sql = "SELECT 'all',COUNT(*) FROM index_encounter WHERE cohort=?"
             else:
-                group_sql = "SELECT "+segment+",COUNT(*) FROM index_encounter WHERE cohort=? GROUP BY "+segment
-                args = (cohort,)
+                group_sql = ("SELECT "+segment+",COUNT(*) FROM index_encounter "
+                             "WHERE cohort=? GROUP BY "+segment)
             strata = {}
-            for group,n in db.execute(group_sql,args).fetchall():
-                filter_cond = "" if segment=="overall" else " AND i."+segment+"=?"
-                binds = (cohort,) if segment=="overall" else (cohort,group)
-                row = db.execute("""SELECT
-                    COUNT(*),
-                    SUM(CASE WHEN EXISTS (
-                       SELECT 1 FROM observed o WHERE o.cohort=i.cohort
-                       AND o.patient_id=i.patient_id AND o.category='MRI_BRAIN'
-                       AND o.window='within_stay') THEN 1 ELSE 0 END),
-                    SUM(CASE WHEN EXISTS (
-                       SELECT 1 FROM observed o WHERE o.cohort=i.cohort
-                       AND o.patient_id=i.patient_id
-                       AND o.category IN ('CTA_HEAD','CTA_NECK','MRA_HEAD','MRA_NECK')
-                       AND o.window='within_stay') THEN 1 ELSE 0 END)
-                    FROM index_encounter i WHERE i.cohort=?"""+filter_cond,binds).fetchone()
-                count,mri,vascular = row
-                strata[group] = {
-                    "denominator_n": suppress(count),
-                    "recorded_MRI_BRAIN_within_stay_n": suppress(count,mri or 0),
-                    "recorded_any_CTA_or_MRA_within_stay_n": suppress(count,vascular or 0),
-                }
-            cohorts[segment] = strata
-        result[cohort] = cohorts
+            for group, n in db.execute(group_sql,(cohort,)).fetchall():
+                filt = "" if segment == "overall" else "AND i."+segment+"=?"
+                args = (cohort,) if segment == "overall" else (cohort,group)
+                entry = {"denominator_n":suppress(n)}
+                count_by_measure={}
+                for name,categories in measures.items():
+                    placeholders = ",".join("?" for _ in categories)
+                    query=outcome_sql.format(filter=filt,categories=placeholders)
+                    count=db.execute(query,args+categories).fetchone()[0]
+                    count_by_measure[name]=count
+                    entry["recorded_"+name+"_within_stay_n"]=suppress(n,count)
+                no_advanced = n - count_by_measure["any_MRI_or_vascular"]
+                entry["no_recorded_MRI_or_vascular_within_stay_n"]=suppress(n,no_advanced)
+                strata[group]=entry
+            cohorts[segment]=strata
+        result[cohort]=cohorts
     return result
-
 
 def make_report(db, approvals, codebook_path):
     counts = {stage: n for stage,n in db.execute("SELECT stage,records_read FROM stages")}
