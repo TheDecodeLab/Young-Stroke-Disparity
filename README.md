@@ -5,6 +5,29 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current gating item: clinical type-code review (Step 40)
+
+The Step39 private worksheet has been created successfully: all observed
+encounter types have a reference description, but inpatient interpretation
+and clinician approval are still **pending**. Follow the
+[Step40 manual decision protocol](docs/STEP40_ENCOUNTER_TYPE_REVIEW_VALIDATION.md)
+to review and classify the local five-row worksheet **without sharing it**.
+
+After an authorized clinical/data-steward review, run:
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step40_encounter_type_review_validation.py
+```
+
+The validator never reads source clinical ZIP tables, modifies the
+worksheet, or approves inpatient definitions. The aggregate-only JSON
+and review ZIP stay inside Git-ignored `results/phase1/`, where
+**all generated research files must remain**. The repo PR stays draft.
+Do not start the full clinical cohort reconstruction before verifying
+inpatient status, source-ID scope, and imaging ascertainment.
+
 ## Current action: local encounter-type codebook review (Step 39)
 
 The uploaded Step38 report successfully matched **all five** sampled
