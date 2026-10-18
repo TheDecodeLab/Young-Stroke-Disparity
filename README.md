@@ -5,7 +5,30 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## CURRENT STEP: Step61 local disclosure-candidate review
+## CURRENT STEP: DATEFIX_V2 for YYYYMMDD calendar dates
+
+The investigator's bounded source-format check on 2026-10-18 showed
+**eight-digit** date values in encounter, diagnosis and procedure.
+Our earlier Step59 parser mistakenly required hyphenated dates, causing
+**every record to be classified as INVALID** in the year-level aggregates,
+and leaving Step60/Step61 with **no observed study years**. This is a
+**parser defect**, not evidence that the original clinical dates are invalid.
+
+The [DATEFIX_V2 protocol](docs/DATEFIX_V2_RESEARCH_NETWORK_QA.md)
+fixes the parser with actual YYYYMMDD calendar validation. First run
+synthetic tests and a **bounded 1,000-row date probe**, then (only when
+those probes support YYYYMMDD) run sequential corrected Step59
+whole-table QA stages with `--datefix-v2`. New private v2 filenames
+preserve all original aggregate reports. Reconcile the three corrected
+reports with Step60 `--datefix-v2`; it refuses mixed parser versions
+and leaves year completeness and site/HCO coverage unapproved.
+
+Previously reported overall procedure code-system proportions and
+whole-table row totals do not depend on date parsing, but all
+previous year-specific conclusions are invalid. PR #1 remains draft
+and Step45 patient-cohort reconstruction stays hard disabled.
+
+## HISTORICAL CHECKPOINT: Step61 local disclosure-candidate review
 
 **Workstation-confirmed (2026-10-18):** Step58, all three Step59
 source-wide aggregate QA stages and **Step60 local report reconciliation**
