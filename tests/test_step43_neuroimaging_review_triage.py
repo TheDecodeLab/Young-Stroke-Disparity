@@ -163,7 +163,7 @@ def test_invalid_review_batch_bound(workdir):
             run(src, meta, workdir, amount)
 
 def test_review_csv_neutralizes_spreadsheet_formulas():
-    assert safe_spreadsheet_cell('=HYPERLINK("malicious")') == '\'=HYPERLINK("malicious")'
+    assert safe_spreadsheet_cell('=HYPERLINK("malicious")') == "'" + '=HYPERLINK("malicious")'
     assert safe_spreadsheet_cell(" +SUM(1,2)") == "' +SUM(1,2)"
     assert safe_spreadsheet_cell("medical description") == "medical description"
     text = csv_bytes([{
