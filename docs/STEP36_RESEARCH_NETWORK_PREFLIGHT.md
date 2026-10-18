@@ -1,5 +1,14 @@
 # Step 36: Research Network stroke export feasibility (metadata only)
 
+> **Historical stage:** This earlier metadata proposal contains the old,
+> now superseded 2018–2019 Research Network assumption. **Diamond only**
+> uses fixed 2018–2019; the Research Network's proposed 2016+ end year
+> remains unverified pending approved coverage QA. See the
+> [active study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md) and
+> [pre-reconstruction authorization and scientific validation gate](RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md).
+> Do **not** interpret this document as permission to run a clinical scan.
+
+
 **Status: preflight, not a clinical result.** The investigator wants to retain the original neuroimaging disparities research question where the available data permit it. The Research Network stroke export may include `encounter_id` in diagnoses and procedures plus a separate `encounter.csv`. This requires verification using the specific original local ZIP. An encounter ID column alone does **not** establish valid hospital admissions, encounter-linked imaging, or population representativeness.
 
 The previous Diamond analyses (Steps 25–35) remain a separate administrative-record sensitivity audit. The Research Network export is a candidate **new primary source**, not a replacement for NIS validation or a clinical truth standard. Do not transfer count or rate estimates across exports.
