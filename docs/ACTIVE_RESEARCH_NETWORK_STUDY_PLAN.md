@@ -53,7 +53,26 @@ Step57 external review of 13 other **CPT-labelled reference entries**: eight def
 - ED sensitivity B can only measure change in *coded event capture under a provisional date-only association*, not validity of a hospital transfer. Describe limitations of missing ED imaging codes and incomplete network participation.
 - Manuscript citations: [Vagal2017_AJNR] and [Wang2024_JACR] for research framing; [CMS2010_MPPR] for CPT14 modalities; [CMS2026_MRIanalysis] and [CMS2025_MRgFUS] for exclusions; [HHS2025_OPPS2026] for future 2026 codes; [CMS2015_ICD10] for era transition. Those do NOT validate patient-level use in TriNetX. Reference metadata: `docs/references/imaging_references.csl.json`, `.ris`, `.bib`, plus full code-level crosswalk.
 
-## 6. Investigator-confirmed existing research access and immediate technical QA
+## 6. Step58 completed; Step59 source-wide aggregate QA is next
+
+On 2026-10-18 the investigator successfully executed Step58's limited
+500-row-per-table **local technical pilot**, with its clinical-derived report
+remaining private and unshared. This is proof of command success, **not**
+a network-wide data-quality or representativeness finding.
+
+The next documented step is the [Step59 one-table-at-a-time full-source
+AGGREGATE QA](STEP59_LOCAL_FULL_SOURCE_AGGREGATE_QA.md), only if such
+whole-table local processing is covered by the investigator's existing Penn
+State approval. The new [source](../scripts/step59_full_source_aggregate_qa.py)
+and [synthetic tests](../tests/test_step59_full_source_aggregate_qa.py) do not
+access patient records within ChatGPT, do not save patient or encounter
+identifiers to output, and do not re-enable the old Step45 reconstruction.
+Yearly encounter volumes, per-system procedure code-row counts and diagnosis
+principal-flag distributions are a *first source-wide aggregate QA*, not a
+clinical stroke cohort, verified completed imaging, site-adjusted denominator
+or final study-period signoff. Reports stay private on the workstation.
+
+## 7. Investigator-confirmed existing research access and immediate technical QA
 
 **2026-10-18 investigator attestation:** An existing **approved Penn State
 research protocol or data-use agreement covers access to this Research Network
