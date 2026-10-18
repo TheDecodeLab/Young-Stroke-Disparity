@@ -342,6 +342,11 @@ def finalize(source=SOURCE_CSV, status=SOURCE_JSON, output=DEST,
         )
         if (item["code_system"].strip().upper(), item["code"].strip().upper()) != key:
             raise ValueError("Code/system edited; terminology provenance mismatch")
+        reference = review_entry(identity_value, source_row)
+        for fixed_name in ("review_priority", "reference_description", "reference_path",
+                           "automated_candidate_NOT_APPROVED", "discovery_basis"):
+            if item[fixed_name] != csv_cell(reference[fixed_name]):
+                raise ValueError("Protected reference metadata was edited: " + fixed_name)
         decision = (item["clinician_decision_INCLUDE_EXCLUDE_DEFER"] or "").strip().lower()
         if decision not in VALID_DECISIONS:
             raise ValueError("Invalid include/exclude/defer decision")
@@ -369,8 +374,10 @@ def finalize(source=SOURCE_CSV, status=SOURCE_JSON, output=DEST,
                 raise PermissionError("Mixed or overridden anatomy needs a substantial clinical rationale")
         if key in approved_keys:
             raise ValueError("Duplicate or conflicting code_system/code among included codes")
-        if (key[0] not in SYSTEMS or not re.fullmatch(r"[A-Z0-9._-]{1,60}", key[1])):
+        if (key[0] not in SYSTEMS or not re.fullmatch(r"[A-Z0-9][A-Z0-9._-]{0,59}", key[1])):
             raise ValueError("Unsafe or unsupported code format for Step45 codebook")
+        if item["reviewer"].lstrip().startswith(("=", "+", "-", "@")):
+            raise ValueError("Unsafe reviewer value in output CSV")
         approved_keys.add(key)
         approved.append({
             "code_system": key[0], "code": key[1], "category": cat,
@@ -416,12 +423,14 @@ def main():
     prep = actions.add_parser("prepare", help="Safe: reference-only local reviewer bundle")
     prep.add_argument("--per-category", type=int, default=5)
     prep.add_argument("--ambiguous-limit", type=int, default=5)
-    actions.add_parser("finalize", help="Only after explicit clinical review/signoff; no clinical scan")
+    final = actions.add_parser("finalize", help="Only after explicit clinical review/signoff; no clinical scan")
+    final.add_argument("--review-file", type=Path, default=DEST / PRIORITY,
+                       help="Reviewed local priority sheet OR complete reference inventory")
     args = parser.parse_args()
     if args.action == "prepare":
         prepare(per_category=args.per_category, ambiguous_limit=args.ambiguous_limit)
     else:
-        finalize()
+        finalize(review=args.review_file)
 
 
 if __name__ == "__main__":
