@@ -5,6 +5,34 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Next step: neuroimaging vocabulary review (Step 42)
+
+The Step41 **nonrandom file-prefix** pilot showed consistent patient identifiers
+for observed encounter-linked events, but no sampled inpatient candidate
+had both an I63 and a historical CPT14 imaging signal in the independently
+truncated files. This is **not an imaging-utilization estimate** or evidence
+that stroke patients went without neuroimaging.
+
+Before a huge encounter-linked source scan, use the [Step42
+reference-only vocabulary audit](docs/STEP42_NEUROIMAGING_VOCABULARY_DISCOVERY.md)
+to discover candidate CT/MRI/CTA/MRA terminology across CPT, SNOMED,
+HCPCS and other procedure systems. It reads no clinical rows.
+Its private, unapproved CSV codebook must stay in gitignored
+`results/phase1/`; an independent aggregate-only review ZIP can be
+shared only after institutional disclosure review.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step42_neuroimaging_vocabulary.py \
+  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip"
+```
+
+Once the codebook, inpatient criteria and diagnosis index are reviewed,
+design a **single efficient, private full-source reconstruction**, rather
+than another sequence of unrelated event-prefix scans. The draft PR
+remains unmerged pending data governance review.
+
 ## Technical next step: provisional inpatient event concordance (Step 41)
 
 Step 40 status confirmed that the codebook worksheet's clinical decision
