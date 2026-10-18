@@ -35,6 +35,15 @@ No matching uses unverified `source_id`. `patient_id` may or may not have stable
 6. **Private QA:** report independent cohort denominators; missing inpatient end dates; missing ED dates; duplicate or cross-patient encounter IDs; unique/ambiguous ED-IP candidates; inpatient-only and ED-contributed counts; codebook/source-system capture by sex and race; changes in model estimands between A and B/C. Review whether suppression is needed even before an aggregate is shared.
 7. **Clinical/statistical review:** finalize exact source codebook and diagnoses, covariates, subgroup definitions, site representation, adjusted models, multiplicity, and language avoiding causal assertions. Only after data-owner and clinical approval should any real full-source execution pathway be considered.
 
+## Gate for any actual Research Network source rows
+
+A future approved reconstruction must satisfy the
+[pre-reconstruction institutional and scientific decision matrix](RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md).
+The source-coverage, event-code-system capture, principal diagnosis,
+encounter/HCO semantics, age uncertainty and disclosure fields remain
+unverified. Step53 synthetic logic is **not** a reviewed production clinical
+extractor and does not grant full-source analysis rights.
+
 ## Immediate next safe local action
 
 ```bash
