@@ -5,6 +5,42 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## CURRENT ACTION: External adjudication of 13 deferred CPT-like codes (Step 57)
+
+The workstation confirmed **489 tests passed, 3 unchanged warnings**.
+Step56 found **13 remaining CPT-labelled reference candidates**.
+External evidence indicates **eight are procedures OTHER THAN the six target
+diagnostic neuroimaging modalities**: `0398T`, `0865T`, `0866T`,
+`61736`, `61737`, `61751`, `78814`, `78830`.
+The remaining **five local seven-digit CPT-labelled identifiers do not
+match standard CPT shape**; their original terminology system/meaning
+is unresolved. Do not invent code mappings or automatically count them
+as imaging. All **14/14 original CPT core codes remain unchanged**.
+
+The evidence, code-year caveats and supporting sources are in
+[Step57 review](docs/STEP57_DEFERRED_CPT_EXTERNAL_EVIDENCE_ADJUDICATION.md).
+[Step57 private classifier](scripts/step57_external_cpt_adjudication.py)
+uses the existing ignored Step56 queue **only**, and adds targeted
+external dispositions and local provenance checks. It does not open
+the TriNetX ZIP, use patient/encounter/procedure records, replace the
+approved codebook or change institutional approval flags.
+
+```bash
+git pull --ff-only origin analysis-rebuild-phase1-audit
+python -m pytest -q && python scripts/step57_external_cpt_adjudication.py prepare
+```
+
+Output is **LOCAL ONLY** under
+`results/phase1/full_reconstruction_private/imaging_review/literature_adjudication/coverage_triage/external_evidence_adjudication/`.
+No file is overwritten. Codes are excluded only from the **six specified
+diagnostic study imaging outcomes**; the unknown five await a reliable
+source-system map rather than guessed clinical meanings.
+
+Diamond 2018–2019 and Research Network proposed 2016 onward remain
+distinct. Primary A same-inpatient encounter imaging and B provisional
+ED-inclusive sensitivity are unchanged. The original Step45 real
+clinical scan stays disabled; PR #1 remains unmerged.
+
 ## CURRENT ACTION: Evidence-mapping coverage triage (Step 56)
 
 The workstation confirmed **481 passed, three nonblocking warnings**.
