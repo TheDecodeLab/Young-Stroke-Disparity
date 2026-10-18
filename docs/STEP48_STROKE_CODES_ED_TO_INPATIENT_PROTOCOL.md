@@ -1,5 +1,13 @@
 # Step 48: Study phenotype expansion and emergency-to-inpatient linkage (design + synthetic code only)
 
+> **Step49 update (2026-10-17):** The ED/IP temporal policy has been
+> implemented as [date-end-first candidate rules with 0, 0–1 and 0–2
+> calendar-day windows](STEP49_ED_IP_END_DATE_LINKAGE.md). Use ED
+> **end_date** compared with inpatient **start_date**, not ED start_date.
+> The code explicitly holds duplicate, overlapping, cross-site and
+> multiply matched encounters; no real clinical scan or source-wide
+> encounter builder has been executed. Step45 real-scan CLI stays disabled.
+>
 **Status: Research-backed protocol amendment, unapproved for source-wide real-data execution.** `scripts/step48_reference_stroke_ed_policy.py` contains pure/testable rules. It does not read the Research Network ZIP, perform clinical extraction, infer HCO identity, or approve any patient record.
 
 ## Investigator directions recorded
@@ -39,7 +47,7 @@ These are literature/official-source support for *family definitions and study a
 Different encounter IDs can represent the same patient arriving in the ED and then being admitted. For that reason, `patient_id+encounter_id` is a useful **within-record join key**, but not a complete **cross-encounter episode key**.
 
 1. Candidate ED type = `EMER` and inpatient type = `IMP`. Confirm these meaning labels and confirm whether there is already an encounter parent/visit-group/admission identifier in the original export.
-2. Same patient ID AND **verified same HCO/site** AND ED preceding inpatient admission on same/previous calendar day are **candidate links**, not clinically validated transitions. Date-only source timestamps cannot establish a true 24-hour interval.
+2. Same patient ID AND **verified same HCO/site** AND **ED end_date on the same day or previous calendar day relative to IMP start_date** are **candidate links**, not clinically validated transitions. An ED encounter can start several days earlier; its end date drives proximity. Date-only source timestamps cannot establish a true 24-hour interval.
 3. Cross-HCO transfer, missing site identifiers, duplicate candidate ED visits, overlapping encounter records, absent admission dates, and multiple possible inpatient recipients must be marked **ambiguous** and not auto-linked.
 4. `source_id` was previously observed differing between encounter/diagnosis/procedure tables and cannot be assumed to be an HCO/site key. Verify the stable site/HCO or parent episode key; do not infer one from `source_id` equality.
 5. Once a unique ED→IMP episode linkage is defensible, define imaging coverage from the ED evaluation/start through inpatient discharge. Count ED and inpatient performed-code events toward the same **hospitalization** numerator, deduplicating at patient+episode+modality. Report separate ED-only, inpatient-only and combined modality capture. A ±2/3-day temporal window is a **sensitivity**, never proof of transfer.
