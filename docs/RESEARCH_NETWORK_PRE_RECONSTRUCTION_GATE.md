@@ -23,7 +23,7 @@ Most recent local code confirmation: **524 tests passed, 3 nonblocking warnings*
 
 | Area | Specific evidence or response needed | Decision owner | Completion status |
 |---|---|---|---|
-| **1. Data-use authorization** | Data-owner/IRB or DUA decision allowing this named Research Network stroke/disparity analysis, local staging and aggregate reporting; scope, access, retention and permitted linkage | Institutional data owner / privacy/IRB | **PENDING** |
+| **1. Data-use authorization** | Existing Penn State research protocol or DUA covering this study; retain its local analysis, retention, sharing and linkage conditions privately | Investigator / institutional data owner | **INVESTIGATOR-CONFIRMED EXISTING ACCESS**; exact document scope not independently inspected |
 | **2. Secure work environment** | Approved encrypted volume, users/roles, audit controls, private processing boundary and destruction/retention policy | IT security / data owner | **PENDING CONFIRMATION** |
 | **3. Historical repository review** | Review legacy Git history for restricted patient/terminology content, determine remediation and merging/public release status | Data steward / institutional privacy | **PENDING**; PR #1 remains draft |
 | **4. Source provenance** | Original source archive and signed manifest identity; four core table schemas and counts, key scope and dataset coverage description; no upload | Data custodian / analyst | **PARTIAL**: metadata/header inspection only |
@@ -59,7 +59,7 @@ The following design specifies **future** local QA and its grain. It is not a co
 
 ## Explicit interpretation/analysis blockers
 
-- **Critical: no institutional authorization evidenced for running the revised full archive.** This is a question for the institution, not a Boolean a script can grant.
+- **Governance scope remains private, not absent:** The investigator confirms approved access for this study. This text cannot independently certify which full-source analyses, aggregate disclosures or storage/retention practices are permitted by the existing protocol. Do not request redundant approval by default, and do not treat an acknowledgment string as legal authorization.
 - **High: actual CPT/procedure-system capture unknown.** Reference data (CPT 30, SNOMED 3,137, etc.) do not quantify clinical utilization; a CPT-only disparity comparison may partly measure differences in coding systems across hospitals.
 - **High: inpatient/ED and HCO linkage semantics unverified.** The exact same encounter identifier supports the A definition only if identifiers and dates are valid; ED-to-IP date-only B must not be called a confirmed transfer.
 - **High: the Research Network's end year and hospital coverage are unknown.** Selecting it from max date/export metadata risks truncation bias and calendar-year confounding.
@@ -74,6 +74,6 @@ The pure [planning gate](../scripts/research_network_pre_reconstruction_gate.py)
 
 The function `coverage_window_candidate()` accepts **explicitly reviewed synthetic-style annual decision flags**, not clinical data. It only identifies a *provisional contiguous candidate* from 2016 and always reports that actual clinical end-year approval is false. Absence of an HCO key may be documented while retaining the provisional ED sensitivity interpretation. A completed checklist is still **independent-review-required**, not approved by the script.
 
-**Next actual dependency**: obtain the institutional decision on authorized purpose, local audit scope, site/encounter metadata and procedure recording, using the [one-pass data-steward request](RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md). Only after those real decisions can a new bounded-memory local extractor be designed and separately approved; never reactivate the superseded Step45 scanner or pretend existing tests validated a clinical dataset.
+**Next action:** Run the separate [Step58 locally bounded source technical pilot](STEP58_AUTHORIZED_LOCAL_TECHNICAL_PILOT.md) only within the already approved processing scope. For unresolved source field meanings, use the [optional data-steward questions](RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md); a new general authorization request is not presumed necessary. Later, design an independently governed bounded-memory source-wide **aggregate QA** program as needed, never reactivate the superseded Step45 scanner or pretend tests validated real clinical outcomes.
 
 Leave draft PR #1 **unmerged** until the legacy history privacy review.
