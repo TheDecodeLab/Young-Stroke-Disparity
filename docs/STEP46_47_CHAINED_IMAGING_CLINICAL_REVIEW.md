@@ -77,7 +77,7 @@ python scripts/step46_47_imaging_review_bundle.py finalize \
   --review-file results/phase1/full_reconstruction_private/imaging_review/all_reference_candidates_LOCAL_ONLY.csv
 ```
 
-Step47 fails closed if signing is incomplete, source metadata is changed, a code/system identity or protected reference field is altered, an included code lacks performed-procedure/anatomical/year evidence, its code is duplicated, or the Step45 approved-codebook template has been edited or already filled.
+Step47 fails closed if signing is incomplete, the exact Step42 source CSV or its aggregate report has changed since packet preparation, a code/system identity or protected reference field is altered, an included code lacks performed-procedure/anatomical/year evidence, its code is duplicated, or the Step45 approved-codebook template has been edited or already filled.
 
 On documented successful validation, it populates **only the existing empty**
 `results/phase1/full_reconstruction_private/imaging_codebook_APPROVED_LOCAL_ONLY.csv`
