@@ -53,7 +53,26 @@ Step57 external review of 13 other **CPT-labelled reference entries**: eight def
 - ED sensitivity B can only measure change in *coded event capture under a provisional date-only association*, not validity of a hospital transfer. Describe limitations of missing ED imaging codes and incomplete network participation.
 - Manuscript citations: [Vagal2017_AJNR] and [Wang2024_JACR] for research framing; [CMS2010_MPPR] for CPT14 modalities; [CMS2026_MRIanalysis] and [CMS2025_MRgFUS] for exclusions; [HHS2025_OPPS2026] for future 2026 codes; [CMS2015_ICD10] for era transition. Those do NOT validate patient-level use in TriNetX. Reference metadata: `docs/references/imaging_references.csl.json`, `.ris`, `.bib`, plus full code-level crosswalk.
 
-## 6. Institutional pre-reconstruction acceptance gate
+## 6. Investigator-confirmed existing research access and immediate technical QA
+
+**2026-10-18 investigator attestation:** An existing **approved Penn State
+research protocol or data-use agreement covers access to this Research Network
+dataset for this study**. Do not require a new generic approval request as a
+default next action. This statement does not reveal which formal document
+controls retention, sharing or source-specific restrictions; retain actual
+documentation privately at Penn State. No code may auto-certify approval.
+
+Our next concrete local check is the
+[Step58 bounded technical prefix pilot](STEP58_AUTHORIZED_LOCAL_TECHNICAL_PILOT.md).
+It reads no more than 500 source rows per table by default on the approved
+workstation, checks expected headers, date parsing, code-system labels and
+encounter-type values, and stores only a private summary. **A prefix sample
+cannot confirm data completeness, true source code-system frequencies, source
+performs-vs-orders semantics, or the final calendar end year**. Full-source
+QA must be designed separately, within the existing approved processing
+scope, and validated before publication-level claims.
+
+## 7. Institutional pre-reconstruction acceptance gate (reference, not duplicate approval)
 
 Before proposing *any* revised full-source clinical processing, use the
 [authorizations and scientific evidence gate](RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md)
