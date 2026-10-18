@@ -1,4 +1,4 @@
-# Research Network Reconstruction: Data Access and Validation Gate
+# TriNetX Research Network Reconstruction: Data Access and Validation Gate
 **Plan of record:** 2026-10-18. This is the **single pre-reconstruction handoff** for governance and methodological validation. It is NOT an authorization, results report, or instruction to run the old Step45 scan. Read alongside the [active study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md) and [manuscript coding evidence](references/IMAGING_CODE_CITATION_REGISTER.md).
 
 ## What is already established
