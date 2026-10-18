@@ -204,3 +204,26 @@ def test_represent_all_IP_even_without_ED():
         "start_date":"20180101","end_date":"20180104","verified_site_key":"SITE_A"}
     links=resolve_episode_candidates([], [ip])
     assert links[("TEST_PATIENT","IP_9")]["status"] == "no_unique_ED_candidate"
+
+
+
+def test_same_encounter_identifier_reused_across_patients_is_held(pair):
+    ed, ip = pair
+    other_patient_ED={**ed, "patient_id":"OTHER_PERSON"}
+    results=resolve_episode_candidates([ed,other_patient_ED], [ip])
+    assert results[("TEST_PATIENT","IP_1")]["status"]=="hold_encounter_id_reused_across_patients"
+
+
+def test_cross_site_transfer_competitor_prevents_unique_assignment(pair):
+    ed, ip = pair
+    different_site_ED={**ed, "encounter_id":"ED_POSSIBLE_TRANSFER",
+                       "verified_site_key":"DIFFERENT_HOSPITAL"}
+    results=resolve_episode_candidates([ed,different_site_ED],[ip])
+    assert results[("TEST_PATIENT","IP_1")]["status"]=="hold_unresolved_potential_ED_competitor"
+
+
+def test_patient_ID_matches_but_missing_site_never_links(pair):
+    ed,ip=pair
+    ip.pop("verified_site_key")
+    result=resolve_episode_candidates([ed],[ip])
+    assert result[("TEST_PATIENT","IP_1")]["status"]=="hold_unresolved_potential_ED_competitor"
