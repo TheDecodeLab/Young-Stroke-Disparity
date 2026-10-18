@@ -8,7 +8,7 @@
 > multiply matched encounters; no real clinical scan or source-wide
 > encounter builder has been executed. Step45 real-scan CLI stays disabled.
 >
-**Status: Research-backed protocol amendment, unapproved for source-wide real-data execution.** `scripts/step48_reference_stroke_ed_policy.py` contains pure/testable rules. It does not read the Research Network ZIP, perform clinical extraction, infer HCO identity, or approve any patient record.
+**Status: historical research-backed phenotype amendment, unapproved for source-wide real-data execution. The fixed 2018–2019 research period has been superseded for Research Network; it belongs to Diamond. See [Steps54–55](STEP54_55_LITERATURE_CODEBOOK_REVIEW_AND_RESEARCH_NETWORK_PERIOD.md).** `scripts/step48_reference_stroke_ed_policy.py` contains pure/testable rules. It does not read the Research Network ZIP, perform clinical extraction, infer HCO identity, or approve any patient record.
 
 ## Investigator directions recorded
 
@@ -39,7 +39,7 @@ These are literature/official-source support for *family definitions and study a
 - **Broad study phenotype:** code families from the investigator's table. Record `cerebral_ischemic`, `retinal_ischemic_H34_1`, and `legacy_icd9` tags independently. Do not count duplicate codes/diagnoses as independent people. Permit H34.1 in the requested broad phenotype only with a clear published distinction and separate retinal results.
 - **Cerebral ischemic sensitivity:** `I63` subcategories, with ICD-9 433.x1/434.x1 only if validated as genuine contemporaneous events; exclude H34.1 from this sensitivity.
 - **Diagnostic position:** principal-only versus principal+secondary or any-position **sensitivity**; do not use a synthetic `P` indicator as proof of true principal diagnoses until TriNetX source semantics are checked.
-- **Period:** 2018–2019 incident/inpatient episodes. Audit/label ICD-9 rows separately because 2018/19 service dates postdate the U.S. transition.
+- **Period (corrected 2026-10-18):** Diamond: 2018–2019. Research Network: proposed 2016 onward through the last sufficiently complete calendar year established by authorized source-coverage QA. The original 2018–2019 restriction must NOT be copied into Research Network. Audit/label legacy ICD-9 codes separately; any 2016+ ICD-9 records postdate the U.S. transition.
 - **Codebook version:** require a local exact 127-code inventory (9+118) if the investigator wants strict **individual-code** matching rather than prefix-family matching. The counts in the prompt do not reveal those individual codes; do not invent the 127 entries. Note that `H34.1` may or may not already be within the stated 118 depending on how the original code table was counted.
 
 ## Proposed ED → IMP episode definition
