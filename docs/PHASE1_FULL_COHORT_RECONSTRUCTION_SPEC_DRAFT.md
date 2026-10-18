@@ -65,14 +65,20 @@ calendar years 2018–2019 in the available Research Network:
    encounter IDs across patients and sites; do not automatically require
    `source_id` to agree across event and encounter tables before learning
    its provenance semantics.
-3. **Demographics:** complete scan of `patient.csv` for matched
-   patients. Sex, race/ethnicity, year-of-birth and their missingness
-   must be characterized. With year-of-birth only, age at event is
-   interval-censored by up to one year: report boundary uncertainty
-   rather than silently assigning exact ages. Proposed **primary**
-   general young-stroke threshold: ages 18–50 inclusive (subject to
-   collaborator agreement). Historical sex-specific ≤52/≤54 thresholds
-   can be a *secondary* sensitivity only, not assumed primary.
+3. **Demographics and TWO CO-PRIMARY AGE DEFINITIONS (user-confirmed):**
+   complete scan of `patient.csv` for matched patients, preserving
+   sex, race/ethnicity, YOB and missingness. Analyze **both primary
+   cohorts in parallel**: (A) age 18–50 inclusive regardless of sex;
+   (B) age ≥18 and ≤52 for men or ≤54 for women (original study rule).
+   Neither is secondary. Present both denominators, imaging outcomes,
+   and sex/race stratification explicitly; do not pool results or treat
+   the cohorts as independent. Patients may enter both definitions.
+   With year-of-birth only, actual age at admission is interval-censored
+   by up to one year: use conservative definitely-in-range rules in the
+   primary extracts and report ambiguous boundary ages separately.
+   Cohort B cannot classify a person with unknown/nonbinary sex into a
+   sex-specific threshold without a clinician-approved policy; track
+   this as ineligible/unknown rather than imputing sex.
 4. **Repeated events:** define one index hospitalization per patient
    (proposed earliest eligible 2018–19 admission) with a stated policy for
    overlapping/transfer encounters. Do not double-count people.
@@ -155,7 +161,7 @@ of sensitive derived patient rows, even in Git history.
   processing and approved handling of derived row-level stages.
 - Inpatient `IMP` mapping, principal I63 flag semantics, transfer and
   collision rules reviewed by the study clinical/data team.
-- Primary young-stroke age threshold and treatment of YOB uncertainty.
+- Both co-primary age definitions and treatment of YOB uncertainty.
 - Primary imaging codebook and procedure performed-vs-ordered meaning,
   including CPT and relevant non-CPT systems.
 - Reporting disclosure suppression and standards for missing race/site
