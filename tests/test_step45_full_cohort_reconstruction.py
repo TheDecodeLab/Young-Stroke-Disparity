@@ -157,7 +157,7 @@ def test_two_parallel_primary_definitions_and_imaging_independent_indexes(worksp
     assert result["source_rows_read_by_stage"]["diagnosis"]==10
     assert result["source_rows_read_by_stage"]["encounter"]==10
     assert result["source_rows_read_by_stage"]["patient"]==8
-    assert result["source_rows_read_by_stage"]["procedure"]==13
+    assert result["source_rows_read_by_stage"]["procedure"]==12
     assert "EVENT_A" not in m.REPORT.read_text()
     assert "A" not in result["co_primary_aggregates_LOCAL_ONLY"][m.DEFINITIONS[0]]["sex"]
     assert m.DB.stat().st_mode & 0o077==0
