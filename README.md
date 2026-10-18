@@ -5,6 +5,39 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current study definition: literature-backed stroke and ED-to-IP reconstruction (Step 48)
+
+The investigator has clarified that neuroimaging code definitions should be
+defensible from literature/authoritative coding resources; the study needs
+imaging sensitivity analyses; and imaging done during the **emergency visit
+before an inpatient admission** must be included in that inpatient episode.
+The user-supplied stroke code families include **ICD-9 433.x1/434.x1**,
+**ICD-10-CM I63 family**, and **H34.1**, with a retinal subgroup and
+cerebral-only sensitivity analysis so definitions are transparent.
+We retain **both co-primary age cohorts** defined previously.
+
+A [reviewable Step48 protocol with scientific references](docs/STEP48_STROKE_CODES_ED_TO_INPATIENT_PROTOCOL.md)
+and synthetic-only [code-family/ED-IMP candidate helpers](scripts/step48_reference_stroke_ed_policy.py)
+and [tests](tests/test_step48_reference_stroke_ed_policy.py) are now committed.
+No source ZIP or patient records were read for Step48.
+
+**IMPORTANT: Step45 source-wide clinical execution is deliberately
+disabled**. Its previous principal-I63-and-same-inpatient-encounter
+behavior is incompatible with ED-before-IP imaging and the revised
+code families. Its metadata `--zip` plan and synthetic tests still work.
+Step48 *does not yet implement* the complete source-wide ED-to-IP
+episode builder. Do not set approvals to true or attempt the Step45
+real-data stage flags. The next task is completing that implementation
+and validating hospital/site linkage before any real-data source scan.
+
+The previously prepared 49-code review subset and 3,270-term private
+inventory remain **unapproved reference candidates** under
+`results/phase1/full_reconstruction_private/imaging_review/`.
+Reviewed high-specificity CPT codes and broader multi-system sets can
+be compared as prespecified imaging sensitivity definitions; literature
+alone does not guarantee that a TriNetX procedure record means an exam
+was actually performed.
+
 ## Current action: one bundled clinical imaging review (Steps 46–47)
 
 To reduce back-and-forth, use the
