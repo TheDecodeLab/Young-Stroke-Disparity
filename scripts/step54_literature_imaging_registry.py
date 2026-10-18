@@ -118,6 +118,7 @@ def classify_imaging_code(system: str, code: str, event_date=None) -> dict:
         "date_compatibility": "needs_service_date_or_source_era_validation",
         "performed_procedure_verified": False,
         "source_semantics_verified": False,
+        "external_code_meaning_supported": False,
         "clinical_codebook_signed_off": False,
         "source_url": None,
     }
@@ -127,7 +128,7 @@ def classify_imaging_code(system: str, code: str, event_date=None) -> dict:
         category, meaning = BASE_CPT[code]
         result.update({
             "status": "core_exact_CPT_modality_candidate",
-            "source_semantics_verified": True,
+            "external_code_meaning_supported": True,
             "category": category, "meaning": meaning,
             "date_compatibility": "known_pre_2016_and_in_historical_CMS_schedule",
             "source_url": CPT_HISTORICAL,
@@ -136,7 +137,7 @@ def classify_imaging_code(system: str, code: str, event_date=None) -> dict:
     if code == CTA_DUAL_2026:
         result.update({
             "status": "extended_CTA_head_plus_neck_2026_only_NOT_CORE",
-            "source_semantics_verified": True,
+            "external_code_meaning_supported": True,
             "category": "CTA_HEAD", "secondary_category": "CTA_NECK",
             "meaning": "Combined CTA head and neck, single code 70471",
             "source_url": CPT_2026_CHANGE,
@@ -152,7 +153,7 @@ def classify_imaging_code(system: str, code: str, event_date=None) -> dict:
         start, end, meaning = CT_PERFUSION[code]
         result.update({
             "status": "CT_PERFUSION_SEPARATE_NOT_PRIMARY_CTA_MRA_MRI_CT_HEAD",
-            "source_semantics_verified": True,
+            "external_code_meaning_supported": True,
             "meaning": meaning, "source_url": CTP_2026_CHANGE,
             "date_compatibility": "unknown_requires_date",
         })
@@ -166,7 +167,7 @@ def classify_imaging_code(system: str, code: str, event_date=None) -> dict:
     if code in EXCLUSION_EXAMPLES:
         result.update({
             "status": "exclude_not_study_modality",
-            "source_semantics_verified": True,
+            "external_code_meaning_supported": True,
             "meaning": EXCLUSION_EXAMPLES[code],
             "source_url": ("https://www.cms.gov/medicare/quality-initiatives-patient-assessment-instruments/pqrs/downloads/2014-physician-fee-schedule-final-rule_cms-1600-fc.pdf" if code in {"93880","93882"} else CPT_HISTORICAL),
             "date_compatibility": "not_applicable",
