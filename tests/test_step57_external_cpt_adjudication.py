@@ -20,7 +20,7 @@ def test_eight_documented_non_diagnostic_CPT_codes_are_excluded(code):
     assert result["source_system_mapping_verified"] == "NOT_VERIFIED"
 
 
-@pytest.mark.parametrize("code", ["1010296", "1010318", "1010322", "1014877", "1036724"])
+@pytest.mark.parametrize("code", ["9000001", "9000002", "9000003", "9000004", "9000005"])
 def test_seven_digit_private_identifiers_are_held_not_misread_as_CPT(code):
     result = m.classify(code)
     assert result["decision"] == "hold_nonstandard_CPT_shape_CHECK_ORIGINAL_CODE_SYSTEM"
@@ -46,7 +46,7 @@ def local_record(code, n):
 
 def test_review_13_codes_keeps_all_8_exclusions_and_5_holds():
     codes = sorted(m.PUBLIC_EXCLUSIONS) + [
-        "1010296", "1010318", "1010322", "1014877", "1036724"
+        "9000001", "9000002", "9000003", "9000004", "9000005"
     ]
     rows = m.adjudicate([local_record(c, i) for i, c in enumerate(codes, 1)])
     assert len(rows) == 13
