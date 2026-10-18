@@ -1,6 +1,9 @@
 # Step 57: External adjudication of the 13 deferred CPT-like reference entries
 
-**Evidence review completed 2026-10-18.** The investigator's workstation confirmed **489 passing tests** after Step56, and the existing private Step56 queue contains 13 CPT-labelled reference entries. All conclusions below concern **external code meaning**, not actually observed Research Network procedures. The submitted 13 code strings were discussed in this conversation, but no local terminology descriptions or private source files were uploaded.
+> **Current authority:** For Research Network analysis, follow the [active 2026 study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md) and [canonical code-to-reference register](references/IMAGING_CODE_CITATION_REGISTER.md). Earlier stage text below is historical/provisional and must not override the agreed A-primary/B-sensitivity policy, Diamond-only 2018–2019 distinction, source-code meaning limitations, and hard-blocked full scan.
+
+
+**Evidence review completed 2026-10-18; locally confirmed 511 passing tests and Step57 8 exclusions + 5 holds.** The investigator's workstation confirmed **489 passing tests** after Step56 and **511** after Step57, and the existing private Step56 queue contains 13 CPT-labelled reference entries. All conclusions below concern **external code meaning**, not actually observed Research Network procedures. The submitted 13 code strings were discussed in this conversation, but no local terminology descriptions or private source files were uploaded.
 
 ## Literature-based decisions for diagnostic stroke neuroimaging
 
