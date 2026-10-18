@@ -4,7 +4,7 @@
 
 ## Findings prompting this step
 
-The uploaded Step 41 technical report showed matching patient keys among observed encounter links, but no sampled provisional inpatient encounter contained *both* a recorded I63 diagnosis and an imaging CPT14 code in the three independent 50,000-row file prefixes. This does **not** imply that stroke patients lacked imaging, because corresponding rows can be located outside the unrelated truncated prefixes.
+The Step 41 technical pilot found consistent patient keys among observed encounter links, but independently truncated file prefixes cannot establish stroke-neuroimaging co-occurrence or true imaging utilization. Relevant rows may be located outside the unrelated truncated prefixes. Exact aggregate clinical counts belong only in local private reports, not in public repository documentation.
 
 Research Network procedures include CPT, SNOMED and additional vocabularies. The historical CPT14 set is not a validated complete MRI/CTA/MRA ascertainment codebook.
 
