@@ -22,9 +22,10 @@ record-row counts, not year-specific data-quality evidence.
 
 ## Do this in order (no raw clinical dates leave the workstation)
 
-1. Pull and run full synthetic suite. Previously **610 tests passed** on
-   the workstation (before this correction); the new regression cases
-   increase the count. Require zero failing tests and valid Python syntax:
+1. Pull and run full synthetic suite. The last workstation-confirmed full suite was **599 passed**. Step61
+   added 11 synthetic tests verified locally, and this date-fix adds 23
+   test cases. The expected current full test count is **633**, pending
+   your workstation run. Require zero failing tests and valid Python syntax:
 
 ```bash
 git pull --ff-only origin analysis-rebuild-phase1-audit
