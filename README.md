@@ -5,6 +5,43 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Investigator-confirmed analysis priority (2026-10-18)
+
+The investigator approved the final **relative role** of the imaging definitions:
+
+- **A = PRIMARY:** documented imaging coded to the same index inpatient
+  (`IMP`) encounter. This is a narrow capture definition; it can miss imaging
+  performed before inpatient admission.
+- **B = SENSITIVITY:** A plus imaging coded to a single, reciprocally unique,
+  same-patient, date-adjacent emergency (`EMER`) encounter. The proposed
+  ED end-date → IP start-date window is 0–1 **calendar days**. It is an
+  **unverified date-only association**, not proof of the same hospital.
+- **Additional sensitivity:** vary the ED→IP maximum gap across 0, 1 and
+  2 calendar days, and transparently report excluded/ambiguous candidates.
+
+Apply the same outcome priorities to **both co-primary age cohorts**
+(`uniform_18_50`, `original_sex_specific_18_52_54`). Define the
+hospitalized stroke denominator independently of imaging availability,
+and describe outcomes as **documented imaging codes**, not confirmed
+procedures or evidence that absent coding means absent care.
+
+The decision is now frozen for development in
+[`investigator_analysis_contract()`](scripts/step52_date_only_ed_ip_sensitivity.py),
+covered by [synthetic tests](tests/test_step52_date_only_ed_ip_sensitivity.py),
+and recorded in the [Step52 protocol](docs/STEP52_NO_HCO_DATE_ONLY_ED_IP_SENSITIVITY.md).
+
+**No investigator decision can substitute for clinical codebook validation,
+data-owner approval, or governance of restricted records.** The previous
+Step45 full clinical-data scan remains hard blocked. No actual patient data
+were used to implement this decision; draft PR #1 stays unmerged.
+
+To verify the new test cases:
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+```
+
 ## Current study-design status: no verified exported hospital/episode key (Step 52)
 
 The operator confirmed **381 passing tests** and Step51 checked all **18 CSV
@@ -22,8 +59,9 @@ have been added. They separate:
   end date is 0–1 calendar days before IP start), and
 - **0-day and 0–2-day** ED-link windows as sensitivity variants.
 
-No match is a verified transfer/same-hospital episode. The final choice
-of primary imaging outcome remains pending clinical/data-steward review;
+No match is a verified transfer/same-hospital episode. **A PRIMARY and
+B SENSITIVITY are now investigator-confirmed** (see the top of this README);
+clinical/data-steward codebook and data-use reviews remain outstanding.
 Step52 does not change the two co-primary age definitions or auto-approve
 the imaging codebook.
 
