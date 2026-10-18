@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS admission(
   patient_id TEXT NOT NULL, encounter_id TEXT NOT NULL,
   start_day TEXT NOT NULL, end_day TEXT,
   PRIMARY KEY(patient_id, encounter_id));
+CREATE INDEX IF NOT EXISTS admission_patient_start ON admission(patient_id,start_day,encounter_id);
 CREATE TABLE IF NOT EXISTS person(
   patient_id TEXT PRIMARY KEY, sex TEXT NOT NULL, race TEXT NOT NULL,
   ethnicity TEXT NOT NULL, yob INTEGER);
@@ -250,8 +251,13 @@ def rows_of(z, member, expected_headers):
 
 
 def db_open(path):
-    conn = sqlite3.connect(str(private_path(path)), timeout=120)
+    path = private_path(path)
+    # SQLite's working files must stay in our private repository workspace.
+    os.environ["SQLITE_TMPDIR"] = str(path.parent)
+    conn = sqlite3.connect(str(path), timeout=120)
     os.chmod(path, 0o600)
+    conn.execute("PRAGMA temp_store=MEMORY")
+    conn.execute("PRAGMA journal_mode=DELETE")
     conn.executescript(SCHEMA)
     return conn
 
