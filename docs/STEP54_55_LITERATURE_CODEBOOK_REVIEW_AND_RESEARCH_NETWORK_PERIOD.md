@@ -15,6 +15,8 @@
 | MRA_NECK | 70547, 70548, 70549 | MR angiography of neck |
 | CT_HEAD | 70450, 70460, 70470 | Conventional head/brain CT comparator (contrast variants) |
 
+A [public, nonpatient, 14-row machine-readable CPT meaning codebook](STEP54_PUBLIC_CPT14_LITERATURE_CODE_MEANING_REVIEW.csv) is included in the repository; its entries are labeled evidence-supported **code meanings**, NOT verified performed-examination data.
+
 **Primary external references**
 1. CMS, *Diagnostic Imaging Code List*, effective 2011: https://www.cms.gov/regulations-and-guidance/guidance/transmittals/downloads/r738otn.pdf — explicit mappings for all 14 CPT codes. A historical code list is strong evidence of code meaning, not of universal source completeness or performed care.
 2. CMS, *Medicare NCCI 2026 Policy Manual Chapter 9*: https://www.cms.gov/files/document/09-chapter9-ncci-medicare-policy-manual-2026-final.pdf — MRI brain 70551–70553 and related modality distinctions.
