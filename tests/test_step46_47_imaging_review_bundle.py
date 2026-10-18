@@ -23,7 +23,7 @@ def sandbox():
         source = folder / "step42_private.csv"
         summary = folder / "step42_private.json"
         target = folder / "full_reconstruction_private" / "imaging_codebook_APPROVED_LOCAL_ONLY.csv"
-        return folder, source, summary, review, target
+        yield folder, source, summary, review, target
 
 
 def build_source(source, summary):
