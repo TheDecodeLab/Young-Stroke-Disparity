@@ -306,7 +306,7 @@ def candidate_encounter_bloom(db):
     return pref
 
 
-def staged_scan(z, members, db, stage, codebook):
+def staged_scan(z, members, db, stage, codebook, expected_rows):
     """Stage uses a fresh table and marks success ONLY after source EOF.
 
     Interrupted stages are discarded/restarted, never treated as complete.
@@ -407,6 +407,10 @@ def staged_scan(z, members, db, stage, codebook):
                     if abs((day-start).days) <= 7:
                         db.execute("INSERT OR IGNORE INTO observed VALUES (?,?,?,?)",
                                    (cohort,pid,category,"same_encounter_pm7"))
+        if expected_rows is None or scanned != expected_rows:
+            raise ValueError(
+                "Full source pass row count does not match approved Step36 manifest; stage not marked complete"
+            )
         db.execute("INSERT INTO stages(stage,records_read) VALUES (?,?)", (stage,scanned))
     return {"stage":stage, "records_read":scanned, "candidate_hits_in_memory_or_disk_private":inserted}
 
@@ -594,7 +598,12 @@ def run_stage(source, stage, approvals, codebook, preflight, min_free_bytes=16*(
                 return
             ensure_previous(db,stage)
             if stage in TABLE_MAP:
-                outcome = staged_scan(z,members,db,stage,codes)
+                source_name = TABLE_MAP[stage]
+                expected_rows = prior.get("relevant_manifest_counts", {}).get(
+                    source_name, {}).get("row_count")
+                if not isinstance(expected_rows, int) or expected_rows < 0:
+                    raise ValueError("Step36 manifest row count must be known before full scan")
+                outcome = staged_scan(z,members,db,stage,codes,expected_rows)
             elif stage=="index":
                 outcome = make_index(db)
             else:
