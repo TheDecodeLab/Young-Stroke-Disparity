@@ -164,3 +164,36 @@ def test_no_explicit_end_year_approval_from_full_reviewed_years():
     r=gate.coverage_window_candidate([_year(2016),_year(2017)],current_year=2026)
     assert r["candidate_end_year"]==2017
     assert r["clinical_end_year_approved"] is False
+
+
+def test_repository_governance_gate_is_linked_from_active_plan_and_readme():
+    from pathlib import Path
+    repo = Path(__file__).resolve().parents[1]
+    readme = (repo / "README.md").read_text(encoding="utf-8")
+    plan = (repo / "docs/ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md").read_text(encoding="utf-8")
+    gate_doc = (repo / "docs/RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md").read_text(encoding="utf-8")
+    assert "RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md" in readme
+    assert "RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md" in readme
+    assert "RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md" in plan
+    assert "CURRENT PLAN OF RECORD" in readme
+    assert "No numeric thresholds" in gate_doc
+    assert "TriNetX" in gate_doc
+
+
+def test_old_clinical_scan_is_still_explicitly_disabled():
+    from pathlib import Path
+    repo = Path(__file__).resolve().parents[1]
+    source = (repo / "scripts/step45_full_cohort_reconstruction.py").read_text(encoding="utf-8")
+    assert "Real clinical scan disabled for superseded Step45 phenotype" in source
+    assert gate.evaluate_evidence(_full_packet())["old_step45_execution_unblocked"] is False
+
+
+def test_source_preflight_does_not_override_new_period_or_permission():
+    from pathlib import Path
+    repo = Path(__file__).resolve().parents[1]
+    old_doc = (repo / "docs/STEP36_RESEARCH_NETWORK_PREFLIGHT.md").read_text(encoding="utf-8")
+    new_doc = (repo / "docs/RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md").read_text(encoding="utf-8")
+    assert "now superseded 2018" in old_doc
+    assert "2016" in old_doc and "Diamond only" in old_doc
+    assert "source_id" in new_doc
+    assert "does not constitute approval" in new_doc
