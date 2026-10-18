@@ -587,10 +587,10 @@ def run_stage(source, stage, approvals, codebook, preflight, min_free_bytes=16*(
                 "codebook_sha256": hashlib.sha256(private_path(codebook).read_bytes()).hexdigest(),
                 "age_definitions": DEFINITIONS,
             }, sort_keys=True).encode()).hexdigest()
-            prior = db.execute("SELECT value FROM run_meta WHERE key='frozen_inputs'").fetchone()
-            if prior and prior[0] != fingerprint:
+            stored_fingerprint = db.execute("SELECT value FROM run_meta WHERE key='frozen_inputs'").fetchone()
+            if stored_fingerprint and stored_fingerprint[0] != fingerprint:
                 raise RuntimeError("Frozen source, approvals, preflight, codebook or age policy changed: start a separately reviewed private run")
-            if not prior:
+            if not stored_fingerprint:
                 with db:
                     db.execute("INSERT INTO run_meta VALUES ('frozen_inputs',?)", (fingerprint,))
             if completed(db,stage):
