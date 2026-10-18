@@ -5,6 +5,33 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Technical next step: provisional inpatient event concordance (Step 41)
+
+Step 40 status confirmed that the codebook worksheet's clinical decision
+cells are still blank. We will **not** treat lexical candidates as
+approved inpatient definitions. The shared reference terminology makes
+a strict inpatient candidate available for a *bounded technical-only*
+pilot, while unclassified encounter types remain unknown.
+
+Run [Step41](docs/STEP41_PROVISIONAL_INPATIENT_CONCORDANCE.md) to
+examine whether diagnosis and procedure prefixes share encounter and
+patient keys with sampled candidate inpatient encounters, and whether
+recorded I63 and selected CPT imaging codes align in time. Its
+nonrandom-prefix technical counts are **not** cohort estimates or
+evidence of imaging utilization.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step41_provisional_inpatient_concordance.py \
+  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip"
+```
+
+The bounded script writes only aggregate JSON plus a review ZIP inside
+the repo's gitignored `results/phase1/`. Clinical codebook review
+and source linkage validation are still required before the full
+study-cohort reconstruction and disparity models.
+
 ## Current gating item: clinical type-code review (Step 40)
 
 The Step39 private worksheet has been created successfully: all observed
