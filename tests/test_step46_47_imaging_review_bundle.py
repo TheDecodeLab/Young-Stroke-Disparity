@@ -102,7 +102,7 @@ def test_prepare_preserves_all_candidates_and_makes_compact_review(sandbox):
     assert source.read_bytes()==before
     assert len(read_priority(review/m.INVENTORY))==8
     prioritized=read_priority(review/m.PRIORITY)
-    assert len(prioritized)==6
+    assert len(prioritized)==7
     assert len({r["review_id"] for r in prioritized})==len(prioritized)
     assert all(not r["clinician_decision_INCLUDE_EXCLUDE_DEFER"] for r in prioritized)
     assert "'" + "=HYPERLINK" in (review/m.INVENTORY).read_text()
