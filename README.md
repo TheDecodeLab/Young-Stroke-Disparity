@@ -5,7 +5,32 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## NEXT RESEARCH EXECUTION STEP: Step59 whole-table aggregate QA
+## CURRENT STEP: Interpret all three completed Step59 reports privately
+
+**Investigator-confirmed (2026-10-18):** The approved Penn State workstation
+successfully completed **Step59 encounter, diagnosis and procedure** source-wide
+aggregate scans; all three original private JSON reports stayed local. The
+workstation confirmed **581 tests passed, 3 existing warnings** before those
+scans. Their counts have NOT been reviewed by the assistant; clinical
+study-year completeness, imaging ascertainment and site linkage are NOT
+validated merely because all scans finished.
+
+Use the [Step60 private aggregate reviewer](docs/STEP60_PRIVATE_SOURCE_QA_REVIEW.md)
+([source](scripts/step60_local_aggregate_review.py),
+[synthetic regression tests](tests/test_step60_local_aggregate_review.py)) to
+reconcile the **three existing local Step59 summaries without rescanning
+clinical source data**. Step60 writes a new ignored mode-0600 local-only
+report with per-table/year patterns and provisional diagnostic flags, never
+public clinical numbers or a signed-off final study end year. First run the
+workstation Python compilation and full pytest suite before executing Step60.
+
+Step60 is NOT a cohort reconstruction. Review changes in site participation,
+actual imaging code-system capture and procedure-event semantics separately
+before selecting study years or estimating disparities. Old Step45 clinical
+scan remains hard-blocked; PR #1 stays DRAFT unmerged due to unresolved
+historical Git clinical-data governance.
+
+## HISTORICAL CHECKPOINT: Step59 whole-table aggregate QA
 
 The investigator reported that **Step58 succeeded on the approved Penn State
 workstation** and its private prefix report was saved locally; it was not
