@@ -5,6 +5,33 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current action: distinguish terminology-path ambiguity (Step 44)
+
+The Step43 aggregate report preserved every candidate, but its
+triage placed the ambiguous terminology in one large mixed
+head/neck bucket. That is still **too crude for clinical review**:
+an inherited reference path may mention head and neck even when
+the actual code description specifies only one region.
+
+Run [Step44](docs/STEP44_ANATOMY_AMBIGUITY_REVIEW.md) to split this
+review workload into technical groups based on **description-only
+versus reference-path** anatomy matches. This reads only the
+existing private Step43 worksheet and its local aggregate JSON.
+It **does not read any clinical or original Research Network files**,
+does not reclassify approved outcomes, and does not delete codes.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step44_anatomy_ambiguity_review.py
+```
+
+A full private ambiguity worksheet, smaller first-review worksheet,
+and aggregate-only status ZIP are written **only** into the clone's
+gitignored `results/phase1/`. Do not share the LOCAL_ONLY CSVs.
+The inpatient definition and clinical neuroimaging codebook still
+require substantive review before any full cohort reconstruction.
+
 ## Current action: prioritize neuroimaging reference code review (Step 43)
 
 The Step42 reference-only audit found a large candidate vocabulary,
