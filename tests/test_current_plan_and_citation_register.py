@@ -116,3 +116,41 @@ def test_readme_has_one_active_plan_and_explicit_historical_warning():
     assert "IMAGING_CODE_CITATION_REGISTER.md" in readme
     assert "historical implementation records" in readme
     assert "No source-wide revised Research Network scan executed" in readme
+
+
+def test_public_inclusion_registry_evidence_urls_match_code_crosswalk():
+    from scripts.step54_literature_imaging_registry import (
+        BASE_CPT, classify_imaging_code,
+    )
+    by_code={r["code"]:r for r in _crosswalk()}
+    for code, (category, _) in BASE_CPT.items():
+        observed=by_code[code]
+        candidate=classify_imaging_code("CPT",code)
+        assert observed["category"]==category
+        assert observed["source_url"]==candidate["source_url"]
+        assert candidate["source_semantics_verified"] is False
+
+
+def test_eight_exclusion_source_urls_match_authoritative_register():
+    from scripts.step57_external_cpt_adjudication import PUBLIC_EXCLUSIONS
+    by_code={r["code"]:r for r in _crosswalk()}
+    assert len(PUBLIC_EXCLUSIONS)==8
+    for code, (_,source_url,_) in PUBLIC_EXCLUSIONS.items():
+        observed=by_code[code]
+        assert observed["decision"]=="exclude_from_six_diagnostic_categories"
+        assert observed["source_url"]==source_url
+
+
+def test_year_2026_official_federal_rule_is_used_for_CTA_and_perfusion():
+    from scripts.step54_literature_imaging_registry import (
+        CTP_2026_CHANGE, CPT_2026_CHANGE,
+    )
+    by_code={r["code"]:r for r in _crosswalk()}
+    assert CTP_2026_CHANGE.endswith("2025-20907.pdf")
+    assert by_code["70471"]["source_url"].endswith("2025-20907.pdf")
+    assert {by_code[x]["source_url"] for x in ("70472","70473","0042T")}=={
+        CTP_2026_CHANGE
+    }
+    # CPT_2026_CHANGE is a separate official CMS code list; the manuscript
+    # reference uses the Federal Register rule for exact code descriptors.
+    assert CPT_2026_CHANGE.startswith("https://www.cms.gov/")
