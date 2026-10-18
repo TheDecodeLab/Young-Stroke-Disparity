@@ -141,7 +141,7 @@ def date_only_window_summary(eds, ips, windows=WINDOWS):
             "provisional_gap_days_counts": dict(sorted(gaps.items())),
             "same_hospital_verified": False,
             "patient_id_cross_hco_scope_verified": False,
-            "clinical_rows_read_by_this_module": 0,
+            "source_archive_or_clinical_files_opened": False,
             "outcome": "SENSITIVITY_ONLY_NOT_CONFIRMED_ED_IP_TRANSFER",
         }
     return result
