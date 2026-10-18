@@ -257,3 +257,35 @@ def test_full_run_does_not_auto_approve_manual_clinical_work(workspace):
     source,prior=build_source(workspace)
     assert m.approval_template()["institutional_data_use_approved"] is False
     assert m.approval_template()["co_primary_age_definitions"] == list(m.DEFINITIONS)
+
+
+
+def test_bloom_prefilter_has_no_false_negatives():
+    bloom=m.FixedBloom()
+    values=["INTERNAL_TEST_A","INTERNAL_TEST_B","_"]+[f"synthetic_{i}" for i in range(200)]
+    for value in values: bloom.add(value)
+    assert all(bloom.contains(value) for value in values)
+
+
+def test_missing_admission_end_never_counts_as_within_stay(workspace):
+    source,prior=build_source(workspace)
+    for stage in ("diagnosis","encounter","patient","index"):
+        m.run_stage(source,stage,m.CONFIG,m.CODEBOOK,prior,0)
+    with sqlite3.connect(m.DB) as db:
+        db.execute("UPDATE index_encounter SET end_day=NULL WHERE patient_id='A'")
+    m.run_stage(source,"procedure",m.CONFIG,m.CODEBOOK,prior,0)
+    with sqlite3.connect(m.DB) as db:
+        within=db.execute(
+            "SELECT COUNT(*) FROM observed WHERE patient_id='A' AND window='within_stay'"
+        ).fetchone()[0]
+        sensitivity=db.execute(
+            "SELECT COUNT(*) FROM observed WHERE patient_id='A' AND window='same_encounter_pm7'"
+        ).fetchone()[0]
+    assert within==0
+    assert sensitivity==4  # 2 imaging categories x 2 parallel cohorts
+
+
+def test_real_execution_flags_are_not_implicit():
+    # No data access or files. Strict phrase and flag are intentionally separate.
+    assert m.CONFIRM=="I_ACKNOWLEDGE_FULL_TRINETX_CLINICAL_SCAN"
+    assert m.approval_template()["source_linkage_policy"]=="patient_id_plus_encounter_id"
