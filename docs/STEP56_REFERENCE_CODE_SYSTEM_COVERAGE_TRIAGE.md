@@ -1,5 +1,8 @@
 # Step 56: Evidence-based imaging terminology coverage triage
 
+> **Current authority:** For Research Network analysis, follow the [active 2026 study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md) and [canonical code-to-reference register](references/IMAGING_CODE_CITATION_REGISTER.md). Earlier stage text below is historical/provisional and must not override the agreed A-primary/B-sensitivity policy, Diamond-only 2018–2019 distinction, source-code meaning limitations, and hard-blocked full scan.
+
+
 **Status:** private reference-terminology analysis only. The workstation confirmed **481 tests passed, three known warnings** and Step55 completed on **3,270** reference terms. It located all **14/14** published core CPT modality codes; the status distribution was 3,240 non-CPT/unverified, 13 other CPT requiring research, 2 excluded and 1 separate CT-perfusion term.
 
 **Scientific interpretation:** 3,240 *reference candidates* are not 3,240 actual Research Network procedure records, and do not imply that CPT coding is necessarily uncommon. The export's reference terminology may contain unused concepts; a procedure-row code-system distribution is unknown and cannot be inferred from this file. This distinction is essential to avoid calling a technically correct CPT core a *complete* imaging measurement.
