@@ -115,6 +115,8 @@ def assemble_outcome_reference(index_admissions, all_inpatient_encounters,
         if _field(ed, "type").upper() != "EMER":
             raise ValueError("ED pool has non-EMER encounter")
         by_ed[key] = ed
+    if set(by_ip).intersection(by_ed):
+        raise ValueError("An encounter key cannot be both IMP and EMER")
     events_by_visit = _reviewed_event_map(imaging_events)
     links = {window: resolve_date_only_candidates(eds, inpatients, window)
              for window in WINDOWS}
