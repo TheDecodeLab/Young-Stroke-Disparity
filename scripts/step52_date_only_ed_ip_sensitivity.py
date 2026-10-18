@@ -148,9 +148,47 @@ def date_only_window_summary(eds, ips, windows=WINDOWS):
 
 
 def outcome_definition_labels():
-    """Names do not assert which endpoint is scientifically primary."""
+    """Investigator-selected endpoint priority; NOT a data-use authorization.
+
+    Both co-primary age cohorts apply independently to the same definitions.
+    The primary numerator must NEVER include a different ED encounter.
+    """
     return (
-        "same_inpatient_encounter_documented_imaging_REFERENCE",
+        "same_inpatient_encounter_documented_imaging_PRIMARY_REFERENCE",
         "inpatient_plus_date_only_unique_ED_imaging_PROVISIONAL_SENSITIVITY",
         "ED_date_window_0_1_2_calendar_days_SENSITIVITY",
     )
+
+
+def investigator_analysis_contract():
+    """Frozen investigator decision for a future approved reconstruction.
+
+    Describes planned recorded-procedure outcomes, not actual imaging receipt.
+    No patient records or clinical codebooks are accessed by this helper.
+    A site-unverified ED match is usable only as a labeled sensitivity.
+    """
+    return {
+        "study_outcome": "documented_imaging_codes_not_confirmed_receipt",
+        "primary": {
+            "key": "A_same_IMP_encounter",
+            "role": "primary",
+            "procedure_encounter_types": ("IMP",),
+            "may_include_separate_ED_encounter": False,
+        },
+        "sensitivity": {
+            "key": "B_IMP_plus_unique_provisional_ED",
+            "role": "sensitivity",
+            "procedure_encounter_types": ("IMP", "EMER"),
+            "may_include_separate_ED_encounter": True,
+            "ED_linkage_requires_reciprocal_uniqueness": True,
+            "ED_to_IP_main_gap_calendar_days": (0, 1),
+            "ED_to_IP_window_sensitivity_max_gap_days": (0, 1, 2),
+            "same_hospital_verified": False,
+        },
+        "co_primary_age_cohorts": (
+            "uniform_18_50", "original_sex_specific_18_52_54"
+        ),
+        "denominator_selected_independent_of_imaging": True,
+        "clinical_codebook_review_complete": False,
+        "institutional_full_scan_authorized_by_this_decision": False,
+    }
