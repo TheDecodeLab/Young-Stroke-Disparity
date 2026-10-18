@@ -5,6 +5,45 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current implementation: guarded full-cohort extraction (Step 45)
+
+The study now uses **TWO PARALLEL CO-PRIMARY age definitions**:
+
+- **Uniform**: ages 18–50 for all sexes
+- **Original sex-specific**: males 18–52, females 18–54
+
+Neither definition is a secondary sensitivity. Due to year-of-birth-only
+data, boundary-uncertain ages are excluded from the conservative
+primary extracts and reported separately in local diagnostics.
+Each patient can appear in both overlapping primary cohorts.
+
+The [guarded Step 45 pipeline](docs/STEP45_GUARDED_FULL_RECONSTRUCTION.md)
+has been implemented in `scripts/step45_full_cohort_reconstruction.py`,
+with synthetic-only tests. It is a disk-backed, staged **diagnosis → encounter
+→ patient → index → procedure → report** reconstruction. It is
+imaging-independent at cohort definition, uses a reviewed codebook for
+imaging flags, and retains all patient-level stages **only in the clone's
+Git-ignored `results/phase1/full_reconstruction_private/`**.
+
+**NO FULL SOURCE SCAN HAS BEEN EXECUTED.** Without `--stage` and
+separate full-scan confirmation plus locally recorded authorizations,
+the script only inspects ZIP metadata. To check the safe plan:
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+python scripts/step45_full_cohort_reconstruction.py \
+  --zip "$HOME/datasets/TriNetX/stroke_research_network_dataset_68b1a0575a2bf16052a523ef.zip"
+```
+
+Clinical inpatient/principal-diagnosis semantics, YOB boundary policy,
+source ID meaning, imaging codebook and data-use/storage permissions
+must be signed off before issuing full-scan flags. The code does not
+grant these approvals automatically. This is a guarded technical
+reconstruction, **not** a ready clinical disparity model. Draft PR #1
+remains unmerged because public Git history carries unresolved
+TriNetX data-governance concerns.
+
 ## Current decision: finish protocol and prepare full-cohort extraction
 
 [Step 44](docs/STEP44_ANATOMY_AMBIGUITY_REVIEW.md) established that
