@@ -5,6 +5,37 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current action: one bundled clinical imaging review (Steps 46–47)
+
+To reduce back-and-forth, use the
+[chained Step46–47 reviewer workflow](docs/STEP46_47_CHAINED_IMAGING_CLINICAL_REVIEW.md).
+It joins the already generated **Step42 reference candidates** to a
+private first-review packet for the study neurologist/neuroradiologist
+and a complete companion reference inventory.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q && python scripts/step46_47_imaging_review_bundle.py prepare
+```
+
+**PREPARE ONLY:** no patient, encounter, diagnosis or procedure rows read;
+no original source ZIP scan; no code approved; no changes to Step45
+`approvals_LOCAL_ONLY.json` or its empty `imaging_codebook_APPROVED_LOCAL_ONLY.csv`.
+
+Everything generated remains in the cloned repository's Git-ignored
+`results/phase1/full_reconstruction_private/imaging_review/`, including
+the full code inventory, focused clinician worksheet, review guide and
+FALSE signoff template. Keep these reference and review files private.
+The packet is not a codebook approved for real-data analysis.
+
+When a clinician has reviewed the codes AND the complete codebook
+scope and signed off explicitly, the same script has a separate
+`finalize` mode that can translate **only reviewer-included performed
+codes** into the existing Step45 codebook format. It refuses unsigned
+or unsupported entries and never flips institutional approval flags.
+**Do not run finalize until a real clinical sign-off.** PR remains
+draft/unmerged pending institutional data governance review.
+
 ## Current implementation: guarded full-cohort extraction (Step 45)
 
 The study now uses **TWO PARALLEL CO-PRIMARY age definitions**:
