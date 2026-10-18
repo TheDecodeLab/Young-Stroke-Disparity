@@ -1,5 +1,15 @@
 # Step 45: Guarded full-cohort reconstruction (NOT EXECUTED)
 
+> **CURRENT SAFETY STATUS: FULL-SCAN CLI DISABLED.** After the
+> investigator requested (a) broad diagnosis code families including
+> ICD-9 433.x1/434.x1 and H34.1 and (b) emergency-to-inpatient imaging,
+> the original same-IMP/I63-only Step45 code is no longer scientifically
+> compatible with the intended analysis. Refer to
+> [Step48 revised phenotype and ED-to-inpatient protocol](STEP48_STROKE_CODES_ED_TO_INPATIENT_PROTOCOL.md).
+> The metadata-only plan and synthetic tests remain usable.
+> Do not attempt to bypass the CLI stop, change approval flags or use the
+> old source-scan path; it would give biased/incomplete imaging outcomes.
+>
 **Implementation status:** executable, disk-backed staged pipeline and synthetic tests committed to draft PR #1. **No full Research Network clinical scan has been run or authorized by this commit.** Default invocation is *read-only metadata planning*, and the scan is blocked unless institutional and clinical approvals are recorded locally.
 
 ## TWO co-primary definitions (explicit study decision)
