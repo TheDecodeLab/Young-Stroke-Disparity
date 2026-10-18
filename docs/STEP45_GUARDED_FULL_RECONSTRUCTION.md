@@ -1,6 +1,6 @@
 # Step 45: Guarded full-cohort reconstruction (NOT EXECUTED)
 
-> **CURRENT SAFETY STATUS: FULL-SCAN CLI DISABLED.** After the
+> **CURRENT SAFETY STATUS: FULL-SCAN CLI DISABLED.** **The former 2018–2019 year filter was a mistaken restriction for Research Network**. That fixed period belongs to Diamond. Follow [Steps54–55](STEP54_55_LITERATURE_CODEBOOK_REVIEW_AND_RESEARCH_NETWORK_PERIOD.md) for Research Network's independent, coverage-dependent time policy. Do NOT enable the old Step45 code as a Diamond or Research Network full scan. After the
 > investigator requested (a) broad diagnosis code families including
 > ICD-9 433.x1/434.x1 and H34.1 and (b) emergency-to-inpatient imaging,
 > the original same-IMP/I63-only Step45 code is no longer scientifically
