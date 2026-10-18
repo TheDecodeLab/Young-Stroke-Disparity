@@ -422,7 +422,7 @@ def make_index(db):
         db.execute("DELETE FROM index_encounter")
         db.execute("DELETE FROM age_audit")
         query = """SELECT a.patient_id,a.encounter_id,a.start_day,a.end_day,
-                          p.sex,p.race,p.yob FROM admission a
+                          p.sex,p.race,p.yob FROM admission a INDEXED BY admission_patient_start
                    LEFT JOIN person p ON p.patient_id=a.patient_id
                    ORDER BY a.patient_id,a.start_day,a.encounter_id"""
         for pid,eid,start_txt,end_txt,sex,race,yob in db.execute(query):
