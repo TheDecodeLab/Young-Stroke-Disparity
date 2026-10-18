@@ -19,6 +19,7 @@ import tempfile
 import zipfile
 from collections import Counter
 from datetime import date
+from itertools import islice
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,9 +89,7 @@ def _sample_table(source, member_name, required, max_rows):
                 raise ValueError("Core table header unexpectedly large or empty")
             if not set(required).issubset(columns):
                 raise ValueError("Core table missing expected columns in "+member_name)
-            for row in reader:
-                if rows >= max_rows:
-                    break
+            for row in islice(reader, max_rows):
                 if None in row or any(v is None for v in row.values()):
                     raise ValueError("Malformed CSV row in "+member_name)
                 rows+=1
@@ -172,7 +171,7 @@ def inspect(archive_path, preflight_path=PREFLIGHT, max_rows=500):
             observed=next(csv.reader([first.decode("utf-8-sig").rstrip("\r\n")]))
             if observed!=files[name]["headers"]:
                 raise ValueError("Changed table header since Step36")
-            tables[name]=_sample_table(archive,mapping[name],"".join([]) or MEMBERS[name],max_rows)
+            tables[name]=_sample_table(archive,mapping[name],MEMBERS[name],max_rows)
     return {
         "stage":"STEP58_BOUNDED_CLINICAL_PREFIX_TECHNICAL_PILOT_LOCAL_ONLY",
         "source":"user_workstation_under_user_attested_existing_protocol",
@@ -220,6 +219,8 @@ def main():
     args=parser.parse_args()
     if args.acknowledge!=ACCEPT:
         parser.error("Explicit local data-use attestation does not match")
+    if _private_output(OUT).exists():
+        parser.error("Private pilot output already exists; refusing to rescan")
     result=inspect(args.zip,max_rows=args.max_rows_per_table)
     saved=save_private(result)
     print("Step58 private, bounded-prefix technical pilot completed.")
