@@ -1,4 +1,13 @@
 # One-Pass Data Steward / Institutional Review Request (Working Template)
+
+> **Optional clarification document (2026-10-18):** The investigator
+> confirms existing Penn State protocol/DUA access covering this study.
+> This template is **not** a mandatory application or next step. Use it
+> only for data-dictionary ambiguity, procedural meanings, allowable
+> disclosure or any remaining agreement-scope questions. The immediate
+> local technical next step is
+> [Step58](STEP58_AUTHORIZED_LOCAL_TECHNICAL_PILOT.md).
+
 **Study:** Disparities in documented neuroimaging among adults hospitalized with young-onset ischemic stroke, using the TriNetX Research Network export.
 
 **Purpose of this handoff:** Request the data owner and appropriate institutional reviewers to make **specific, documented decisions** needed before the team runs the revised full-cohort reconstruction. This public template contains no patient records, institution-specific authorization IDs, data paths or source-derived code descriptions. Complete the actual request in an institution-approved private communication channel.
