@@ -645,6 +645,15 @@ def main():
         return
     if not args.execute_full_scan or args.confirm != CONFIRM:
         parser.error("Full scan blocked: --execute-full-scan and exact --confirm phrase both required")
+    # User-confirmed phenotype expansion: old Step45 is inpatient/I63-only.
+    # Blocking CLI source execution until the ED-to-inpatient linkage and
+    # revised ICD-9/I63/retinal rules have been fully implemented and
+    # externally validated. Synthetic tests can still run directly.
+    parser.error(
+        "Real clinical scan disabled for superseded Step45 phenotype: "
+        "ED-to-inpatient episode linkage and expanded diagnosis policies "
+        "are NOT implemented yet. Do not execute the old full scan."
+    )
     if not args.zip.is_file(): parser.error("Source ZIP unavailable")
     if args.zip.resolve() == DB.resolve(): parser.error("Input and SQLite DB must differ")
     run_stage(args.zip,args.stage,args.approvals,args.codebook,args.step36)
