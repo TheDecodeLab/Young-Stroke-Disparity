@@ -3,9 +3,30 @@
 
 ## 1. Current evidence and execution status
 
-- Local workstation: **511 passed, 3 existing nonblocking warnings**, Step57 **13** CPT-labelled reference entries classified: **8 excluded from six diagnostic imaging outcomes, 5 held** as nonstandard-length labels. All **14/14** published core CPT code meanings were found in the pre-existing **3,270-entry reference vocabulary**.
+**Updated execution checkpoint, 2026-10-18:** Step58, Step59 (all
+three separate whole-source aggregate QA stages) and Step60 (private
+reconciliation of existing aggregate reports) each **completed locally**
+under the investigator's existing Penn State research authorization.
+The workstation reported **599 passed, 3 existing warnings** before the
+next Step61 addition. These tasks quantify/reconcile source *rows*,
+not unique stroke patients or performed neuroimaging. Private research
+aggregates have not been inspected or shared in ChatGPT. **No revised
+Research Network patient-cohort reconstruction has been executed.**
+
+The current next workflow is [Step61 local conservative disclosure candidate](STEP61_LOCAL_DISCLOSURE_CANDIDATE.md)
+([source](../scripts/step61_disclosure_candidate.py),
+[synthetic tests](../tests/test_step61_disclosure_candidate.py)).
+It reads **only the existing local Step60 report**, emits broad qualitative
+year/coding summaries with small-cell suppression, and does not grant release
+permission. The investigator indicated appropriately reviewed aggregate
+sharing may be allowed; the *specific candidate* still needs human disclosure
+review before upload. Study years, site participation, code-event semantics
+and full-cohort imaging ascertainment remain scientifically unvalidated.
+
+
+- Historical Step57 checkpoint: **511 passed, 3 existing nonblocking warnings**, Step57 **13** CPT-labelled reference entries classified: **8 excluded from six diagnostic imaging outcomes, 5 held** as nonstandard-length labels. All **14/14** published core CPT code meanings were found in the pre-existing **3,270-entry reference vocabulary**.
 - System mix among reference terminology entries: CPT 30, HCPCS 20, ICD-10-PCS 80, ICD-9-CM 3, SNOMED 3,137. **These are NOT frequencies of actual procedures** in the Research Network.
-- **No Research Network patient/encounter/diagnosis/procedure source-wide scan has been run under the rebuilt phenotype**. Step45 old real-data CLI **remains disabled**. Step49–53 logic has only been validated with synthetic records. The final Research Network study years, encounter semantics, procedure-use coverage, source-specific mapping and clinical event meaning are unknown.
+- **Source-wide aggregate QA scans of Research Network encounter/diagnosis/procedure tables DID run locally in Step59**, with private reports reconciled in Step60. **No revised Research Network phenotype/cohort reconstruction or imaging outcome assignment has run**. Step45 old real-data CLI **remains disabled**. Step49–53 linkage/outcome logic has only been validated with synthetic records. The final Research Network study years, encounter semantics, procedure-use coverage, source-specific mapping and clinical event meaning are unknown.
 - Step47 `finalize` is **not** valid for Research Network's full period because its signoff worksheet hardcodes Diamond-style `valid_for_2018_2019`. Never silently mark codebook/institutional approval fields true.
 - PR #1 stays **draft and unmerged** pending governance review of possible restricted clinical data in preexisting repository history. No source-derived private terminology rows or clinical data should be uploaded to GitHub.
 
