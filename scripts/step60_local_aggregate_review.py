@@ -77,7 +77,7 @@ def _two_key_map(obj, allowed, current_year):
     return result
 
 
-def validate_report(report, stage, current_year=None):
+def validate_report(report, stage, current_year=None, datefix_v2=False):
     """Validate internal consistency of an already-completed Step59 report."""
     if current_year is None:
         current_year = date.today().year
@@ -85,6 +85,9 @@ def validate_report(report, stage, current_year=None):
         raise ValueError("Report is not a Step59 aggregate QA artifact")
     if report.get("table") != stage + ".csv":
         raise ValueError("Step59 report table does not match required stage")
+    expected_parser = "YYYYMMDD_OR_ISO8601_VALIDATED_V2" if datefix_v2 else None
+    if report.get("date_parser_version") != expected_parser:
+        raise ValueError("Step59 date-parser version mismatch; mixing legacy and v2 reports prohibited")
     if (report.get("source_clinical_table_scanned_completely") is not True
             or report.get("full_cohort_reconstruction_performed") is not False
             or report.get("sharing_requires_disclosure_review") is not True):
@@ -153,14 +156,19 @@ def validate_report(report, stage, current_year=None):
     }
 
 
-def build_review(reports, current_year=None):
+def build_review(reports, current_year=None, datefix_v2=False):
     """Private review only, no automated year approval or phenotype execution."""
     if current_year is None:
         current_year = date.today().year
     if not isinstance(reports, dict) or set(reports) != set(STAGES):
         raise ValueError("Exactly three completed Step59 reports are required")
-    checked = {stage: validate_report(reports[stage], stage, current_year)
+    checked = {stage: validate_report(reports[stage], stage, current_year,
+                                      datefix_v2=datefix_v2)
                for stage in STAGES}
+    if datefix_v2 and any(not any(k not in YEARS_SPECIAL and v > 0
+                                   for k, v in checked[stage]["year_counts"].items())
+                          for stage in STAGES):
+        raise ValueError("Corrected dates still unparseable in one or more source tables")
     years = sorted({year for data in checked.values() for year in data["year_counts"]
                     if year not in YEARS_SPECIAL}, key=int)
     by_year = {}
@@ -213,6 +221,8 @@ def build_review(reports, current_year=None):
     }
     return {
         "stage": "STEP60_LOCAL_PRIVATE_STEP59_REVIEW",
+        "date_parser_version": ("YYYYMMDD_OR_ISO8601_VALIDATED_V2"
+                                if datefix_v2 else None),
         "source": "THREE_EXISTING_STEP59_PRIVATE_REPORTS_ONLY",
         "all_three_step59_artifacts_validated": True,
         "no_source_clinical_rows_read": True,
@@ -240,12 +250,13 @@ def build_review(reports, current_year=None):
     }
 
 
-def read_reports(private_dir=PRIVATE):
+def read_reports(private_dir=PRIVATE, datefix_v2=False):
     """Read only exact local private Stage59 filenames; no source ZIP access."""
     directory = Path(private_dir)
     docs = {}
     for stage in STAGES:
-        file = directory / ("step59_" + stage + "_LOCAL_ONLY.json")
+        suffix = "_DATEFIX_V2_LOCAL_ONLY.json" if datefix_v2 else "_LOCAL_ONLY.json"
+        file = directory / ("step59_" + stage + suffix)
         if file.is_symlink() or not file.is_file():
             raise ValueError("Required private Step59 report missing or unsafe")
         if file.stat().st_size > 2_000_000:
@@ -281,13 +292,18 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--acknowledge", required=True,
                         help="Confirm private local review permitted under existing study protocol")
+    parser.add_argument("--datefix-v2", action="store_true",
+                        help="Reconcile corrected v2 date outputs, never legacy reports")
     options = parser.parse_args(argv)
     if options.acknowledge != ACK:
         parser.error("Explicit local privacy acknowledgment is required")
-    if OUTPUT.exists():
+    output = (PRIVATE / "step60_local_aggregate_review_DATEFIX_V2_LOCAL_ONLY.json"
+              if options.datefix_v2 else OUTPUT)
+    if output.exists():
         parser.error("Step60 private review already exists; refusing overwrite")
-    review = build_review(read_reports())
-    saved = write_review(review)
+    review = build_review(read_reports(datefix_v2=options.datefix_v2),
+                          datefix_v2=options.datefix_v2)
+    saved = write_review(review, output=output)
     print("Step60 private review completed; 3 prior Step59 aggregate reports reconciled.")
     print("Private result:", saved)
     print("Do not upload, paste or publish this private report.")
