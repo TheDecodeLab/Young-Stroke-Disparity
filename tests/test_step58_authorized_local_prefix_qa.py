@@ -171,3 +171,25 @@ def test_no_change_to_step45_clinical_scan_guard():
     old=(s.ROOT/"scripts"/"step45_full_cohort_reconstruction.py").read_text()
     assert "Real clinical scan disabled for superseded Step45 phenotype" in old
     assert s.ACCEPT=="I_CONFIRM_APPROVED_LOCAL_BOUNDED_CLINICAL_QA"
+
+
+
+def test_active_docs_acknowledge_existing_study_access_without_claiming_scan_approval():
+    readme=(s.ROOT/"README.md").read_text(encoding="utf-8")
+    plan=(s.ROOT/"docs"/"ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md").read_text(encoding="utf-8")
+    gate=(s.ROOT/"docs"/"RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md").read_text(encoding="utf-8")
+    assert "approved Penn State research protocol" in readme
+    assert "Step58 local bounded technical pilot" in readme
+    assert "INVESTIGATOR-CONFIRMED EXISTING ACCESS" in gate
+    assert "STEP58_AUTHORIZED_LOCAL_TECHNICAL_PILOT.md" in plan
+    assert "clinical_scan_authorized_by_this_tool" in (s.ROOT/"scripts"/"step58_authorized_local_prefix_qa.py").read_text()
+
+
+def test_no_raw_clinical_values_reported_when_unknown_encounter_types_and_codes(fake_local_source):
+    z,p,_=fake_local_source
+    report=s.inspect(z,p,max_rows=3)
+    assert not report["sharing_allowed_without_disclosure_review"]
+    for table in report["tables"].values():
+        assert table["source_identifiers_emitted"] is False
+        assert table["raw_clinical_rows_emitted"] is False
+    assert report["old_step45_scan_unblocked"] is False
