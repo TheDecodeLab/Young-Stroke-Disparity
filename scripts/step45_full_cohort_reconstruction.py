@@ -21,6 +21,7 @@ import sqlite3
 import stat
 import tempfile
 import zipfile
+import zlib
 from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
@@ -265,6 +266,37 @@ def ensure_previous(db, stage):
         raise RuntimeError("Previous stage incomplete: " + STAGES[index-1])
 
 
+class FixedBloom:
+    """Fixed 64 MiB membership prefilter; false positives possible, not negatives.
+
+    SQLite remains the final authority for patient+encounter matching.
+    """
+    def __init__(self):
+        self.bits = bytearray(64 * 1024 * 1024)
+        self.size = len(self.bits) * 8
+
+    def _positions(self, value):
+        b = value.encode("utf-8")
+        h1 = zlib.crc32(b) % self.size
+        h2 = zlib.adler32(b) % self.size
+        return h1, (h1 + h2 + 1) % self.size
+
+    def add(self, value):
+        for pos in self._positions(value):
+            self.bits[pos >> 3] |= 1 << (pos & 7)
+
+    def contains(self, value):
+        return all(self.bits[pos >> 3] & (1 << (pos & 7))
+                   for pos in self._positions(value))
+
+
+def candidate_encounter_bloom(db):
+    pref = FixedBloom()
+    for (eid,) in db.execute("SELECT DISTINCT encounter_id FROM candidate"):
+        pref.add(eid)
+    return pref
+
+
 def staged_scan(z, members, db, stage, codebook):
     """Stage uses a fresh table and marks success ONLY after source EOF.
 
@@ -277,6 +309,7 @@ def staged_scan(z, members, db, stage, codebook):
     source_name = TABLE_MAP[stage]
     scanned = 0
     inserted = 0
+    lookup_prefilter = candidate_encounter_bloom(db) if stage == "encounter" else None
     with db:
         for row in rows_of(z, members[source_name], FIELDS[source_name]):
             scanned += 1
@@ -297,7 +330,10 @@ def staged_scan(z, members, db, stage, codebook):
                                (pid, eid, day.isoformat()))
                     inserted += 1
             elif stage == "encounter":
-                if not pid or not eid or not db.execute(
+                if (not pid or not eid or
+                        not lookup_prefilter.contains(eid)):
+                    continue
+                if not db.execute(
                     "SELECT 1 FROM candidate WHERE patient_id=? AND encounter_id=? LIMIT 1",
                     (pid,eid)).fetchone():
                     continue
