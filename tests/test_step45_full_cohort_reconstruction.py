@@ -118,6 +118,9 @@ def build_source(private):
     step36.write_text(json.dumps({
         "stage":"STEP36_RESEARCH_METADATA_PREFLIGHT",
         "schema_supports_attempted_encounter_linkage":True,"files":files,
+        "relevant_manifest_counts": {
+            name: {"row_count":len(rows)} for name,rows in data.items()
+        },
     }))
     approvals=m.approval_template()
     approvals.update({k:True for k in m.APPROVAL_KEYS})
