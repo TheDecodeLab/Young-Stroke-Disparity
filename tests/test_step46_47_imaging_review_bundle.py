@@ -295,3 +295,35 @@ def test_complete_inventory_may_be_reviewed_without_auto_including_any_code(sand
     sign(review)
     result=m.finalize(source,summary,review, review=full, target=target)
     assert result["included_code_entries"]==1
+
+
+
+def test_source_csv_edit_after_preparation_requires_new_review(sandbox):
+    _,source,summary,review,target=sandbox
+    build_source(source,summary)
+    m.prepare(source,summary,review)
+    rows=read_priority(review/m.PRIORITY)
+    mark_valid_review(next(r for r in rows if r["code"]=="70551"))
+    write_review(review/m.PRIORITY,rows)
+    sign(review)
+    # Preserve row/category counts but alter a distinct source code description.
+    lines=source.read_text()
+    assert "CT head" in lines
+    source.write_text(lines.replace("CT head","CT of the head"))
+    with pytest.raises(PermissionError,match="source changed"):
+        m.finalize(source,summary,review,target=target)
+    assert not target.exists()
+
+
+def test_review_row_date_cannot_postdate_signoff(sandbox):
+    _,source,summary,review,target=sandbox
+    build_source(source,summary)
+    m.prepare(source,summary,review)
+    rows=read_priority(review/m.PRIORITY)
+    item=next(r for r in rows if r["code"]=="70551")
+    mark_valid_review(item)
+    item["review_date"]="2026-10-18"
+    write_review(review/m.PRIORITY,rows)
+    sign(review)
+    with pytest.raises(PermissionError,match="after signed clinical review"):
+        m.finalize(source,summary,review,target=target)
