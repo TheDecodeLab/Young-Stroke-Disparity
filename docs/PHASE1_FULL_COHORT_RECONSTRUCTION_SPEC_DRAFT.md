@@ -106,7 +106,7 @@ The historical 14 CPT code anchors can serve as a **clearly labeled
 high-specificity exploratory sensitivity definition**, subject to
 rechecking each code. They are **not** an approved primary full-source
 codebook. Broad SNOMED/HCPCS/ICD terminology matches are candidates for
-clinical review only; the 1,259 mixed-anatomy entries must not be
+clinical review only; the mixed-anatomy entries must not be
 forced into a single category.
 
 Record code-system/code pairs, description, modality, anatomy,
