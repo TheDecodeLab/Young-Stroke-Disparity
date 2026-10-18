@@ -2,7 +2,7 @@
 
 **Investigator decision validated on the workstation at commit `557a8ab`: 415 passing tests, three unchanged warnings.** Same-inpatient-encounter imaging is the **primary outcome (A)**. ED-inclusive imaging is an **unverified date-only sensitivity (B)**. ED max-gap 0, 1, and 2 calendar days are secondary window sensitivities. Both previously approved co-primary age populations remain independent overlapping analyses.
 
-**Status of Step53:** pure Python reference logic and synthetic tests; NOT a production Research Network extractor, not a clinical codebook validation, not a database schema migration, and not permission to read any real clinical records. The superseded Step45 real-scan CLI remains explicitly **DISABLED**.
+**Status of Step53:** pure Python reference logic and synthetic tests; NOT a production Research Network extractor, not a clinical codebook validation, not a database schema migration, and not permission to read any real clinical records. **Study period correction:** Diamond alone uses 2018–2019; Research Network has a proposed start of 2016 and an end that must be determined after source completeness QA, as described in [Steps54–55](STEP54_55_LITERATURE_CODEBOOK_REVIEW_AND_RESEARCH_NETWORK_PERIOD.md). The superseded Step45 real-scan CLI remains explicitly **DISABLED**.
 
 ## Scientific definitions and units
 
