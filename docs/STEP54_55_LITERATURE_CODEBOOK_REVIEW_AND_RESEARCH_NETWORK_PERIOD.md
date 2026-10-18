@@ -1,5 +1,8 @@
 # Step 54–55: Literature-based imaging code review, Research Network time policy
 
+> **Current authority:** For Research Network analysis, follow the [active 2026 study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md) and [canonical code-to-reference register](references/IMAGING_CODE_CITATION_REGISTER.md). Earlier stage text below is historical/provisional and must not override the agreed A-primary/B-sensitivity policy, Diamond-only 2018–2019 distinction, source-code meaning limitations, and hard-blocked full scan.
+
+
 **Investigator direction, 2026-10-18:** perform this scientific coding review directly using published sources. **2018–2019 belongs to Diamond only**. Do not reuse that interval for the Research Network. Clinical literature review of a code's *meaning* is distinct from a Research Network procedure row representing a completed study. The latter has not been validated, so label all resulting estimates **recorded imaging-code utilization**, not verified completed imaging.
 
 ## Decisions from authoritative external coding sources
@@ -21,7 +24,7 @@ A [public, nonpatient, 14-row machine-readable CPT meaning codebook](STEP54_PUBL
 1. CMS, *Diagnostic Imaging Code List*, effective 2011: https://www.cms.gov/regulations-and-guidance/guidance/transmittals/downloads/r738otn.pdf — explicit mappings for all 14 CPT codes. A historical code list is strong evidence of code meaning, not of universal source completeness or performed care.
 2. CMS, *Medicare NCCI 2026 Policy Manual Chapter 9*: https://www.cms.gov/files/document/09-chapter9-ncci-medicare-policy-manual-2026-final.pdf — MRI brain 70551–70553 and related modality distinctions.
 3. CMS, *Appropriate Use Criteria Advanced Diagnostic Imaging Code List*: https://www.cms.gov/files/document/r2404otn.pdf — includes brain MRI, MRA head/neck, head CT/CTA and procedure families.
-4. Stroke imaging research context: Boltyenkov et al., *Sex-based disparity in acute stroke imaging utilization and the impact on treatment and outcomes: 2012–2021*, https://pmc.ncbi.nlm.nih.gov/articles/PMC10840948/ ; and *Age, Sex, and Racial Differences in Neuroimaging Use in Acute Stroke*, https://pmc.ncbi.nlm.nih.gov/articles/PMC7963631/ . These support modality choices and disparity research framing, not individual source code execution semantics.
+4. Stroke imaging research context: Wang et al., *Gender-Based Disparity in Acute Stroke Imaging Utilization and the Impact on Treatment and Outcomes: 2012 to 2021*, https://pubmed.ncbi.nlm.nih.gov/37586470/ ; and *Age, Sex, and Racial Differences in Neuroimaging Use in Acute Stroke*, https://pmc.ncbi.nlm.nih.gov/articles/PMC7963631/ . These support modality choices and disparity research framing, not individual source code execution semantics.
 
 **New 2026 coding:** CPT 70471 represents **combined CTA head and neck** from 2026-01-01. It cannot be forced into *only* CTA_HEAD or CTA_NECK; if verified as present in the study period, it should populate both categories using a future date-aware implementation. It is **not** part of the historical 14-code core. CPT 0042T (CT cerebral perfusion, used through 2025) was replaced effective 2026-01-01 by 70472 and 70473 for CT cerebral perfusion. **Perfusion is separate**, not a surrogate for CTA/MRA or regular CT head. Consider CTP as an optional separately reported secondary outcome only with correct year/version mapping, not an original imaging outcome.
 - CMS 2026 update: https://www.cms.gov/files/document/annual-update-list-cpt-hcpcs-codes-effective-january-1-2026.pdf
