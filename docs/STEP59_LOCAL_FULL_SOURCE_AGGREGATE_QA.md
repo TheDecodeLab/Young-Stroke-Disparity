@@ -1,5 +1,13 @@
 # Step 59: Local whole-table AGGREGATE QA (not cohort reconstruction)
 
+> **Investigator status update, 2026-10-18:** The encounter, diagnosis and
+> procedure stages all completed on the approved Penn State workstation.
+> The three resulting files remain private. **Do not repeat scans** for
+> Step60; use the [existing-report-only private review](STEP60_PRIVATE_SOURCE_QA_REVIEW.md).
+> Completion does not validate calendar-year coverage, source codebook
+> sensitivity, linkage or performed imaging.
+
+
 **Current decision:** Step58 finished successfully on the investigator's approved Penn State workstation (reported 2026-10-18). No Step58 private clinical-derived report was shared or read in GitHub. The local repository previously passed **569 tests, 3 existing warnings** at commit `a9c5de4`.
 
 The [Step59 script](../scripts/step59_full_source_aggregate_qa.py) is a **new, separately guarded, stage-by-stage streaming aggregate quality check**, NOT the superseded Step45 clinical reconstruction. It does not select patients, link encounters, compute sex/race imaging disparities, or establish that billed/recorded codes equal completed exams. It does not grant new approval. It may run only when the existing institutional protocol/DUA **actually permits the proposed local full-table aggregate QA**.
