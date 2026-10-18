@@ -170,12 +170,15 @@ def test_missing_or_unsafe_file_fails_without_scanning_source(three, tmp_path):
 
 
 def test_no_patient_records_in_review(three):
-    stext = json.dumps(s.build_review(three, current_year=2026))
-    assert "patient_id" not in stext
-    assert "encounter_id" not in stext
-    assert "SYNTH_PATIENT_ROW" not in stext
-    assert "No authorizations" not in stext
-    assert "cohort_reconstruction" not in stext
+    # An unexpectedly added raw field is ignored, not reproduced.
+    three["encounter"]["result"]["unexpected_raw_patient_id"] = "SYNTH_PATIENT_001"
+    three["procedure"]["result"]["unexpected_raw_encounter_id"] = "SYNTH_ENCOUNTER_002"
+    review = s.build_review(three, current_year=2026)
+    stext = json.dumps(review)
+    assert "SYNTH_PATIENT_001" not in stext
+    assert "SYNTH_ENCOUNTER_002" not in stext
+    assert review["no_patient_or_encounter_identifiers_returned"] is True
+    assert review["final_study_end_year"] is None
 
 
 def test_main_ack_is_required(monkeypatch):
