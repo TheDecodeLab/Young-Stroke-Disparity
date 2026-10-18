@@ -26,6 +26,7 @@ UNRESOLVED = frozenset({
     "hold_missing_or_invalid_dates",
     "hold_bad_emergency_interval",
     "hold_bad_inpatient_interval",
+    "hold_different_site_or_transfer",
 })
 EPISODE_CANDIDATE = "unique_temporal_candidate_REQUIRES_SITE_AND_CLINICAL_VALIDATION"
 
@@ -118,6 +119,15 @@ def resolve_episode_candidates(
             raise TypeError("Each encounter must be a dictionary")
     duplicates = Counter(_key(row) for row in eds + ips if all(_key(row)))
     duplicates = {key for key,n in duplicates.items() if n > 1}
+    id_patients = defaultdict(set)
+    for row in eds + ips:
+        patient, encounter = _key(row)
+        if patient and encounter:
+            id_patients[encounter].add(patient)
+    colliding_encounter_ids = {
+        encounter for encounter, patients in id_patients.items()
+        if len(patients) > 1
+    }
     by_patient_ed = defaultdict(list)
     by_patient_ip = defaultdict(list)
     for row in eds:
@@ -152,6 +162,10 @@ def resolve_episode_candidates(
         choices = links[key]
         if key in duplicates:
             status = "hold_duplicate_patient_encounter_key"
+            choice = None
+        elif key[1] in colliding_encounter_ids or any(
+                ed_key[1] in colliding_encounter_ids for ed_key in choices):
+            status = "hold_encounter_id_reused_across_patients"
             choice = None
         elif any(ed_key in duplicates for ed_key in choices):
             status = "hold_duplicate_patient_encounter_key"
