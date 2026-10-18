@@ -5,6 +5,53 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## CURRENT ACTION: Literature-reviewed imaging code definitions (Steps 54–55)
+
+**Investigator correction:** **2018–2019 applies to Diamond, not the
+Research Network.** We propose Research Network `IMP` index admissions
+from **2016-01-01 through the last sufficiently complete observed
+calendar year**, to be finalized after authorized source-coverage QA.
+No end year is assumed from the ZIP creation date.
+
+The previous 49-code priority sheet and the full 3,270-entry
+terminology inventory are **reference candidates**, not validated
+completed clinical imaging. I reviewed authoritative CMS coding sources
+and committed a [14-code exact-CPT evidence registry](scripts/step54_literature_imaging_registry.py)
+and [literature/period protocol](docs/STEP54_55_LITERATURE_CODEBOOK_REVIEW_AND_RESEARCH_NETWORK_PERIOD.md).
+A [private reference-inventory matcher](scripts/step55_private_literature_codebook_review.py)
+classifies ALL locally prepared Step46 candidate rows against the evidence,
+without reading any patient/encounter/diagnosis/procedure rows and without
+requiring manual classification of thousands of lexical candidates.
+
+Exact CPT codes: CT head `70450/70460/70470` (comparator);
+CTA head `70496`; CTA neck `70498`;
+MRA head `70544/70545/70546`; MRA neck `70547/70548/70549`;
+MRI brain `70551/70552/70553`. Other code systems remain
+**deferred** until an exact source-backed mapping is available, not
+automatically considered absent imaging. CPT `70471` for combined
+head+neck CTA is 2026-only, and CT perfusion has separate 2026 coding
+changes; neither is silently counted into the historical CPT14 core.
+
+```bash
+git pull --ff-only origin analysis-rebuild-phase1-audit
+python -m pytest -q && python scripts/step55_private_literature_codebook_review.py prepare
+```
+
+This command uses the existing **private** Step46 reference inventory,
+not the original Research Network ZIP. It writes **new** owner-only
+literature recommendations under
+`results/phase1/full_reconstruction_private/imaging_review/literature_adjudication/`.
+It does **not** modify existing codebook/signoff/approval files, claim
+Research Network performed-care validation or enable the superseded
+Step45 full clinical scan. The old Step47 `valid_for_2018_2019`
+signoff is not a valid Research Network all-years workflow. For the
+manuscript describe *recorded imaging codes*, not proven receipt.
+
+The user-confirmed outcome A same-IMP **primary** and date-linked
+ED-inclusive B **sensitivity** remain unchanged; both co-primary
+age cohorts remain independent. Draft PR #1 remains unmerged pending
+the historical research-data Git governance issue.
+
 ## Current implementation: Step53 synthetic outcome routing
 
 The investigator's Step52 update has now been **validated locally** at
