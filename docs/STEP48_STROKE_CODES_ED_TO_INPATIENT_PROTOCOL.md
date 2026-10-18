@@ -1,5 +1,8 @@
 # Step 48: Study phenotype expansion and emergency-to-inpatient linkage (design + synthetic code only)
 
+> **Current authority:** For Research Network analysis, follow the [active 2026 study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md) and [canonical code-to-reference register](references/IMAGING_CODE_CITATION_REGISTER.md). Earlier stage text below is historical/provisional and must not override the agreed A-primary/B-sensitivity policy, Diamond-only 2018–2019 distinction, source-code meaning limitations, and hard-blocked full scan.
+
+
 > **Step49 update (2026-10-17):** The ED/IP temporal policy has been
 > implemented as [date-end-first candidate rules with 0, 0–1 and 0–2
 > calendar-day windows](STEP49_ED_IP_END_DATE_LINKAGE.md). Use ED
