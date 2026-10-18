@@ -70,7 +70,9 @@ def _year(value):
 
 def _sample_table(source, zip_member, table_name, required, max_rows):
     """Returns aggregate-only counters; never preserves clinical input rows."""
-    if table_name not in MEMBERS:\n        raise ValueError("Unknown expected core table")\n    missing=Counter()
+    if table_name not in MEMBERS:
+        raise ValueError("Unknown expected core table")
+    missing=Counter()
     bad_date=Counter()
     seen_years=set()
     systems=Counter()
