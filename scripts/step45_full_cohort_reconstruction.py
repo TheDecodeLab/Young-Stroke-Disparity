@@ -56,6 +56,7 @@ APPROVAL_KEYS = (
 CONFIRM = "I_ACKNOWLEDGE_FULL_TRINETX_CLINICAL_SCAN"
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS stages(stage TEXT PRIMARY KEY, records_read INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS run_meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS candidate(
   patient_id TEXT NOT NULL, encounter_id TEXT NOT NULL, dxday TEXT NOT NULL,
   PRIMARY KEY(patient_id, encounter_id, dxday));
@@ -279,6 +280,10 @@ def staged_scan(z, members, db, stage, codebook):
     with db:
         for row in rows_of(z, members[source_name], FIELDS[source_name]):
             scanned += 1
+            if scanned % 10000 == 0:
+                # Only completed full-file passes receive a stage marker.
+                # A failed pass is cleared and restarted at the next attempt.
+                db.commit()
             pid = (row.get("patient_id") or "").strip()
             eid = (row.get("encounter_id") or "").strip()
             if stage == "diagnosis":
@@ -350,8 +355,8 @@ def staged_scan(z, members, db, stage, codebook):
                 for cohort, start_txt, end_txt in candidate_indexes:
                     start = date.fromisoformat(start_txt)
                     finish = date.fromisoformat(end_txt) if end_txt else start
-                    if start <= day <= finish:
-                        db.execute("INSERT OR IGNORE INTO observed VALUES (?,?,?,?)",
+                    if end_txt and start <= day <= finish:
+                        db.execute("INSERT OR IGNORE INTO observed VALUES (?,?,?,?)"
                                    (cohort,pid,category,"within_stay"))
                         inserted += 1
                     if abs((day-start).days) <= 7:
@@ -389,6 +394,7 @@ def make_index(db):
 
 def suppress(n, successes=None):
     """Safeguard numerator and complementary failure counts (not cross-margin proof)."""
+    if n == 0: return 0
     if n < 11: return "suppressed"
     if successes is None: return n
     return "suppressed" if (0 < successes < 11 or 0 < n-successes < 11) else successes
@@ -478,6 +484,23 @@ def run_stage(source, stage, approvals, codebook, preflight, min_free_bytes=16*(
         members = members_and_preflight(z, prior)
         db = db_open(DB)
         try:
+            source_signature = [
+                [name, z.getinfo(members[name]).file_size, z.getinfo(members[name]).CRC]
+                for name in sorted(members)
+            ]
+            fingerprint = hashlib.sha256(json.dumps({
+                "source_signature": source_signature,
+                "preflight_sha256": hashlib.sha256(preflight.read_bytes()).hexdigest(),
+                "approvals_sha256": hashlib.sha256(private_path(approvals).read_bytes()).hexdigest(),
+                "codebook_sha256": hashlib.sha256(private_path(codebook).read_bytes()).hexdigest(),
+                "age_definitions": DEFINITIONS,
+            }, sort_keys=True).encode()).hexdigest()
+            prior = db.execute("SELECT value FROM run_meta WHERE key='frozen_inputs'").fetchone()
+            if prior and prior[0] != fingerprint:
+                raise RuntimeError("Frozen source, approvals, preflight, codebook or age policy changed: start a separately reviewed private run")
+            if not prior:
+                with db:
+                    db.execute("INSERT INTO run_meta VALUES ('frozen_inputs',?)", (fingerprint,))
             if completed(db,stage):
                 print("Stage already complete; refusing to rerun/duplicate:",stage)
                 return
