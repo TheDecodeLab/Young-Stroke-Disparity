@@ -201,3 +201,43 @@ def test_empty_but_valid_report_does_not_invent_year(three):
     review = s.build_review(three, current_year=2026)
     assert review["calendar_years_present_NOT_APPROVED"] == []
     assert review["final_study_end_year"] is None
+
+
+def test_datefix_v2_requires_all_three_matching_parser_versions(three):
+    for stage in three:
+        three[stage]["date_parser_version"] = "YYYYMMDD_OR_ISO8601_VALIDATED_V2"
+    review = s.build_review(three, current_year=2026, datefix_v2=True)
+    assert review["date_parser_version"] == "YYYYMMDD_OR_ISO8601_VALIDATED_V2"
+    assert review["final_study_end_year"] is None
+    three["diagnosis"].pop("date_parser_version")
+    with pytest.raises(ValueError, match="date-parser version mismatch"):
+        s.build_review(three, current_year=2026, datefix_v2=True)
+
+
+def test_legacy_cannot_accept_datefix_v2_report(three):
+    three["procedure"]["date_parser_version"] = "YYYYMMDD_OR_ISO8601_VALIDATED_V2"
+    with pytest.raises(ValueError, match="date-parser version mismatch"):
+        s.build_review(three, current_year=2026)
+
+
+def test_datefix_v2_cannot_claim_success_when_entire_table_dates_invalid(three):
+    for stage in three:
+        three[stage]["date_parser_version"] = "YYYYMMDD_OR_ISO8601_VALIDATED_V2"
+    obj = three["encounter"]["result"]
+    n = obj["rows_scanned"]
+    obj["rows_by_year_bucket_NOT_COVERAGE_VERIFIED"] = {"INVALID": n}
+    obj["encounter_type_by_year_bucket_NOT_INPATIENT_ADMISSIONS"] = {"INVALID|IMP": n}
+    with pytest.raises(ValueError, match="Corrected dates still unparseable"):
+        s.build_review(three, current_year=2026, datefix_v2=True)
+
+
+def test_read_only_datefix_v2_specific_report_names(three, tmp_path):
+    for stage in three:
+        three[stage]["date_parser_version"] = "YYYYMMDD_OR_ISO8601_VALIDATED_V2"
+        (tmp_path / ("step59_" + stage + "_DATEFIX_V2_LOCAL_ONLY.json")).write_text(
+            json.dumps(three[stage]))
+    readings = s.read_reports(tmp_path, datefix_v2=True)
+    assert s.build_review(readings, current_year=2026, datefix_v2=True)[
+        "date_parser_version"] == "YYYYMMDD_OR_ISO8601_VALIDATED_V2"
+    with pytest.raises(ValueError, match="Required private Step59"):
+        s.read_reports(tmp_path, datefix_v2=False)
