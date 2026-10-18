@@ -5,7 +5,54 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## CURRENT ACTION: External adjudication of 13 deferred CPT-like codes (Step 57)
+## CURRENT PLAN OF RECORD (2026-10-18)
+
+**The canonical active study decisions are in
+[Active Research Network Study Plan](docs/ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md).**
+**Manuscript-ready coding sources** are in the
+[code-level citation register](docs/references/IMAGING_CODE_CITATION_REGISTER.md),
+[per-code CSV](docs/references/CODE_TO_REFERENCE_CROSSWALK.csv),
+and Zotero-ready [RIS](docs/references/imaging_references.ris),
+[BibTeX](docs/references/imaging_references.bib),
+[CSL-JSON](docs/references/imaging_references.csl.json).
+
+**Last confirmed workstation execution: 511 passed, 3 unchanged nonblocking
+warnings; Step57 classified 13 private CPT-labelled terminology entries:
+8 external-procedure exclusions, 5 source-identity holds.** All 14/14
+reference CPT brain/vascular imaging codes are present in the 3,270-item
+reference vocabulary, but this does NOT reveal their actual patient-event
+usage, source capture or performed-examination status.
+
+- **Research Network:** provisional inpatient-index `IMP.start_date`
+  cohort 2016-01-01 through the last sufficiently complete observed year,
+  ending year **UNKNOWN pending authorization and coverage QA**.
+  **Diamond alone** keeps the separate 2018–2019 interval.
+- **Two overlapping co-primary populations**: ages 18–50 for everyone
+  and historical men 18–52/women 18–54, with YOB boundary uncertainty.
+- **Imaging A PRIMARY** = code recorded under same indexed inpatient
+  patient+encounter within visit dates.
+  **B SENSITIVITY** = A plus uniquely patient-and-date matched preceding ED
+  imaging (0–1 calendar days from ED end to IP start), never a verified
+  shared-hospital episode. Also compare 0 and 0–2 day windows. Index
+  hospitalized stroke eligibility is independent of imaging.
+- **Imaging code core**: 14 evidence-backed CPT meanings for brain MRI,
+  head/neck CTA and MRA, and head CT as comparator. Eight other public
+  CPT codes are not target diagnostic exams; five local seven-digit
+  CPT-labelled identifiers remain held. SNOMED/HCPCS/ICD-10-PCS still
+  need exact mappings AND actual source-frequency/semantics assessment.
+- **No source-wide revised Research Network scan executed.** Old Step45
+  execution is disabled; Step47's year-limited approval sheet is NOT a
+  Research Network approval; no codebook or source access is auto-signed.
+  Draft PR #1 stays unmerged pending historical research-data governance.
+
+**Do not rerun earlier Step46–57 `prepare` commands**: their private
+outputs already exist and intentionally refuse overwrites. The sections
+below are **historical implementation records, not active instructions**.
+Only reference and synthetic tests are permissible without the additional
+institutional authorization described in the active plan.
+
+---
+## Historical completed action: External adjudication of 13 deferred CPT-like codes (Step 57)
 
 The workstation confirmed **489 tests passed, 3 unchanged warnings**.
 Step56 found **13 remaining CPT-labelled reference candidates**.
@@ -41,7 +88,7 @@ distinct. Primary A same-inpatient encounter imaging and B provisional
 ED-inclusive sensitivity are unchanged. The original Step45 real
 clinical scan stays disabled; PR #1 remains unmerged.
 
-## CURRENT ACTION: Evidence-mapping coverage triage (Step 56)
+## Historical completed action: Evidence-mapping coverage triage (Step 56)
 
 The workstation confirmed **481 passed, three nonblocking warnings**.
 Step55 classified **3,270 reference terminology candidates**:
@@ -78,7 +125,7 @@ coverage-dependent and does not inherit Diamond's fixed **2018–2019**
 interval. Primary A same-inpatient imaging and B date-only ED-inclusive
 sensitivity remain unchanged. Draft PR #1 remains unmerged.
 
-## CURRENT ACTION: Literature-reviewed imaging code definitions (Steps 54–55)
+## Historical completed action: Literature-reviewed imaging code definitions (Steps 54–55)
 
 **Investigator correction:** **2018–2019 applies to Diamond, not the
 Research Network.** We propose Research Network `IMP` index admissions
@@ -126,7 +173,7 @@ ED-inclusive B **sensitivity** remain unchanged; both co-primary
 age cohorts remain independent. Draft PR #1 remains unmerged pending
 the historical research-data Git governance issue.
 
-## Current implementation: Step53 synthetic outcome routing
+## Historical implementation: Step53 synthetic outcome routing
 
 The investigator's Step52 update has now been **validated locally** at
 `557a8ab`: **415 passed, three unchanged nonblocking warnings**.
@@ -155,7 +202,7 @@ and data-owner authorization**, followed by a governed implementation
 of the full bounded-memory reconstruction. PR #1 remains draft and
 unmerged pending the historical restricted-data review.
 
-## Investigator-confirmed analysis priority (2026-10-18)
+## Historical decision record: Investigator-confirmed analysis priority (2026-10-18)
 
 The investigator approved the final **relative role** of the imaging definitions:
 
@@ -192,7 +239,7 @@ git pull origin analysis-rebuild-phase1-audit
 python -m pytest -q
 ```
 
-## Current study-design status: no verified exported hospital/episode key (Step 52)
+## Historical study-design status: no verified exported hospital/episode key (Step 52)
 
 The operator confirmed **381 passing tests** and Step51 checked all **18 CSV
 table headers**. The only broadly present candidate-like field was
@@ -225,7 +272,7 @@ No clinical data have been read for this step. Site/key semantics and local
 full-data processing authorizations are still needed. Draft PR #1 stays
 unmerged pending institutional governance review.
 
-## Current local action: look for a site/episode key in OTHER tables (Step 51)
+## Historical local action: look for a site/episode key in OTHER tables (Step 51)
 
 The workstation confirmed **364 tests passed** and Step50's existing Step36
 encounter-table headers show **no explicit HCO/parent-episode field**.
@@ -253,7 +300,7 @@ column exists, consider a documented **date-only sensitivity** rather
 than automatically asserting same-hospital care. The original Step45
 full clinical scan is still blocked and PR #1 stays draft.
 
-## Current local action: hospital/site-key structural review (Step 50)
+## Historical local action: hospital/site-key structural review (Step 50)
 
 After the operator confirmed **352 passing tests**, the next blocker is not
 date arithmetic but the meaning of HCO/site and episode identifiers in the
@@ -275,7 +322,7 @@ for a source-wide scan. The original Step45 full clinical scan is still
 explicitly blocked. Keep draft PR #1 unmerged pending restricted-data
 governance review.
 
-## Current implementation: ED-end-date → inpatient-start-date candidates (Step 49)
+## Historical implementation: ED-end-date → inpatient-start-date candidates (Step 49)
 
 The study now has a [Step49 pure ED/IP encounter resolver](scripts/step49_ed_ip_episode_candidates.py),
 [synthetic-only tests](tests/test_step49_ed_ip_episode_candidates.py),
@@ -374,7 +421,7 @@ or unsupported entries and never flips institutional approval flags.
 **Do not run finalize until a real clinical sign-off.** PR remains
 draft/unmerged pending institutional data governance review.
 
-## Current implementation: guarded full-cohort extraction (Step 45)
+## Historical implementation: guarded full-cohort extraction (Step 45)
 
 The study now uses **TWO PARALLEL CO-PRIMARY age definitions**:
 
