@@ -53,7 +53,21 @@ Step57 external review of 13 other **CPT-labelled reference entries**: eight def
 - ED sensitivity B can only measure change in *coded event capture under a provisional date-only association*, not validity of a hospital transfer. Describe limitations of missing ED imaging codes and incomplete network participation.
 - Manuscript citations: [Vagal2017_AJNR] and [Wang2024_JACR] for research framing; [CMS2010_MPPR] for CPT14 modalities; [CMS2026_MRIanalysis] and [CMS2025_MRgFUS] for exclusions; [HHS2025_OPPS2026] for future 2026 codes; [CMS2015_ICD10] for era transition. Those do NOT validate patient-level use in TriNetX. Reference metadata: `docs/references/imaging_references.csl.json`, `.ris`, `.bib`, plus full code-level crosswalk.
 
-## 6. What is done vs. still blocked
+## 6. Institutional pre-reconstruction acceptance gate
+
+Before proposing *any* revised full-source clinical processing, use the
+[authorizations and scientific evidence gate](RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md)
+and the [one-pass request for the data steward](RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md).
+These list required DUA/IRB scope, legacy restricted Git-history review,
+encryption/privacy boundaries, diagnosis and `IMP`/`EMER` semantics,
+encounter/HCO ID scope, actual procedure code-system and performed/order
+capture, observed complete calendar-year QA, age/sex policy, and disclosure
+requirements. The pure planning gate never grants clinical-scan authorization.
+The old Step45 full-data CLI **remains disabled**; if execution is later
+approved, build an independently reviewed **new** bounded-memory extractor
+for the revised A-primary/B-sensitivity phenotype.
+
+## 7. What is done vs. still blocked
 
 | Workstream | Decision or evidence state |
 |---|---|
