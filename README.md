@@ -15,6 +15,8 @@ legacy reference**. New work uses documented, tested Python scripts.
 and Zotero-ready [RIS](docs/references/imaging_references.ris),
 [BibTeX](docs/references/imaging_references.bib),
 [CSL-JSON](docs/references/imaging_references.csl.json).
+A [manuscript Methods/codebook draft](docs/MANUSCRIPT_METHODS_CODEBOOK_SCAFFOLD.md)
+uses those citation keys without implying a completed patient-level analysis.
 
 **Last confirmed workstation execution: 511 passed, 3 unchanged nonblocking
 warnings; Step57 classified 13 private CPT-labelled terminology entries:
