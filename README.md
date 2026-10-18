@@ -5,6 +5,38 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
+## Current study-design status: no verified exported hospital/episode key (Step 52)
+
+The operator confirmed **381 passing tests** and Step51 checked all **18 CSV
+table headers**. The only broadly present candidate-like field was
+`source_id`, whose HCO/site meaning is **unknown**. Oncology
+`tumor_site_code` is not a hospital identifier. No explicit
+HCO/hospital or parent-episode key was found in the exported headers.
+
+[Step52 protocol](docs/STEP52_NO_HCO_DATE_ONLY_ED_IP_SENSITIVITY.md),
+[pure provisional date-only resolver](scripts/step52_date_only_ed_ip_sensitivity.py),
+and [synthetic-only tests](tests/test_step52_date_only_ed_ip_sensitivity.py)
+have been added. They separate:
+- **same-`IMP` imaging** (inpatient-encounter reference, may miss ED scans),
+- **ED + IMP date-only sensitivity** (same patient, unique candidate ED whose
+  end date is 0–1 calendar days before IP start), and
+- **0-day and 0–2-day** ED-link windows as sensitivity variants.
+
+No match is a verified transfer/same-hospital episode. The final choice
+of primary imaging outcome remains pending clinical/data-steward review;
+Step52 does not change the two co-primary age definitions or auto-approve
+the imaging codebook.
+
+```bash
+git pull origin analysis-rebuild-phase1-audit
+python -m pytest -q
+```
+
+**Do not rerun Step51 or execute the old Step45 clinical scan.**
+No clinical data have been read for this step. Site/key semantics and local
+full-data processing authorizations are still needed. Draft PR #1 stays
+unmerged pending institutional governance review.
+
 ## Current local action: look for a site/episode key in OTHER tables (Step 51)
 
 The workstation confirmed **364 tests passed** and Step50's existing Step36
