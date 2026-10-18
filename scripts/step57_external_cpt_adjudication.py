@@ -44,12 +44,12 @@ PUBLIC_EXCLUSIONS = {
     ),
     "0865T": (
         "Quantitative brain MRI image analysis without diagnostic MRI in the same session",
-        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11286008/",
+        "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=60245",
         "effective 2024-01-01; software analysis not diagnostic MRI acquisition",
     ),
     "0866T": (
         "Quantitative brain MRI image analysis with diagnostic MRI in the same session",
-        "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleId=60397&ver=5",
+        "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=60245",
         "effective 2024-01-01; adjunct analysis not stand-alone MRI acquisition",
     ),
     "61736": (
@@ -69,12 +69,12 @@ PUBLIC_EXCLUSIONS = {
     ),
     "78814": (
         "Tumor PET/CT limited-area imaging, not diagnostic brain CT",
-        "https://www.cms.gov/regulations-and-guidance/guidance/transmittals/downloads/r527cp.pdf",
+        "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=54953&ver=68",
         "service years require version validation; nuclear medicine PET/CT",
     ),
     "78830": (
         "Radiopharmaceutical SPECT/CT localization, not diagnostic brain CT",
-        "https://vsac.nlm.nih.gov/context/cs/codesystem/CPT/version/2024/code/78830/info",
+        "https://www.cms.gov/medicare-coverage-database/view/article.aspx?articleid=54953&ver=68",
         "2024 vocabulary evidence; verify relevant historical code version",
     ),
 }
