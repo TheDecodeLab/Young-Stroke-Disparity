@@ -1,5 +1,8 @@
 # Steps 46–47: Chained clinical imaging-codebook review and validation
 
+> **Current authority:** For Research Network analysis, follow the [active 2026 study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md) and [canonical code-to-reference register](references/IMAGING_CODE_CITATION_REGISTER.md). Earlier stage text below is historical/provisional and must not override the agreed A-primary/B-sensitivity policy, Diamond-only 2018–2019 distinction, source-code meaning limitations, and hard-blocked full scan.
+
+
 > **Historical workflow only for year-specific local signoff.** The investigator clarified that **2018–2019 is Diamond's period, NOT an automatic Research Network restriction**. For Research Network, use the literature-reviewed exact CPT core and private adjudication in [Steps54–55](STEP54_55_LITERATURE_CODEBOOK_REVIEW_AND_RESEARCH_NETWORK_PERIOD.md). Do not use this workflow's hardcoded `valid_for_2018_2019_yes_no` as Research Network all-year evidence, and do not run Step47 `finalize` for the Research Network using this stale time assumption. Clinical coding meaning can be reviewed from literature, but TriNetX clinical event completion semantics remain unverified.
 
 **Status:** A safe reviewer-preparation workflow. **No clinical data read, no imaging codes auto-approved, and no full clinical scan started.** This follows the Step 45 plan-only validation (275 previously passing tests).
