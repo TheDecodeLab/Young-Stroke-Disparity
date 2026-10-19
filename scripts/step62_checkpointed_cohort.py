@@ -12,6 +12,8 @@ import csv
 import hashlib
 import io
 import json
+import fcntl
+from contextlib import contextmanager
 import os
 import sqlite3
 import stat
@@ -161,6 +163,27 @@ def verified_zip(source, preflight=PREFLIGHT):
     except Exception:
         z.close()
         raise
+
+
+@contextmanager
+def single_writer(folder):
+    """Fail fast rather than corrupt checkpoints during concurrent stage runs."""
+    path = folder / ".step62.lock"
+    if path.is_symlink():
+        raise ValueError("Private lock must not be a symlink")
+    flags = os.O_CREAT | os.O_RDWR
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    fd = os.open(str(path), flags, 0o600)
+    try:
+        os.chmod(str(path), 0o600)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise RuntimeError("Step62 already running in this private directory")
+        yield
+    finally:
+        os.close(fd)
 
 
 def connection(folder):
@@ -412,34 +435,34 @@ def run(source, stage, preflight=PREFLIGHT, folder=PRIVATE,
     if stage not in STAGES:
         raise ValueError("Unknown stage")
     folder = _private_dir(folder)
-    z, members, prior, fingerprint = verified_zip(source, preflight)
-    try:
-        db = connection(folder)
+    with single_writer(folder):
+        z, members, prior, fingerprint = verified_zip(source, preflight)
         try:
-            key = db.execute("SELECT value FROM meta WHERE key='source'").fetchone()
-            if key and key[0] != fingerprint:
-                raise ValueError("Source/preflight/year policy changed since checkpoint")
-            if not key:
-                with db:
-                    db.execute("INSERT INTO meta VALUES('source',?)", (fingerprint,))
-            _stage_order(db, stage)
-            if stage in SOURCE:
-                completed = _stream_stage(db, z, members[stage+".csv"], prior,
-                                          stage, chunk=chunk, stop_after=stop_after)
-            elif stage == "index":
-                _index(db)
-                completed = True
-            else:
-                _report(db, folder)
-                completed = True
-            return {"stage": stage, "complete": completed,
-                    "processed_rows": progress(db, stage)[0],
-                    "private_output_directory": str(folder)}
+            db = connection(folder)
+            try:
+                key = db.execute("SELECT value FROM meta WHERE key='source'").fetchone()
+                if key and key[0] != fingerprint:
+                    raise ValueError("Source/preflight/year policy changed since checkpoint")
+                if not key:
+                    with db:
+                        db.execute("INSERT INTO meta VALUES('source',?)", (fingerprint,))
+                _stage_order(db, stage)
+                if stage in SOURCE:
+                    completed = _stream_stage(db, z, members[stage+".csv"], prior,
+                                              stage, chunk=chunk, stop_after=stop_after)
+                elif stage == "index":
+                    _index(db)
+                    completed = True
+                else:
+                    _report(db, folder)
+                    completed = True
+                return {"stage": stage, "complete": completed,
+                        "processed_rows": progress(db, stage)[0],
+                        "private_output_directory": str(folder)}
+            finally:
+                db.close()
         finally:
-            db.close()
-    finally:
-        z.close()
-
+            z.close()
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
