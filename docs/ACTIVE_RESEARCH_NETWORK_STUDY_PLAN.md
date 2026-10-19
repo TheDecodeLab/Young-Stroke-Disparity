@@ -3,6 +3,35 @@
 
 ## 1. Current evidence and execution status
 
+**Current research checkpoint (2026-10-19):** Corrected `YYYYMMDD`
+Step59 datefix-v2 whole-source scans and matched Step60 v2 reconciliation
+**all completed successfully** on the investigator's approved workstation.
+Original source-row totals are 557,665,953 encounter, 1,376,280,235
+diagnosis and 993,025,015 procedure. All three have **zero invalid
+date rows after date correction**. The 2025 annual volume decreases
+about 47-49% relative to 2024 in all three tables; **2016-2024 is a
+provisional candidate window**, not yet an approved complete-year decision.
+No patient-level cohort, hospital coverage, performed imaging or
+demographic disparities have been established by these aggregates.
+
+**New next technical phase:** [Step62 provisional cohort pipeline](STEP62_CHECKPOINTED_COHORT_PIPELINE.md)
+([source](../scripts/step62_checkpointed_cohort.py),
+[synthetic tests](../tests/test_step62_checkpointed_cohort.py)).
+The new independent bounded-memory SQLite staging pipeline records
+patient/encounter IDs **only in private Git-ignored workstation files**,
+uses strict same-encounter diagnostic/inpatient linkage, applies both
+co-primary year-of-birth age rules independently, selects candidate
+index admissions without using imaging, and assigns only same-IMP
+CPT14 documented-code outcomes. An interrupted stream stage resumes
+from its last atomic checkpoint, and source metadata are frozen.
+**Python 3.9 synthetic-only GitHub Actions verification passed.**
+No new real clinical-data cohort scan has been executed. `P` flag,
+IMP/performed-procedure meaning, complete-year/HCO participation,
+non-CPT imaging capture and ED sensitivity remain unvalidated.
+The disabled Step45 scanner must never be used.
+
+## 1. Current evidence and execution status
+
 **Date-format correction, 2026-10-18:** Investigator checked bounded
 local prefixes of `encounter.start_date`, `diagnosis.date`, and
 `procedure.date`: all sampled values have eight digits (no hyphens).
