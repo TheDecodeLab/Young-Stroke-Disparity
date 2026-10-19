@@ -68,10 +68,31 @@ still decompresses/reads the earlier part; this is **not random-access**
 ZIP seeking and can be time-consuming, but it avoids duplicating already
 committed state. A different ZIP, Step36 preflight or year policy is
 rejected via a frozen fingerprint (ZIP table name, uncompressed bytes and
-CRC plus preflight SHA). Competing patient demographics or same-key
-qualifying encounters with inconsistent dates fail rather than silently
-coalescing. The stage also checks the Step36 manifest's complete row
+CRC plus preflight SHA). Competing patient demographics still fail, while date-discordant
+qualifying inpatient encounters are quarantined and excluded rather than
+silently coalesced. The stage also checks the Step36 manifest's complete row
 count before marking a stage done.
+
+**Encounter-key conflicts and recovery.** A repeated patient/encounter key
+with different *qualifying* `IMP` admission dates cannot safely define
+one index stay. The revised code quarantines that key in
+`ambiguous_admission`, deletes any earlier `admission` record, and
+prevents its later re-entry. Identical duplicated dates continue to coalesce.
+Quarantine, deletion and row-progress checkpoints commit atomically.
+This is an additive SQLite schema change: **retain the existing DB and
+resume the interrupted encounter stage**. Do not rerun diagnosis or
+delete checkpoints. The stage prints a local-only conflict-key count;
+the final LOCAL ONLY report also records affected unique patients
+and remaining qualifying keys. Do not upload these figures without the
+institutional disclosure review.
+
+This narrowly detects conflicting date spans **only among qualifying
+`IMP` rows** for the same patient/encounter key; it does not exhaustively
+check unqualified, malformed-date or cross-type duplicate keys. The
+conflict count must be assessed relative to the qualifying encounter
+denominator and site/key semantics before disparity inference.
+Quarantining a conflict does not validate the encounter ID grain or
+prove completed imaging.
 
 The SQLite database, its indices and the final aggregate report contain
 sensitive de-identified encounter/person linkage information. They stay
