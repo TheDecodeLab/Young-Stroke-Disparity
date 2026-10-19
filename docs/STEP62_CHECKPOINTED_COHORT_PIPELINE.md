@@ -113,8 +113,7 @@ stage must read the entire 1.376-billion-row diagnosis table on the
 workstation, but stores only strict `I63` candidates. Encounter,
 patient and procedure stages also require complete local source scans;
 Step59's aggregate summaries **cannot replace encounter-level linkages**.
-Each stage is no-op on output until its own completeness check succeeds,
-and later stages are blocked until the preceding stage completes.
+Each source stage commits **partial private SQLite state at checkpoints**, but is marked complete only after its source-row reconciliation. Later stages are blocked until the preceding stage completes.
 
 For the final **aggregate-only** report, after all stages complete:
 
