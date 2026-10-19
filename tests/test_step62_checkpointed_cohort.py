@@ -108,8 +108,8 @@ def test_date_and_stroke_candidates():
     (2003,"M",s.COHORTS[0],"boundary_uncertain"),
     (1969,"M",s.COHORTS[0],"boundary_uncertain"),
     (1969,"M",s.COHORTS[1],"definite"),
-    (1970,"F",s.COHORTS[1],"excluded"),
-    (1970,"F",s.COHORTS[0],"excluded"),
+    (1960,"F",s.COHORTS[1],"excluded"),
+    (1960,"F",s.COHORTS[0],"excluded"),
     (None,"F",s.COHORTS[0],"unknown_yob"),
     (1990,"U",s.COHORTS[1],"unknown_sex"),
 ])
@@ -129,12 +129,12 @@ def test_complete_synthetic_stages_and_primary_linkage(fake):
     uniform = output["cohorts"][s.COHORTS[0]]
     historical = output["cohorts"][s.COHORTS[1]]
     assert uniform["indexed_patients_not_validated"] == 1
-    assert historical["indexed_patients_not_validated"] == 2  # A and C; E is not definitely 18-54 in 2024
+    assert historical["indexed_patients_not_validated"] == 3  # A, C and E (female E has age 53-54 in 2024)
     assert uniform["by_start_year"]["2020"]["with_P_label"] == 1
     assert uniform["primary_same_IMP_CPT14_code_capture_counts_NOT_performed_scans"] == {
         "CT_HEAD": 1, "MRI_BRAIN": 1}
     assert historical["primary_same_IMP_CPT14_code_capture_counts_NOT_performed_scans"] == {
-        "CT_HEAD": 1, "CTA_HEAD": 1, "MRI_BRAIN": 1}
+        "CT_HEAD": 1, "CTA_HEAD": 1, "MRI_BRAIN": 2}
     serialized = json.dumps(output)
     for value in ("AIP","AED","SYNTH_STROKE_ONLY","patient_id","encounter_id"):
         assert value not in serialized
