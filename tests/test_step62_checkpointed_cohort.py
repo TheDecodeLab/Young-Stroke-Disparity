@@ -187,3 +187,13 @@ def test_preflight_and_path_guards(fake, tmp_path):
 def test_no_unknown_cohort():
     with pytest.raises(ValueError, match="Unknown cohort"):
         s.age_class("20200101",1990,"F","not_a_cohort")
+
+
+def test_prevent_concurrent_stages_before_scanning_source(fake):
+    z, pre, folder = fake
+    folder.mkdir(parents=True, mode=0o700)
+    with s.single_writer(folder):
+        with pytest.raises(RuntimeError, match="already running"):
+            s.run(z, "diagnosis", preflight=pre, folder=folder)
+    assert stat.S_IMODE((folder / ".step62.lock").stat().st_mode) == 0o600
+    assert not (folder / s.DB.name).exists()
