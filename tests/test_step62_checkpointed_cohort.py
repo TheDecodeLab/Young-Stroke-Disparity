@@ -105,7 +105,7 @@ def test_date_and_stroke_candidates():
 
 @pytest.mark.parametrize("yob,sex,cohort,expected", [
     (1990,"F",s.COHORTS[0],"definite"),
-    (2003,"M",s.COHORTS[0],"boundary_uncertain"),
+    (2002,"M",s.COHORTS[0],"boundary_uncertain"),
     (1969,"M",s.COHORTS[0],"boundary_uncertain"),
     (1969,"M",s.COHORTS[1],"definite"),
     (1960,"F",s.COHORTS[1],"excluded"),
