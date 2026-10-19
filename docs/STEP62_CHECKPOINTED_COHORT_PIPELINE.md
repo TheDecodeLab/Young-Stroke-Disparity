@@ -57,6 +57,11 @@ clinical rows never enter GitHub. A batch of up to 20,000 source rows is
 loaded into memory at a time; the database checkpoint and all inserts for
 that batch commit atomically.
 
+The pipeline also holds an **exclusive local OS file lock** for the full
+stage invocation, rejecting concurrent writers before any ZIP row scan.
+This prevents accidental overlapping source-wide runs and corrupted
+SQLite checkpoints.
+
 If an interruption occurs, rerun the **same stage** to resume from the
 last committed source-row count, skipping earlier ZIP CSV rows. Skipping
 still decompresses/reads the earlier part; this is **not random-access**
