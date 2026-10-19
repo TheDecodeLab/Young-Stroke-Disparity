@@ -197,3 +197,74 @@ def test_prevent_concurrent_stages_before_scanning_source(fake):
             s.run(z, "diagnosis", preflight=pre, folder=folder)
     assert stat.S_IMODE((folder / ".step62.lock").stat().st_mode) == 0o600
     assert not (folder / s.DB.name).exists()
+
+
+def test_qualifying_imp_date_conflict_quarantines_key(fake):
+    """Discordant qualifying stay spans cannot select whichever appears first."""
+    z, pre, folder = fake
+    assert s.run(z, "diagnosis", preflight=pre, folder=folder, chunk=2)["complete"]
+    db = s.connection(folder)
+    try:
+        first = {"patient_id": "A", "encounter_id": "AIP",
+                 "type": "IMP", "start_date": "20200104", "end_date": "20200108"}
+        conflict = dict(first, start_date="20200102", end_date="20200106")
+        with db:
+            s._source_row(db, "encounter", first)
+            s._source_row(db, "encounter", first)
+        assert db.execute("SELECT COUNT(*) FROM admission WHERE patient='A'").fetchone()[0] == 1
+        with db:
+            s._source_row(db, "encounter", conflict)
+            s._source_row(db, "encounter", first)
+            s._source_row(db, "encounter", conflict)
+        assert db.execute("SELECT COUNT(*) FROM admission WHERE patient='A'").fetchone()[0] == 0
+        assert db.execute("SELECT COUNT(*) FROM ambiguous_admission").fetchone()[0] == 1
+    finally:
+        db.close()
+
+
+def test_conflict_after_checkpoint_resumes_without_reset(fake):
+    """A conflicting row after a committed chunk is quarantined on restart."""
+    z, pre, folder = fake
+    with zipfile.ZipFile(z, "r") as src:
+        content = {item.filename: src.read(item.filename)
+                   for item in src.infolist() if not item.is_dir()}
+    key = "synthetic/encounter.csv"
+    content[key] += ("A,AIP,20200102,20200106,IMP" + chr(10)).encode("utf-8")
+    with zipfile.ZipFile(z, "w", compression=zipfile.ZIP_DEFLATED) as dest:
+        for name, data in content.items():
+            dest.writestr(name, data)
+    preflight = json.loads(pre.read_text())
+    preflight["files"]["encounter.csv"]["uncompressed_bytes"] = len(content[key])
+    preflight["relevant_manifest_counts"]["encounter.csv"]["row_count"] += 1
+    pre.write_text(json.dumps(preflight))
+    assert s.run(z, "diagnosis", preflight=pre, folder=folder, chunk=3)["complete"]
+    partial = s.run(z, "encounter", preflight=pre, folder=folder,
+                    chunk=2, stop_after=2)
+    assert partial["complete"] is False and partial["processed_rows"] == 2
+    resumed = s.run(z, "encounter", preflight=pre, folder=folder, chunk=3)
+    assert resumed["complete"] is True and resumed["processed_rows"] == 10
+    assert resumed["quarantined_qualifying_IMP_keys_LOCAL_ONLY"] == 1
+    db = s.connection(folder)
+    try:
+        assert db.execute("SELECT COUNT(*) FROM admission WHERE patient='A'").fetchone()[0] == 0
+        assert db.execute("SELECT COUNT(*) FROM ambiguous_admission").fetchone()[0] == 1
+        assert db.execute("SELECT COUNT(*) FROM admission WHERE patient='B'").fetchone()[0] == 1
+        assert s.progress(db, "encounter") == (10, 1)
+    finally:
+        db.close()
+
+
+def test_quarantine_table_additive_migration_preserves_checkpoint(fake):
+    """Existing diagnosis checkpoint survives addition of quarantine table."""
+    z, pre, folder = fake
+    assert s.run(z, "diagnosis", preflight=pre, folder=folder)["complete"]
+    db = s.connection(folder)
+    db.execute("DROP TABLE ambiguous_admission")
+    db.commit()
+    db.close()
+    db = s.connection(folder)
+    try:
+        assert db.execute("SELECT COUNT(*) FROM ambiguous_admission").fetchone()[0] == 0
+        assert s.progress(db, "diagnosis")[1] == 1
+    finally:
+        db.close()
