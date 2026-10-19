@@ -56,6 +56,9 @@ CREATE TABLE IF NOT EXISTS admission(patient TEXT NOT NULL, encounter TEXT NOT N
  start TEXT NOT NULL, end TEXT NOT NULL, principal INTEGER NOT NULL,
  PRIMARY KEY(patient,encounter));
 CREATE INDEX IF NOT EXISTS admission_patient ON admission(patient,start,encounter);
+-- Persistent quarantine for ambiguous qualifying patient/IMP encounter keys.
+CREATE TABLE IF NOT EXISTS ambiguous_admission(
+ patient TEXT NOT NULL, encounter TEXT NOT NULL, PRIMARY KEY(patient,encounter));
 CREATE TABLE IF NOT EXISTS person(patient TEXT PRIMARY KEY, yob INTEGER, sex TEXT NOT NULL,
  race TEXT NOT NULL, ethnicity TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS idx(cohort TEXT NOT NULL, patient TEXT NOT NULL,
@@ -241,6 +244,11 @@ def _source_row(db, stage, row):
         end = parsedate(row.get("end_date"))
         if start is None or not START <= start <= END or end is None or end < start:
             return  # Missing end or reversed span is unassessable, never imaging-negative.
+        # Prevent later duplicated rows from restoring a quarantined key.
+        if db.execute(
+            "SELECT 1 FROM ambiguous_admission WHERE patient=? AND encounter=?",
+            (p, e)).fetchone() is not None:
+            return
         flag = db.execute("""SELECT MAX(principal) FROM dx
           WHERE patient=? AND encounter=? AND day>=? AND day<=?""",
           (p, e, start, end)).fetchone()[0]
@@ -249,7 +257,12 @@ def _source_row(db, stage, row):
                 "SELECT start,end FROM admission WHERE patient=? AND encounter=?",
                 (p, e)).fetchone()
             if previous is not None and previous != (start, end):
-                raise ValueError("Conflicting duplicate qualifying inpatient encounter key")
+                # Ambiguous qualifying stay spans cannot be resolved by row order.
+                # Quarantine plus deletion commit atomically with the checkpoint.
+                db.execute("INSERT INTO ambiguous_admission VALUES (?,?)", (p, e))
+                db.execute(
+                    "DELETE FROM admission WHERE patient=? AND encounter=?", (p, e))
+                return
             db.execute("""INSERT INTO admission VALUES(?,?,?,?,?)
               ON CONFLICT(patient,encounter) DO UPDATE SET
               principal=MAX(principal,excluded.principal)""",
@@ -410,6 +423,19 @@ def _report(db, folder):
         "ED_date_only_sensitivity_included": False,
         "race_ethnicity_disparities_computed": False,
         "cohorts": cohorts,
+        "encounter_key_integrity_LOCAL_ONLY": {
+            "quarantined_qualifying_IMP_keys_with_conflicting_dates": db.execute(
+                "SELECT COUNT(*) FROM ambiguous_admission").fetchone()[0],
+            "patients_with_quarantined_qualifying_IMP_keys": db.execute(
+                "SELECT COUNT(DISTINCT patient) FROM ambiguous_admission").fetchone()[0],
+            "remaining_matched_IMP_encounter_keys": db.execute(
+                "SELECT COUNT(*) FROM admission").fetchone()[0],
+            "limitations": "Only multiple date-discordant QUALIFYING IMP rows for "
+                           "the same patient/encounter key are detected; "
+                           "unqualified, malformed-date, and different-type "
+                           "duplicates are not exhaustively assessed.",
+            "clinical_review_required": True,
+        },
         "private_index_source_counts_NOT_independent_patients": {
             "I63_candidate_patient_encounter_dates": db.execute(
                 "SELECT COUNT(*) FROM dx").fetchone()[0],
@@ -456,9 +482,13 @@ def run(source, stage, preflight=PREFLIGHT, folder=PRIVATE,
                 else:
                     _report(db, folder)
                     completed = True
-                return {"stage": stage, "complete": completed,
-                        "processed_rows": progress(db, stage)[0],
-                        "private_output_directory": str(folder)}
+                result = {"stage": stage, "complete": completed,
+                          "processed_rows": progress(db, stage)[0],
+                          "private_output_directory": str(folder)}
+                if stage == "encounter":
+                    result["quarantined_qualifying_IMP_keys_LOCAL_ONLY"] = db.execute(
+                        "SELECT COUNT(*) FROM ambiguous_admission").fetchone()[0]
+                return result
             finally:
                 db.close()
         finally:
@@ -477,6 +507,10 @@ def main(argv=None):
     print("Private Step62 stage:", result["stage"])
     print("Complete:", result["complete"], "rows read:", result["processed_rows"])
     print("Private working directory:", result["private_output_directory"])
+    if args.stage == "encounter":
+        print("Quarantined qualifying IMP keys with conflicting stay dates:",
+              result["quarantined_qualifying_IMP_keys_LOCAL_ONLY"])
+        print("Review conflict prevalence before proceeding to patient/index stages.")
     print("Provisional cohort and recorded-code data only. Never commit private results.")
 
 
