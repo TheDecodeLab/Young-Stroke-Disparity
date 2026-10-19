@@ -5,7 +5,34 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## CURRENT STEP: DATEFIX_V2 for YYYYMMDD calendar dates
+## CURRENT STEP: Step62 checkpointed provisional cohort pipeline
+
+**2026-10-19:** All three corrected Step59 `DATEFIX_V2` source-wide
+QA reports completed on the approved local workstation; their Step60 v2
+aggregate reconciliation also completed and was reviewed. The original
+`YYYYMMDD` date-format bug has been corrected. Encounter, diagnosis
+and procedure tables show records in 2016–2025; the synchronized ~half-
+volume drop in 2025 favors using **2016–2024 provisionally** while
+complete-year/HCO participation checks remain outstanding.
+
+**New code:** [Step62 checkpointed young-stroke cohort extractor](docs/STEP62_CHECKPOINTED_COHORT_PIPELINE.md)
+([script](scripts/step62_checkpointed_cohort.py),
+[synthetic tests](tests/test_step62_checkpointed_cohort.py)).
+Its **GitHub Actions synthetic-only Python 3.9 test job passed**
+([workflow](.github/workflows/step62_synthetic.yml)).
+Step62 has **not yet run on actual clinical records**.
+
+It independently stages I63.* candidates, matches exact `IMP` admissions
+and patient YOB, selects earliest definitely-age-eligible admission for
+each overlapping co-primary cohort, and assigns same-IMP CPT14 recorded
+imaging codes. It handles row-level continuation via a private SQLite
+checkpoint. The source archive and private SQLite stay on the approved
+workstation and outside GitHub. The final report is **provisional**
+and is not a validated stroke phenotype, performed-imaging rate or
+disparity estimate. The old Step45 scanner remains hard-disabled; PR #1
+is **DRAFT/unmerged**.
+
+## HISTORICAL CHECKPOINT: DATEFIX_V2 for YYYYMMDD calendar dates
 
 The investigator's bounded source-format check on 2026-10-18 showed
 **eight-digit** date values in encounter, diagnosis and procedure.
