@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS idx(cohort TEXT NOT NULL, patient TEXT NOT NULL,
 CREATE INDEX IF NOT EXISTS idx_enc ON idx(patient,encounter);
 CREATE TABLE IF NOT EXISTS image(cohort TEXT NOT NULL, patient TEXT NOT NULL,
  category TEXT NOT NULL, PRIMARY KEY(cohort,patient,category));
+CREATE TABLE IF NOT EXISTS audit(cohort TEXT NOT NULL, finding TEXT NOT NULL,
+ n INTEGER NOT NULL, PRIMARY KEY(cohort,finding));
 """
 
 
@@ -220,6 +222,11 @@ def _source_row(db, stage, row):
           WHERE patient=? AND encounter=? AND day>=? AND day<=?""",
           (p, e, start, end)).fetchone()[0]
         if flag is not None:
+            previous = db.execute(
+                "SELECT start,end FROM admission WHERE patient=? AND encounter=?",
+                (p, e)).fetchone()
+            if previous is not None and previous != (start, end):
+                raise ValueError("Conflicting duplicate qualifying inpatient encounter key")
             db.execute("""INSERT INTO admission VALUES(?,?,?,?,?)
               ON CONFLICT(patient,encounter) DO UPDATE SET
               principal=MAX(principal,excluded.principal)""",
@@ -229,9 +236,14 @@ def _source_row(db, stage, row):
             return
         val = (row.get("year_of_birth") or "").strip()
         yob = int(val) if len(val) == 4 and val.isascii() and val.isdigit() else None
-        db.execute("INSERT OR IGNORE INTO person VALUES(?,?,?,?,?)",
-          (p, yob, (row.get("sex") or "").strip(),
-           (row.get("race") or "").strip(), (row.get("ethnicity") or "").strip()))
+        demographics = (yob, (row.get("sex") or "").strip(),
+                        (row.get("race") or "").strip(),
+                        (row.get("ethnicity") or "").strip())
+        previous = db.execute(
+            "SELECT yob,sex,race,ethnicity FROM person WHERE patient=?", (p,)).fetchone()
+        if previous is not None and previous != demographics:
+            raise ValueError("Conflicting duplicate patient demographics")
+        db.execute("INSERT OR IGNORE INTO person VALUES(?,?,?,?,?)", (p,) + demographics)
     elif stage == "procedure":
         if not p or not e or (row.get("code_system") or "").strip().upper() != "CPT":
             return
@@ -295,6 +307,11 @@ def _stream_stage(db, z, member, preflight, stage, chunk=CHUNK, stop_after=None)
     return True
 
 
+def _audit(db, cohort, finding):
+    db.execute("""INSERT INTO audit VALUES(?,?,1)
+      ON CONFLICT(cohort,finding) DO UPDATE SET n=n+1""", (cohort, finding))
+
+
 def _index(db):
     """Earliest definitely-age-eligible index per patient and cohort.
 
@@ -316,6 +333,8 @@ def _index(db):
             if result is not None and not tie[c]:
                 db.execute("INSERT INTO idx VALUES(?,?,?,?,?,?)",
                            (c, prior, result[0], result[1], result[2], result[3]))
+            elif result is not None and tie[c]:
+                _audit(db, c, "patient_held_competing_same_day_index_encounters")
     with db:
         for patient, encounter, start, end, principal, yob, sex in cur:
             if patient != prior:
@@ -324,7 +343,9 @@ def _index(db):
                 first = {c: None for c in COHORTS}
                 tie = {c: False for c in COHORTS}
             for cohort in COHORTS:
-                if age_class(start, yob, sex, cohort) != "definite":
+                age_status = age_class(start, yob, sex, cohort)
+                _audit(db, cohort, "candidate_admission_age_" + age_status)
+                if age_status != "definite":
                     continue
                 selected = first[cohort]
                 if selected is None:
@@ -347,7 +368,10 @@ def _report(db, folder):
         images = db.execute("""SELECT i.category,COUNT(*)
               FROM image i WHERE i.cohort=? GROUP BY i.category ORDER BY i.category""",
               (cohort,)).fetchall()
+        audits = dict(db.execute(
+            "SELECT finding,n FROM audit WHERE cohort=? ORDER BY finding", (cohort,)))
         cohorts[cohort] = {"indexed_patients_not_validated": n,
+            "candidate_admission_age_QA_NOT_patient_denominators": audits,
             "by_start_year": {year: {"index_cases": count, "with_P_label": principal or 0}
                               for year, count, principal in rows},
             "primary_same_IMP_CPT14_code_capture_counts_NOT_performed_scans": dict(images)}
@@ -363,6 +387,14 @@ def _report(db, folder):
         "ED_date_only_sensitivity_included": False,
         "race_ethnicity_disparities_computed": False,
         "cohorts": cohorts,
+        "private_index_source_counts_NOT_independent_patients": {
+            "I63_candidate_patient_encounter_dates": db.execute(
+                "SELECT COUNT(*) FROM dx").fetchone()[0],
+            "matched_IMP_encounter_rows": db.execute(
+                "SELECT COUNT(*) FROM admission").fetchone()[0],
+            "matched_patient_demographic_rows": db.execute(
+                "SELECT COUNT(*) FROM person").fetchone()[0],
+        },
         "external_sharing_requires_review": True,
     }
     path = folder / "aggregate_review_LOCAL_ONLY.json"
