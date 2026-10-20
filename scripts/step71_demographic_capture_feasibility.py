@@ -23,7 +23,7 @@ except ModuleNotFoundError:
     import step63_ed_encounter_feasibility as s63
     import step64_ed_capture_ceiling as s64
     import step68_joint_imaging_window_scan as s68
-    import step70_P_quarantine_standardization as s70
+
 
 ADVANCED=frozenset(("MRI_BRAIN","CTA_HEAD","CTA_NECK","MRA_HEAD","MRA_NECK"))
 MODALITIES=frozenset(s62.CPT.values())
