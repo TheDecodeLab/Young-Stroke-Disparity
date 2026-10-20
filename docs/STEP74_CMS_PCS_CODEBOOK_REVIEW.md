@@ -1,9 +1,32 @@
 # Step74: Official CMS ICD-10-PCS titles versus observed cohort code profiles
 
-**Status:** Python 3.9 synthetic-only implementation; awaiting investigator
-workstation tests and execution. No source ZIP or patient-level database
-will be rescanned; existing Step62, Step63 and Step68 checkpoints
-are opened read-only. The public CMS files are the ONLY new downloads.
+**Status (2026-10-20):** Completed successfully on the
+investigator's authorized workstation: four synthetic Step74
+tests, 708 total repository tests, and the quasi-binomial
+diagnostic passed. Official CMS FY2016–FY2025
+public ZIPs were downloaded, parsed and cached,
+with SHA256 receipts in the LOCAL ONLY report.
+The Step74 source procedure crosswalk completed
+read-only using already captured exact-code
+source-row counts. No clinical source ZIP was
+rescanned or private database modified.
+
+**Important denominator correction (documented
+before any patient-level interpretation):**
+Step74's `all_PCS_source_rows` covers
+EVERY ICD-10-PCS section, whereas the official
+CMS title parser deliberately retained **only
+section B (Imaging)**. Consequently the
+percentage `valid_neighbor_FY_rows / all_PCS_source_rows`
+is NOT a valid percentage of correctly mapped
+all-PCS codes. The [Step75 B-section denominator
+audit](STEP75_PCS_SECTION_DENOMINATOR_AUDIT.md)
+correctly decomposes source non-B, B-syntax-valid,
+B-CMS-matched and B-review-candidate rows,
+using only the existing cached data.
+The Step74 candidate counts remain unvalidated
+source rows across overlapping cohorts, not
+confirmed imaging in distinct patients.
 
 ## Why this step is different
 
