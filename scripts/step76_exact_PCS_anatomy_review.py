@@ -12,16 +12,20 @@ from collections import Counter,defaultdict
 import json
 import os
 from pathlib import Path
+import sqlite3
+from contextlib import closing
 import tempfile
 
 try:
     from scripts import step62_checkpointed_cohort as s62
     from scripts import step74_cms_pcs_codebook_review as s74
     from scripts import step75_pcs_section_denominator_audit as s75
+    from scripts import step68_joint_imaging_window_scan as s68
 except ModuleNotFoundError:
     import step62_checkpointed_cohort as s62
     import step74_cms_pcs_codebook_review as s74
     import step75_pcs_section_denominator_audit as s75
+    import step68_joint_imaging_window_scan as s68
 
 PRIVATE=s62.ROOT/"results/phase1/full_reconstruction_private/step76_code_review_private"
 REPORT="step76_exact_PCS_review_queue_LOCAL_ONLY.json"
@@ -98,6 +102,7 @@ def assess(step74,official):
         evidence[("STRATUM",)+signature]["candidate_rows"]+=count
         evidence[("STRATUM",)+signature][status+"_rows"]+=count
         evidence[("MODE",mode)]["candidate_rows"]+=count
+        evidence[("MODE_YEAR",mode,str(year))]["candidate_rows"]+=count
         evidence[("MODE",mode)][status+"_rows"]+=count
         evidence[("YEAR",str(year))]["candidate_rows"]+=count
         evidence[("YEAR",str(year))][status+"_rows"]+=count
@@ -151,7 +156,43 @@ def assess(step74,official):
     return evidence,review
 
 
-def print_audit(evidence,queue,source):
+def b_source_counts(dbfile,step74):
+    """Reuse indexed source code-frequency profile, NOT the clinical ZIP.
+
+    Independently reconcile all-PCS row counts by date/P/scope before
+    interpreting imaging B-section rates from this same profile.
+    """
+    if dbfile.is_symlink() or not dbfile.is_file():
+        raise FileNotFoundError("Completed Step68 code profile SQLite missing")
+    all_rows=Counter()
+    b_rows=Counter()
+    with closing(sqlite3.connect("file:"+str(dbfile.resolve())+"?mode=ro",
+                                 uri=True)) as db:
+        db.execute("PRAGMA query_only=ON")
+        for yr,P,scope,code,n in db.execute("""
+            SELECT service_year,P,scope,code,n FROM code_profile
+            WHERE system='ICD-10-PCS'
+        """):
+            if scope not in s74.SCOPES or not 2016<=int(yr)<=2024:
+                continue
+            key=(str(yr),str(P),scope)
+            all_rows[key]+=int(n)
+            if code.startswith("B"):
+                b_rows[key]+=int(n)
+    published=step74.get("source_row_aggregates_LOCAL_ONLY",{})
+    if set("|".join(k) for k in all_rows)!=set(published):
+        raise ValueError("Step76 PCS year/P/scope keys do not reconcile to Step74")
+    for key,n in all_rows.items():
+        if n!=int(published["|".join(key)]["source_rows"]):
+            raise ValueError("Step76 PCS source counts changed since Step74")
+    return b_rows
+
+
+def safe_count(n):
+    return str(n) if n==0 or n>=11 else "<11"
+
+
+def print_audit(evidence,queue,source,b_section):
     print("STEP76 LOCAL ONLY: ICD-10-PCS EXACT-CODE CLINICAL REVIEW QUEUE")
     print("Source rows are cohort memberships and can contain repeat procedures.")
     print("No additional patients or completed imaging is established.")
@@ -165,32 +206,35 @@ def print_audit(evidence,queue,source):
             if key[0]!=kind:
                 continue
             print("|".join(key[1:]),
-                  "candidate_source_rows",c["candidate_rows"],
+                  "candidate_source_rows",safe_count(c["candidate_rows"]),
                   "plausible_anatomy_rows",
-                    c["BRAIN_ANATOMY_CANDIDATE_rows"]+
-                    c["HEAD_NECK_VESSEL_CANDIDATE_rows"],
-                  "unresolved_anatomy_rows",c["ANATOMY_UNRESOLVED_rows"])
-    print("\nSOURCE-YEAR BLOCK TRENDS among indexed inpatient B-section rows")
-    rows=source.get("source_row_aggregates_LOCAL_ONLY",{})
+                    safe_count(c["BRAIN_ANATOMY_CANDIDATE_rows"]+
+                               c["HEAD_NECK_VESSEL_CANDIDATE_rows"]),
+                  "unresolved_anatomy_rows",
+                    safe_count(c["ANATOMY_UNRESOLVED_rows"]))
+    print("\nSOURCE-YEAR BLOCK TRENDS within indexed inpatient section-B rows")
     for label,years in GROUPS.items():
-        denominator=sum(int(rec["source_rows"]) for k,rec in rows.items()
-                        if int(k.split("|")[0]) in years
-                        and k.split("|")[2]=="INDEX_IMP")
+        denominator=sum(b_section[(str(yy),str(p),"INDEX_IMP")]
+                        for yy in years for p in (0,1))
         candidate=sum(evidence[("STRATUM",str(yy),str(p),"INDEX_IMP")]
                         ["candidate_rows"] for yy in years for p in (0,1))
-        print(label,"review_only_candidates",candidate,
-              "all_PCS_source_rows",denominator,
-              "candidate_per_all_PCS_pct",
+        print(label,"review_only_candidates",safe_count(candidate),
+              "all_B_section_source_rows",denominator,
+              "candidate_per_B_source_row_pct",
               "%.2f"%(100*candidate/denominator) if denominator else "NA")
-    print("Above denominator is ALL PCS, not B section; for the B-only")
-    print("year-specific denominator see the completed Step75 report.")
-    print("Do NOT use row-frequency trends as patient imaging prevalence.")
+        for mode in MODALITY.values():
+            n=sum(evidence[("MODE_YEAR",mode,str(yy))]["candidate_rows"]
+                  for yy in years)
+            if n:
+                print("  ",mode,"all_scopes_review_only_rows",safe_count(n))
+    print("These ratios are source coding representation, NOT patient imaging prevalence.")
 
 
 def main():
     official,step74=s75.load_cached() # SHA-validated CMS public archives
     evidence,queue=assess(step74,official)
-    print_audit(evidence,queue,step74)
+    b_rows=b_source_counts(s68.PRIVATE/s68.DB,step74)
+    print_audit(evidence,queue,step74,b_rows)
     folder=s62._private_dir(PRIVATE)
     output=folder/REPORT
     if output.is_symlink() or output.exists():
