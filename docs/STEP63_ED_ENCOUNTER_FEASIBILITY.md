@@ -41,10 +41,26 @@ completed Step 62**. Imaging availability never determines ED selection.
   candidate ED must link to just one IMP and the selected index IMP
   must link to just one ED. Reject ambiguous competing EDs or
   competing non-index IMPs, even where one candidate appears favorable.
-- Before linking, verify that every Step 62 indexed IMP encounter still
-  appears with exactly the same dates in the retained, unambiguous
-  Step 63 encounter subset. If not, stop without creating links and
-  investigate source semantics.
+- Before linking, check every Step 62 index key against the retained
+  Step 63 encounter subset. A retained index key with discordant type/dates
+  is a **fatal integrity error**. An index key missing **without documented
+  quarantine** is also a fatal error. However, an indexed key missing
+  because Step 63 quarantined it is **unassessable for ED sensitivity**;
+  never silently drop the patient from Step 62 or call ED imaging absent.
+- Because an ambiguous EMER/IMP source key anywhere within an indexed
+  patient's encounters could conceal a competing ED or IMP, the **strict
+  reciprocal-uniqueness feasibility subset excludes the entire patient
+  whenever ANY encounter key was quarantined**, even if the index key
+  itself is retained. Such patients remain in the original Step 62
+  denominators and are explicitly counted as ED-linkage-unassessable.
+  This is conservative and may exclude substantially more than the
+  directly quarantined index keys. We report both counts and the
+  restricted *evaluable* denominator, including distributions by
+  admission year and the unvalidated `P` label. No zero/absent ED
+  link in this feasibility report proves that imaging was not performed.
+  Quarantine reasons were not individually retained during the V1
+  encounter pass, so its causes cannot be decomposed without further
+  source investigation.
 - Store the source's `derived_by_TriNetX` and start/end derived fields
   as **uninterpreted private strings** for later review. Disagreement
   in duplicate provenance flags is marked `MIXED`. The columns' value
@@ -115,10 +131,28 @@ python scripts/step63_ed_encounter_feasibility.py \
 ```
 
 The link stage creates the local-only aggregate report; it does not
-read all encounter records again. Check per-cohort uniquely linked
-counts, ambiguity rates, invalid index comparisons, and retained
-event records. If links are rare or source flags call reliability into
+read all encounter records again. Check the **original indexed cohort
+denominators**, index-key quarantines, patient-level holds caused by
+ANY ambiguous encounter, restricted evaluable denominators, uniquely
+linked ED encounters, by-year and by-`P` attrition, and retained event
+records. If links are rare or source flags call reliability into
 question, stop rather than launching another large procedure scan.
+
+**Actual Step63 encounter checkpoint, 2026-10-19:** the investigator's
+authorized workstation processed and reconciled 557,665,953 source
+encounter rows, with 658 full-suite tests passing. It retained
+621,878 `EMER` and 1,192,380 `IMP` keys among Step62 indexed patients
+and quarantined 56,261 patient/encounter keys affecting 14,078
+distinct patients. **1,077** uniform cohort and **1,403** historical
+cohort index encounter keys were absent because of quarantine;
+both cohorts reported **zero** retained index date mismatches.
+These counts are not interchangeable with Step62's 64 qualifying IMP
+conflicts: Step63 also quarantines invalid or missing-date rows.
+The existing V1 Step63 DB and completed encounter checkpoint are
+preserved. The revised **link-only** policy evaluates unambiguous
+patients without re-running that encounter source. Neither the
+excluded-patient distribution nor uniqueness/link yield has yet been
+verified locally under this revised policy.
 
 **Future stage, not yet implemented:** Only if encounter feasibility
 passes its scientific review, implement a separate checkpointed ED
