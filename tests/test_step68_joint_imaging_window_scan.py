@@ -110,14 +110,19 @@ def test_single_scan_tests_multiple_windows_and_P(fake):
         assert cohort["new_day0_other"]==1
         assert cohort["new_pre7"]==2
         assert cohort["new_any_day0"]==1
+        assert cohort["new_ed_or_pre2_day0"]==2
+        assert cohort["new_ed_or_pre7_day0"]==2
+        mod=count[("MODALITY_P","uniform_18_50|P=0|MRI_BRAIN")]
+        assert mod["n"]==1 and mod["imp"]==0
+        assert mod["new_ed"]==1 and mod["new_ed_f"]==0
         p0=count[("P","uniform_18_50|P=0")]
         assert p0["n"]==1 and p0["imp"]==0 and p0["new_ed"]==1
         assert db.execute("""SELECT n FROM code_profile
           WHERE system='ICD-10-PCS' AND code='B030ZZZ'
-            AND scope='INDEX_IMP'""").fetchone() == (2,)
+            AND scope='INDEX_IMP' AND service_year='2020' AND P=0""").fetchone() == (2,)
         assert db.execute("""SELECT n FROM code_profile
           WHERE system='SNOMED' AND code='FAKE_CONCEPT'
-            AND scope='INDEX_IMP'""").fetchone() == (2,)
+            AND scope='INDEX_IMP' AND service_year='2020' AND P=1""").fetchone() == (2,)
         assert db.execute("""SELECT COUNT(*) FROM flags
            WHERE modality='MRI_BRAIN'""").fetchone()[0] > 0
     assert report["performed_imaging_verified"] is False
@@ -135,7 +140,7 @@ def test_checkpoint_restart_no_double_count(fake):
         # repeated because of the checkpoint restart.
         assert db.execute("""SELECT n FROM code_profile
             WHERE system='ICD-10-PCS' AND code='B030ZZZ'
-              AND scope='INDEX_IMP'""").fetchone()==(2,)
+              AND scope='INDEX_IMP' AND service_year='2020' AND P=0""").fetchone()==(2,)
     # Idempotent summary without re-reading source, including a prior report.
     assert s68.run(**opts,stage="report")== (fake[-1],1)
 
