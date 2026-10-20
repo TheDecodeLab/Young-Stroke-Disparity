@@ -1,124 +1,90 @@
-# Step77: PCS candidate patient-gain ceiling and clinician codebook worksheet
+# Step77: PCS patient-gain upper bound and restricted clinical code review
 
-**Status:** Read-only script, fabricated-only tests, and private-review
-workflow committed; investigator local execution pending. No procedure
-source scan or additional demographic modeling.
+**Status:** Read-only implementation and fabricated synthetic tests committed.
+Investigator workstation execution pending. No new procedure source scan,
+new demographic model, patient reclassification or public result export.
 
-## What completed Step76 actually established
+## Scientific reason for this gate
 
-The investigator's Step76 local run succeeded (six dedicated
-synthetic checks and **721 total repository tests passed**).
-It identified **40 exact ICD-10-PCS codes** and 5,670 review-only
-source procedure row×cohort memberships:
+The completed Step76 source discovery generated a restricted exact-code
+queue of possible CNS/upper-artery CT/MR ICD-10-PCS procedures, using
+already captured code-profile row frequencies and official CMS titles.
+The queue includes overlapping age cohorts and potentially repeated
+procedures; it is NOT a count of uniquely imaged patients.
 
-| Context | Candidate source rows |
-|---|---:|
-| Index inpatient encounter | 5,575 |
-| Other encounter on index admission day | 77 |
-| Unique preceding ED linkage | 18 |
+The fact that all Step76 candidates pass an automated anatomy-phrase
+screen is **not independent clinical validation**: Step74 already
+preselected titles using related anatomical terms. Exact body part,
+contrast and procedure method still require independent clinical/code
+adjudication. Official year-neighbor title presence is not equivalent
+to validity on an exact inpatient discharge date.
 
-Modality-screen distribution across these contexts:
-CNS CT 728; CNS MRI 1,253; upper-artery CT 3,133;
-upper-artery MR 556. The two overlapping age cohorts
-are **not independent**, and one person may contribute
-multiple source procedure records.
+## Analytic decision rule (no new source extraction)
 
-**Crucial limitation:** Every Step76 entry passed the
-anatomy keyword screen, but this is NOT an independent
-clinical validation. Step74 had already preselected
-B02/B03/B32/B33 titles mentioning brain, carotid,
-vertebral, intracranial, head or neck, so many screen
-results are circular. Individual exact code descriptions
-and possible contrast must be reviewed by a human
-with clinical/coding expertise and correct year-effective
-CMS definitions. Neither imaging completion nor
-same-hospital encounter attribution has been verified.
+For the uniform age 18–50 cohort, obtain the already-frozen
+`P=0` and `P=1` index-IMP patient denominators and inpatient-only
+CPT14 patient numerators from Step68. Separately, sum *review-only
+index-IMP PCS source-row counts* by P from completed Step74 across
+both overlapping cohorts.
 
-Step76 also observed candidate rows / total section-B
-procedure rows of 11.02% in 2016–2018,
-4.04% in 2019–2021, and 4.46% in 2022–2024.
-This is a **source coding mix** change, not a time trend
-in patient imaging utilization.
+For each P group compute:
 
-## New decision: an upper bound without rescanning
+```text
+absolute_maximum_new_imaged_patients =
+    min(frozen_n - CPT14_index_patients,
+        review_only_index_PCS_source_rows_across_both_cohorts)
 
-Before undertaking another ~993-million-row procedure
-source scan, bound the **maximum** gain in original
-same-index inpatient imaging-code capture.
+maximum_possible_recorded_index_capture =
+    (CPT14_index_patients + absolute_maximum_new_imaged_patients)
+    / frozen_n
+```
 
-Step68's primary uniform 18–50 cohort patient totals:
-- `P=0`: n=43,727, original CPT14 n=18,031.
-- `P=1`: n=20,994, original CPT14 n=4,172.
+This deliberately unrealistic upper bound assumes every candidate
+source row is a clinically correct, unique and previously CPT14-negative
+patient of the **one** primary cohort. It is necessarily at least as
+large as any actual patient-level incremental gain from ONLY the
+already discovered PCS codes.
 
-Step74's index-IMP PCS review-candidate **SOURCE
-row memberships across both overlapping cohorts**:
-- `P=0`: at most 4,119 such source rows.
-- `P=1`: at most 1,456 such source rows.
+The completed Step76/Step74 aggregates show qualitatively that
+even this maximum P=1 gain **cannot eliminate** the original
+P0–P1 coded-capture gap. The exact source-derived numerical
+bound is recomputed **locally** by Step77; do NOT commit the
+private source results to the repository. This is a measurement
+ceiling, not a causal hypothesis test, a radiology outcome or
+an inference about source coding systems not yet reviewed.
 
-The candidate source-row count across both overlapping
-cohorts upper-bounds distinct patients newly CPT14-positive
-within **either one** cohort: every newly captured
-patient needs at least one candidate row, and one
-source procedure can be counted in both cohorts.
-This upper bound is intentionally generous because
-it assumes *every* candidate code is clinically
-correct, belongs to a distinct primary-cohort
-patient, occurs on the relevant index, and was not
-already CPT14-positive.
+## Script and clinical worksheet
 
-Thus the theoretical `P=1` ceiling is
-`(4,172 + 1,456)/20,994 = 26.81%`;
-the original `P=0` CPT14 rate remains
-`18,031/43,727 = 41.24%`.
-Even if `P=0` receives **zero** PCS improvement,
-the negative `P=1` versus `P=0`
-association cannot disappear from adding
-ONLY these index-IMP PCS candidates.
-This is a **mathematical source-count ceiling**,
-not an observed expanded outcome or a causal
-explanation of the P discrepancy. Other
-systems (e.g., SNOMED/HCPCS), episode
-attribution, and incomplete source capture
-have not been ruled out. P=0 is not a
-clinically confirmed secondary-stroke group.
+`scripts/step77_pcs_gain_ceiling_and_clinical_review.py` reads only
+the completed local, private Step68, Step74 and Step76 JSON reports,
+checks frozen reporting policies and source-row reconciliation, and
+prints the mathematical ceiling in the authorized terminal.
 
-## What the new Step77 script does
+It creates an atomic, non-overwriting **LOCAL ONLY** clinician-review
+CSV containing the exact observed PCS candidate codes and official
+title variants, with all substantive decisions left `PENDING`:
 
-`scripts/step77_pcs_gain_ceiling_and_clinical_review.py`
-reads only:
-- Completed private Step68 aggregate JSON
-  (`patient_cohort_aggregates`, patient-level
-  original CPT14 capture);
-- Completed private Step74 aggregate JSON
-  (exact-code, year, P, encounter context
-  *source row* counts);
-- Step76 restricted private exact-code review
-  queue (official CMS title variants and status).
+- Verify full anatomic target and method; distinguish relevant
+  neurovascular anatomy from unrelated arteries/brain structures.
+- Decide if contrast/angiographic classification can actually
+  be inferred from the official title/code.
+- Verify official fiscal-year and discharge-date effective periods.
+- Record include/exclude decision, clinical rationale, reviewer
+  and date before freezing a year-valid codebook.
 
-The script independently checks P-specific
-frozen denominators and code-review source
-row totals, applies `min(n-CPT14, PCS_source_rows)`
-to obtain an impossible-to-exceed **distinct-patient
-gain upper bound**, and prints safe aggregate
-rates and resulting smallest possible P0-P1
-index-coded capture gap.
+The worksheet contains no patient IDs or patient-level data, but the
+fact that each public code is **observed in private source records**
+still makes the list restricted source-derived evidence. Do not
+commit, email or otherwise release the observed-code worksheet
+without applicable institutional authorization. A public-only
+clinical codebook may later be authored without source-frequency
+or observed-in-private labels.
 
-It saves one **LOCAL ONLY clinician-review CSV**
-with 40 exact codes, their available official
-CMS title variants and observed source service
-years. Each row contains **blank/PENDING clinical
-fields**, including anatomical site, method,
-contrast (where actually determinable),
-include/exclude decision, evidence/rationale,
-reviewer and effective discharge-date check.
-It does **not** assert any codes are clinically
-approved, issue person-level capture flags,
-or upload source-derived records to GitHub.
-Private source frequencies are not included
-in the clinician CSV; the **observed code list
-itself** is still source-derived and restricted.
+Private local worksheet path (not for upload):
 
-## One local run
+`results/phase1/full_reconstruction_private/step77_decision_gate_private/step77_clinical_code_review_LOCAL_ONLY.csv`
+
+## One bundled, fail-fast local run
 
 ```bash
 (
@@ -131,47 +97,22 @@ itself** is still source-derived and restricted.
 )
 ```
 
-Script uses completed read-only private JSON files
-with no source table reread, no external network,
-and no CMS downloads. It is non-overwriting
-for the private CSV so a completed adjudication
-is never silently destroyed.
+**Handoff: TERMINAL OUTPUT ONLY.** No ZIP, SQLite, private CSV/JSON,
+patient data or original procedure source files. This Step77
+does not re-read the raw ~1-billion-row procedure table.
 
-**Handoff: TERMINAL OUTPUT ONLY**; no ZIP, source
-SQLite, private source-derived JSON, or CSV upload
-is requested.
+## After the run
 
-Private worksheet (do not share absent clearance):
+Do not launch another full procedure scan or additional demographic
+models on the strength of review-only source-code frequencies.
+P=0 combines nonprincipal/unmarked diagnosis indicators rather than
+clinical confirmation of secondary ischemic stroke. True scan
+performance, stroke severity, HCO/episode attribution, and
+source coding differences remain unverified.
 
-`results/phase1/full_reconstruction_private/step77_decision_gate_private/step77_clinical_code_review_LOCAL_ONLY.csv`
-
-## Next scientific gate
-
-1. Clinician/coding reviewer adjudicates exact
-   CNS/upper-arterial anatomic target and method,
-   rejecting unrelated territories and unclear
-   descriptions; document year-specific
-   discharge-date validity and contrast ambiguity.
-2. Freeze a public-only, reviewed and
-   year-valid codebook (code,
-   CMS description, modality, inclusion/exclusion,
-   version dates, clinical rationale).
-   Do not publish or commit any indication that
-   a code was specifically observed in private
-   TriNetX records without release review.
-3. Treat ICD-10-PCS as a **secondary
-   sensitivity**, not an automatic replacement
-   of same-index CPT14: even the unrealistic
-   code-only ceiling cannot resolve the
-   central P recording mismatch.
-4. Revisit a costly checkpointed patient-level
-   source pass only if another explicitly
-   justified code system/encounter hypothesis
-   is likely to change the main conclusions,
-   and the codebook has been reviewed first.
-5. The current clinical imaging-disparity
-   claims remain **not publication-ready**
-   without HCO/episode, severity and
-   performed-imaging validation. Descriptive
-   CPT14 code-capture associations remain
-   reportable only with accurate limitations.
+The next substantive prerequisite is independent clinical
+adjudication of the restricted code list and a publicly defensible
+year-specific codebook. Only then consider whether a targeted
+patient-level source pass could meaningfully improve outcome
+measurement beyond original CPT14 and the existing encounter
+sensitivity analyses.
