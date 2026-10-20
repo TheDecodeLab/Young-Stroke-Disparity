@@ -280,8 +280,8 @@ def _analyze(db,source):
             for name,yes in checks.items():
                 c[name]+=int(yes)
             if not checks["imp"]:
-                for name in ("ed","ed_f","pre2","day0_other","pre7",
-                             "any_pre2","any_day0"):
+                for name in ("ed","ed_f","pre2","day0_other","post2_other","pre7",
+                             "any_pre2","any_day0","any_post2"):
                     if checks[name]:
                         c["new_"+name]+=1
             if checks["imp"] and checks["ed"]:
@@ -291,6 +291,9 @@ def _analyze(db,source):
                     checks["ed"] or checks["pre2"] or checks["day0_other"])
                 c["new_ed_or_pre7_day0"] += int(
                     checks["ed"] or checks["pre7"] or checks["day0_other"])
+                c["new_ed_or_pre2_day0_post2"] += int(
+                    checks["ed"] or checks["pre2"] or checks["day0_other"]
+                    or checks["post2_other"])
         # Preserve modality-specific ED-recovery tests without another scan.
         for modality in sorted(set(s62.CPT.values())):
             m_mask=modalityflags.get((cohort,p),{}).get(modality,0)
@@ -302,8 +305,8 @@ def _analyze(db,source):
                 for name,yes in m_checks.items():
                     mc[name]+=int(yes)
                 if not m_checks["imp"]:
-                    for name in ("ed","ed_f","pre2","day0_other","pre7",
-                                 "any_pre2","any_day0"):
+                    for name in ("ed","ed_f","pre2","day0_other","post2_other","pre7",
+                                 "any_pre2","any_day0","any_post2"):
                         mc["new_"+name]+=int(m_checks[name])
                     mc["new_ed_or_pre2_day0"]+=int(
                         m_checks["ed"] or m_checks["pre2"]
@@ -311,6 +314,9 @@ def _analyze(db,source):
                     mc["new_ed_or_pre7_day0"]+=int(
                         m_checks["ed"] or m_checks["pre7"]
                         or m_checks["day0_other"])
+                    mc["new_ed_or_pre2_day0_post2"]+=int(
+                        m_checks["ed"] or m_checks["pre2"]
+                        or m_checks["day0_other"] or m_checks["post2_other"])
     # Cross-check original same-IMP CPT14 baseline against Step62.
     for cohort in s62.COHORTS:
         baseline=source.execute("""SELECT COUNT(*) FROM idx i
@@ -338,6 +344,8 @@ def _analyze(db,source):
             raise AssertionError("Broader window union exceeds baseline negatives")
         if v["new_ed_or_pre7_day0"] < v["new_ed_or_pre2_day0"]:
             raise AssertionError("Broader pre7 window must include pre2 union")
+        if v["new_ed_or_pre2_day0_post2"] < v["new_ed_or_pre2_day0"]:
+            raise AssertionError("Adding post2 cannot reduce the union")
     return rows
 
 def _output(db,source,folder):
@@ -392,9 +400,11 @@ def _print(counts):
                   "ED_new",c["new_ed"],"ED_F_new",c["new_ed_f"],
                   "nonIMP_pre2_new",c["new_pre2"],
                   "nonIMP_day0_new",c["new_day0_other"],
+                  "nonIMP_post2_new",c["new_post2_other"],
                   "nonIMP_pre7_new",c["new_pre7"],
                   "ED_or_pre2_day0_new",c["new_ed_or_pre2_day0"],
                   "ED_or_pre7_day0_new",c["new_ed_or_pre7_day0"],
+                  "ED_or_pre2_day0_post2_new",c["new_ed_or_pre2_day0_post2"],
                   "ANY_pre2_new",c["new_any_pre2"],
                   "ANY_day0_new",c["new_any_day0"])
     print("\nNot for public release without disclosure review.")
