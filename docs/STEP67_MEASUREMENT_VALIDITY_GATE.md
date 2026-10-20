@@ -68,10 +68,12 @@ at procedure-ROW grain (not young-stroke patients or scans). Thus a
 repeat source-wide aggregate scan to recompute the same row totals
 is not useful. The clinical/codebook gap is more fundamental.
 
-## Decision gate 1: Clinical coding and provenance specification
+## Decision gate 1: Public documentation and available data checks
 
-Before writing the next patient-level scanner, ask the authorized
-TriNetX/CTSI data steward and clinical co-investigator to resolve:
+Before designing the next scanner, investigate the following using
+published definitions, authoritative codebooks, and authorized local
+quality summaries. Escalate to a steward only if a material question
+remains unresolvable by those sources:
 
 1. In the Research Network download, what exactly does a `procedure`
    record represent (performed procedure, claim-coded event, placed
@@ -135,7 +137,8 @@ classification. Its existence does not validate TriNetX data capture.
 
 ## Decision gate 3: Targeted cohort-level measurement test
 
-Only after the above specification and local governance approval:
+After a defensible literature-supported coding specification, successful
+synthetic tests, and all applicable existing local data-use approvals:
 
 1. Implement a separate **checkpointed** procedure-only scanner
    capable of processing the 993-million-row source once, retaining
@@ -185,5 +188,6 @@ collaborators' Git history.
 - Step65: completed encounter-date derivation and quarantine QA.
 - Step66: completed provenance-restricted ED ceiling, no actual ED
   procedure scan.
-- **Step67: measurement-validity decision gate only; NO new clinical
-  source pass, NO new regression, pending steward/clinical review.**
+- **Step67: literature-first coding/measurement plan; NO new clinical
+  source pass yet. Steward consultation is optional, not a prerequisite
+  for documented-code association analyses.**
