@@ -1,23 +1,24 @@
 # Step75: Correct the ICD-10-PCS section-B denominator after Step74
 
-**Status (2026-10-20):** Completed successfully on the investigator's
-workstation: seven fabricated-only checks and **715 total repository
-tests passed**, the original clinical databases were untouched,
-and all Step75 source counts reconciled to completed Step74.
-Among 85,480 indexed-IMP imaging-section B source rows, 85,445
-(99.96%) matched the FY-year/neighbor-year CMS catalog
-and 35 were malformed. That is strong **code-catalog coverage**
-but NOT proof of validity on exact discharge dates, clinical
-imaging performance, or completeness of neurovascular imaging.
-The 5,575 review-only inpatient code-source rows include
-718 CNS CT, 1,236 CNS MRI, 3,069 upper-arterial CT and 552
-upper-arterial MR, each including overlapping age cohorts
-and possible repeat procedure records. A separate 77
-review-only same-day-other-encounter rows and 18 linked-ED
-rows were observed. The next [Step76 exact-code anatomy
-and source-year audit](STEP76_EXACT_PCS_ANATOMY_REVIEW.md)
-reviews specificity and temporal representation from
-the already saved sources, without rescanning patient data.
+**Status (2026-10-20):** Completed on the authorized investigator
+workstation with fabricated-only and full repository tests
+passing. The original clinical databases were not modified,
+and Step75 reconciled all source-code profiling totals to
+Step74. The true imaging-section (`B`) official CMS
+year-neighbor title matching was extremely high;
+the misleading earlier all-PCS match fraction
+was a denominator error. This is catalog coverage,
+NOT verified patient imaging, independent clinical
+code validation, or date-of-discharge code validity.
+
+All source-derived numeric counts, candidate source-row
+frequencies and age/P strata remain in the LOCAL ONLY
+private Step74–Step76 reports. The subsequent
+[Step76 exact anatomy review](STEP76_EXACT_PCS_ANATOMY_REVIEW.md)
+and [Step77 clinician codebook worksheet](
+STEP77_PCS_CAPTURE_CEILING_AND_REVIEW.md) address
+clinical specificity, source-level ceilings,
+and the decision against another premature scan.
 
 ## Why this correction is necessary
 
