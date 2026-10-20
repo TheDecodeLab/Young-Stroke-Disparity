@@ -35,7 +35,7 @@ PRIMARY=s62.COHORTS[0]
 OUTCOMES=("imp_any","imp_advanced","same_day_any","same_day_advanced",
           "CT_HEAD_imp","MRI_BRAIN_imp","CTA_HEAD_imp")
 SCOPES=("quality","demographic_only","clean_only","complete_demographics")
-FIELDS=("sex","race","ethnicity","year","age_proxy","P","held")
+FIELDS=("sex","race","ethnicity","year","age_band","P","held")
 COMPARE={
     "sex":("MALE",("FEMALE",)),
     "race":("WHITE",("BLACK_AFRICAN_AMERICAN","ASIAN","AIAN",
@@ -78,7 +78,11 @@ def records(db):
         upper=year-int(yob)
         if upper<18 or upper>56:
             raise ValueError("Implausible Step72 indexed age-year proxy")
-        x={"cohort":cohort,"year":str(year),"age_proxy":upper,
+        # Age YEAR proxy (±1 year) is coarsened before grouped modeling.
+        band=("UNDER25" if upper<25 else
+              "25TO34" if upper<35 else
+              "35TO44" if upper<45 else "45PLUS")
+        x={"cohort":cohort,"year":str(year),"age_band":band,
            "sex":s71.category("SEX",sex),
            "race":s71.category("RACE",race),
            "ethnicity":s71.category("ETHNICITY",ethnicity),
@@ -122,9 +126,9 @@ def build(db):
         raise ValueError("Step72 empty aggregated model design")
     for field in ("n",)+OUTCOMES:
         table[field]=table[field].astype(int)
-    for field in ("P","held","age_proxy"):
+    for field in ("P","held"):
         table[field]=table[field].astype(int)
-    for field in ("cohort","sex","race","ethnicity","year"):
+    for field in ("cohort","sex","race","ethnicity","year","age_band"):
         table[field]=table[field].astype(str)
     return table
 
@@ -135,11 +139,6 @@ def verify(table,prior):
     for cohort in s62.COHORTS:
         part=table.loc[table.cohort==cohort]
         ref=prior["patient_cohort_aggregates"]["COHORT|"+cohort]
-        expected={
-            "n":"n","imp_any":"imp","same_day_any":"same_day_any",
-            "imp_advanced":"not_available",
-            "day0_new_any":"new_day0_other",
-        }
         if part.empty:
             raise ValueError("Missing required Step72 cohort")
         if int(part.n.sum())!=int(ref["n"]):
@@ -180,7 +179,7 @@ def fit_one(table,cohort,outcome,scope):
     if x.n.sum()<100:
         raise ValueError("Insufficient observations for aggregate modeling")
     x["rate"]=x[outcome]/x.n
-    form=("rate ~ C(sex) + C(race) + C(ethnicity) + C(year) + age_proxy")
+    form=("rate ~ C(sex) + C(race) + C(ethnicity) + C(year) + C(age_band)")
     if scope!="demographic_only":
         form+=" + P"
     if scope=="quality" or scope=="complete_demographics":
