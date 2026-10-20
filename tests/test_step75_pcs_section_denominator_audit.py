@@ -111,6 +111,14 @@ def test_no_source_strings_in_printed_report(source,cms,capsys):
     assert s75.safe(1)=="<11"
 
 
+def test_incomplete_cms_catalog_is_explicit_failure_before_print(source,cms,capsys):
+    counts,reasons=s75.audit_rows(source,cms)
+    partial={year:titles for year,titles in cms.items() if year>=2019}
+    with pytest.raises(ValueError,match="CMS FY catalog incomplete"):
+        s75.show(counts,reasons,partial)
+    assert capsys.readouterr().out==""
+
+
 def test_only_realistic_PCS_shape_is_accepted():
     for code in ("B020ZZZ","B030ZZZ","B320ZZZ","0123456"):
         assert s75.VALID_PCS.fullmatch(code)
