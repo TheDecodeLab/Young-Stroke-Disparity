@@ -1,6 +1,19 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
+## Current local validation gate: Step65 date-provenance audit
+
+The [Step65 local-only derived-date flag audit](STEP65_DATE_PROVENANCE_AUDIT.md)
+has been implemented to check whether Step63's uniquely linked
+EMER->IMP encounter dates are marked as TriNetX-derived. It reuses the
+completed Step62/63 SQLite databases, performs no clinical ZIP scan,
+preserves both database checkpoints and reports only bounded,
+cohort/P/year aggregate flag counts after verifying frozen linkage
+policy. **New Step65 synthetic tests and the real-local audit still
+need investigator execution and review.** This gate precedes a
+decision whether to reprocess ~993 million procedure rows for the ED
+sensitivity and precedes all disparity regression.
+
 ## External terminology clarification and Step64 decision (2026-10-19)
 
 The investigator's Step64 no-rescan ceiling audit has completed locally.
