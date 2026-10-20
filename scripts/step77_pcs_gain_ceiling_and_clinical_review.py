@@ -82,8 +82,9 @@ def analysis(reference,profiles,queue_doc,cohort):
                 and scope in s74.SCOPES):
             raise ValueError("Unexpected Step74 year/P/scope key")
         count=int(record["REVIEW_ONLY_potential_neuroimaging_source_rows"])
-        if count<0:
-            raise ValueError("Negative Step74 PCS candidate source rows")
+        all_pcs=int(record["source_rows"])
+        if count<0 or all_pcs<0 or count>all_pcs:
+            raise ValueError("Invalid Step74 PCS candidate/source-row containment")
         per[P][scope]+=count
     if any(scope not in per[str(p)] for p in (0,1) for scope in ("INDEX_IMP",)):
         raise ValueError("Missing P-specific inpatient source profile")
