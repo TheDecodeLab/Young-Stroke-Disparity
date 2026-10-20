@@ -105,6 +105,18 @@ def test_unique_ed_links_reject_both_kinds_of_competition(fake):
     assert report["same_HCO_verified"] is False
     assert report["source_id_as_HCO"] is False
     assert report["unique_candidate_pair_rows"] == 6
+    assert report["patient_with_ANY_ambiguous_key_held_from_ED_linkage"] is True
+    assert report["held_index_UNASSESSABLE_not_imaging_negative"] is True
+    for cohort in s62.COHORTS:
+        assert report["indexed_cohorts"][cohort][
+            "patients_held_any_ambiguous_EMER_IMP_key_NOT_ED_negative"] == 1
+        assert report["indexed_cohorts"][cohort][
+            "evaluable_patients_no_ambiguous_key"] == 4
+        assert report["indexed_cohorts"][cohort][
+            "index_keys_directly_quarantined_NOT_ED_negative"] == 0
+        assert report["indexed_cohorts"][cohort][
+            "by_unvalidated_P_label_NOT_hospital_confirmed"]["1"][
+                "held_any_ambiguous"] == 1
     for cohort in s62.COHORTS:
         assert report["indexed_cohorts"][cohort][
             "uniquely_linked_ED_patients_date_only"] == 2
@@ -164,9 +176,57 @@ def test_index_span_mismatch_blocks_all_linking(fake):
     # Artificially introduce inconsistent Step63 index snapshot.
     with sqlite3.connect(str(new/s63.DATABASE)) as db:
         db.execute("UPDATE idx SET start='20200102' WHERE patient='A'")
-    with pytest.raises(ValueError,match="missing/conflicting IMP spans"):
+    with pytest.raises(ValueError,match="conflicting IMP spans"):
         s63.run(z,"link",preflight=pre,step62_folder=old,folder=new)
     with sqlite3.connect(str(new/s63.DATABASE)) as db:
         assert db.execute("SELECT COUNT(*) FROM pair").fetchone()[0] == 0
         assert db.execute("SELECT COUNT(*) FROM linked").fetchone()[0] == 0
         assert s63._progress(db,"link") == (0,0)
+
+
+
+def test_quarantined_index_is_held_not_fatal_and_never_linked(fake):
+    """An invalid duplicate of Step62's valid index record holds that
+    patient from ED sensitivity without changing Step62 membership."""
+    z, pre, old, new, _ = fake
+    assert s63.run(z, "encounter", preflight=pre, step62_folder=old,
+                   folder=new)["complete"]
+    with sqlite3.connect(str(new / s63.DATABASE)) as db:
+        subjects = {p for (p,) in db.execute("SELECT patient FROM subject")}
+        with db:
+            s63._record(db, {"patient_id":"A", "encounter_id":"AIP",
+                "type":"IMP", "start_date":"20200105", "end_date":""},
+                subjects)
+        assert db.execute("""SELECT COUNT(*) FROM evt
+            WHERE patient='A' AND encounter='AIP'""").fetchone()[0] == 0
+        assert db.execute("""SELECT COUNT(*) FROM ambiguous
+            WHERE patient='A' AND encounter='AIP'""").fetchone()[0] == 1
+    result = s63.run(z, "link", preflight=pre, step62_folder=old, folder=new)
+    assert result["complete"]
+    report = json.loads((new / s63.REPORT).read_text())
+    for cohort in s62.COHORTS:
+        row = report["indexed_cohorts"][cohort]
+        assert row["step62_indexed_patients_NOT_validated"] == 5
+        assert row["index_keys_directly_quarantined_NOT_ED_negative"] == 1
+        # D's quarantined ED plus A's quarantined index.
+        assert row["patients_held_any_ambiguous_EMER_IMP_key_NOT_ED_negative"] == 2
+        assert row["evaluable_patients_no_ambiguous_key"] == 3
+        assert row["uniquely_linked_ED_patients_date_only"] == 1
+    with sqlite3.connect(str(new / s63.DATABASE)) as db:
+        assert set(db.execute("SELECT DISTINCT patient FROM linked")) == {("E",)}
+        assert db.execute("SELECT COUNT(*) FROM pair").fetchone()[0] == 5
+
+
+def test_missing_index_without_quarantine_remains_fatal(fake):
+    """An unexplained missing index key is not silently called unassessable."""
+    z, pre, old, new, _ = fake
+    assert s63.run(z, "encounter", preflight=pre, step62_folder=old,
+                   folder=new)["complete"]
+    with sqlite3.connect(str(new / s63.DATABASE)) as db:
+        db.execute("DELETE FROM evt WHERE patient='A' AND encounter='AIP'")
+    with pytest.raises(ValueError, match="Unexplained index absence"):
+        s63.run(z, "link", preflight=pre, step62_folder=old, folder=new)
+    with sqlite3.connect(str(new / s63.DATABASE)) as db:
+        assert db.execute("SELECT COUNT(*) FROM pair").fetchone()[0] == 0
+        assert db.execute("SELECT COUNT(*) FROM linked").fetchone()[0] == 0
+        assert s63._progress(db, "link") == (0, 0)
