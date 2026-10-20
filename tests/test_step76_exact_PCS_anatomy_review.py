@@ -156,3 +156,18 @@ def test_console_does_not_leak_exact_private_code(fake_step74,titles,capsys):
     assert "B020ZZZ" not in out
     assert "B330ZZZ" not in out
     assert "private" not in out.lower()
+    # No source patients / events exist in 2016 or 2018 synthetic years.
+    # Absent sparse-dictionary keys must be treated as zero, not KeyError.
+    assert "2016-2018 review_only_candidates 73 all_B_section_source_rows 73" in out
+    assert "2019-2021 review_only_candidates 19 all_B_section_source_rows 19" in out
+
+
+def test_report_rejects_review_numerator_larger_than_B_source(
+        fake_step74,titles,capsys):
+    counts,queue=s76.assess(fake_step74,titles)
+    # Malformed/misaligned counter summaries must never yield a percentage
+    # above 100, even with missing year/P strata.
+    missing_B={("2017","0","INDEX_IMP"):50,
+               ("2017","1","INDEX_IMP"):20}
+    with pytest.raises(ValueError,match="exceed B-section source rows"):
+        s76.print_audit(counts,queue,fake_step74,missing_B)
