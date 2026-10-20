@@ -1,8 +1,18 @@
 # Step72: Exploratory adjusted associations in documented imaging-code capture
 
-**Status:** Read-only implementation and fabricated tests on the analysis
-branch; the investigator has NOT yet run Step72 locally. No source ZIP
-scan. No patient/encounter-level results saved.
+**Status (2026-10-20):** The investigator successfully ran Step72
+locally: the standalone fabricated checks and all 699 repository
+tests passed, and all 17 exploratory grouped-binomial models
+converged after read-only Step62/63/68 input checks. No source ZIP
+scan; no patient/encounter-level results saved. The primary
+code-capture associations differ by modality and encounter window,
+with notable sample-quality sensitivity for NHPI and ethnicity.
+Their direction and magnitude are research QA observations,
+NOT verified clinical imaging disparities or findings adjusted for HCO.
+Point estimates do not establish statistical precision.
+See [Step73 precision and P×quarantine support checks](
+STEP73_UNCERTAINTY_SUPPORT_GATE.md). Source-derived numerical
+outputs remain LOCAL ONLY.
 
 ## Why this is an exploratory modeling screen
 
