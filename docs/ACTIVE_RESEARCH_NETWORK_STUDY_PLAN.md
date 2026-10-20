@@ -1,62 +1,60 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Next investigator run: Step77 source-count ceiling and restricted clinical codebook worksheet
+## Current decision after completed Step77: freeze source scans; review codebook independently
 
-Step76 **completed locally**: six dedicated synthetic tests,
-the full repository suite, exact-code reconciliation,
-and a restricted private review queue were successful.
-The queue includes candidate CNS and upper-arterial CT/MR
-ICD-10-PCS codes observed on index IMP and other
-encounter contexts. The age-cohort results overlap,
-and candidate source rows are NOT distinct imaged
-patients. All candidates passing the repeated keyword
-anatomy screen is partly circular (Step74 performed
-an earlier related keyword selection); this does NOT
-constitute independent clinical approval.
+**Step77 completed (2026-10-20)** on the investigator workstation
+with eight dedicated synthetic checks, 729 full repository
+tests passing, a successfully reconciled P-specific
+PCS candidate upper-bound analysis, and a newly created
+restricted 40-code clinician-review worksheet.
+No clinical source table scan, patient reclassification,
+new disparity model or public export occurred.
 
-The code-representation composition changes substantially
-between earlier and later years, but this is not
-evidence of a real decline in imaging utilization.
-The current 14-CPT outcome remains incomplete
-documented code capture, not performed imaging.
+**Decision supported by the frozen private evidence:**
+even if every P=1 candidate index-IMP PCS source row across
+the two overlapping age cohorts corresponded to a different
+previously CPT14-negative member of the primary 18–50
+cohort (an unrealistically generous assumption), those
+PCS codes alone could NOT erase the original
+P0-versus-P1 index-inpatient recorded CPT14 difference.
+This is only an upper bound on a specific PCS code set,
+not actual extra patients imaged, a causal explanation,
+or evidence of absence of other code/encounter problems.
+The exact source-derived counts and candidate code
+list remain in the restricted local outputs.
 
-**Material decision:** A conservative algebraic
-upper bound derived from completed Step68 patient
-counts and Step74 P-specific source-row candidate
-counts establishes that even an impossibly
-complete addition of ALL observed candidate index-IMP
-PCS source rows cannot eliminate the original P0–P1
-CPT14-coded capture contrast in the primary uniform
-18–50 cohort. The exact source-derived numeric
-comparison is local-only and should not be
-committed to GitHub as a results report.
+**Next scientific action is not another compute gate.**
+Use the [post-Step77 outcome decision and independent
+clinical code-review protocol](
+STEP77_POSTRUN_MEASUREMENT_DECISION.md)
+to adjudicate anatomy, method/contrast and year-effective
+definitions for the 40 exact PCS candidates on the
+approved workstation, or develop an independent
+public-CMS-only clinical mapping. Until this review is
+complete, the working primary endpoint is **documented
+index-IMP CPT14 code capture** in the uniform 18–50
+cohort, with exploratory same-day other-encounter
+capture and preceding ED linkage reported separately
+as sensitivity definitions. These are NOT necessarily
+clinical images performed in the same HCO/stroke episode.
 
-[Step77 PCS ceiling and clinician-review worksheet](
-STEP77_PCS_CAPTURE_CEILING_AND_REVIEW.md)
-implements one **read-only** local execution:
-reconcile the frozen aggregate inputs,
-compute the mathematical patient-gain
-ceiling, and generate a restricted
-**LOCAL ONLY** exact observed-code
-worksheet with pending clinical inclusion,
-anatomy, modality/contrast and
-discharge-year validity fields. The
-observed-code list itself is source-derived,
-even though the code descriptions are public.
+No new full source procedure scans, automatic
+PCS-inclusive patient flags, or further increasingly
+similar demographic models should proceed merely
+because CMS code titles match. Before claiming
+clinical imaging disparities, resolve missing/
+unmapped demographics, P coding validity,
+hospital capture/episode attribution, severity,
+and clinical completion evidence. The historical
+sex-dependent cohort remains overlapping
+sensitivity material.
 
-**Step77 fabricated tests and local execution are PENDING.**
-Next handoff: **TERMINAL OUTPUT ONLY**.
-Do not upload private report JSON,
-source SQLite, clinical source ZIP,
-or restricted observed-code worksheets.
-No further full-source procedure scans,
-patient reclassification, or GLM iterations
-are warranted until a clinically reviewed,
-year-valid codebook and measurement
-benefit are established. Hospital/site
-recording, clinical severity and
-performed imaging remain unverified.
+**Status:** No local terminal command required
+for this stage. The restricted clinician-review
+CSV is already generated; it must not be uploaded,
+committed, or distributed externally without
+the applicable institutional disclosure authorization.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
