@@ -290,6 +290,11 @@ def main():
             metadata.get("s62")!=s68._snapshot(p62)
             or metadata.get("s63")!=s68._snapshot(p63)):
             raise ValueError("Step68 input signature differs")
+        progress=db.execute(
+            "SELECT seen,done FROM capture.progress WHERE stage='procedure'"
+        ).fetchone()
+        if progress != (993025015,1):
+            raise ValueError("Step68 full procedure-source checkpoint incomplete")
         table=build(db)
         verify(table,source)
         print_results(table)
