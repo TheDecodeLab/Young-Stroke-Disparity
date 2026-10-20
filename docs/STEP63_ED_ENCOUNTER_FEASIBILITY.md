@@ -138,21 +138,18 @@ linked ED encounters, by-year and by-`P` attrition, and retained event
 records. If links are rare or source flags call reliability into
 question, stop rather than launching another large procedure scan.
 
-**Actual Step63 encounter checkpoint, 2026-10-19:** the investigator's
-authorized workstation processed and reconciled 557,665,953 source
-encounter rows, with 658 full-suite tests passing. It retained
-621,878 `EMER` and 1,192,380 `IMP` keys among Step62 indexed patients
-and quarantined 56,261 patient/encounter keys affecting 14,078
-distinct patients. **1,077** uniform cohort and **1,403** historical
-cohort index encounter keys were absent because of quarantine;
-both cohorts reported **zero** retained index date mismatches.
-These counts are not interchangeable with Step62's 64 qualifying IMP
-conflicts: Step63 also quarantines invalid or missing-date rows.
-The existing V1 Step63 DB and completed encounter checkpoint are
+**Actual Step63 encounter checkpoint (2026-10-19):** The
+authorized workstation completed the encounter scan and all local
+synthetic tests passed. It also detected a nontrivial number of
+quarantined encounter keys, including some Step62 index keys.
+**Specific source-derived aggregate counts remain LOCAL ONLY** and
+must not be placed in this GitHub document without disclosure approval.
+The completed V1 Step63 database and encounter checkpoint are
 preserved. The revised **link-only** policy evaluates unambiguous
-patients without re-running that encounter source. Neither the
-excluded-patient distribution nor uniqueness/link yield has yet been
-verified locally under this revised policy.
+patients without repeating the encounter source; it excludes indexed
+patients with any quarantined encounter key from the strict
+reciprocal-uniqueness *evaluable* subset and audits this attrition.
+Its actual link yield has not yet been verified on the workstation.
 
 **Future stage, not yet implemented:** Only if encounter feasibility
 passes its scientific review, implement a separate checkpointed ED
