@@ -1,7 +1,48 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Current next validation: Step69 same-day encounter attachment (no source scan)
+## Next investigator run: Step70 year×quarantine-standardized P-label contrasts
+
+Step69 completed locally with synthetic tests and the full suite
+passing, full index/CPT14 reconciliation to Step68, and no procedure
+source read. The dominant signal is that **same-day CPT14 on a
+DIFFERENT encounter** changes the overall P1 vs P0 capture contrast,
+but this pattern is strongly associated with patients whose
+EMER/IMP encounter keys have one or more Step63 quarantine
+flags. It does **not** follow that the other-encounter imaging
+was provided in the same hospital, within the same admission
+episode, or was clinically performed.
+
+The completed local grouped evidence shows that the expanded
+same-day coding contrast differs in direction between patients
+with and without any ambiguous encounter key. P1 has a
+substantially greater share of patients with ANY quarantine.
+Consequently, the overall reversal may be driven partly by
+different source-data quality mixes, an explanation we must
+quantify before adopting a broader primary outcome.
+
+[Step70](STEP70_P_QUARANTINE_STANDARDIZATION.md) now performs one
+**read-only** bundled descriptive test: crude, quarantine-stratum,
+year-stratum, and pooled-weight joint year×quarantine
+standardized comparisons for four frozen CPT14-coded outcome
+definitions, with by-year source-quality sample counts and
+independent Step68 reconciliation. **New Step70 synthetic tests
+and the real local audit still require investigator verification.**
+No ZIP, original procedure scan or new patient-level output is
+required. Next requested handoff is **TERMINAL OUTPUT ONLY**.
+Cohorts continue to overlap, P=0 includes S/blank/unmarked,
+and none of these are adjusted demographic-disparity analyses.
+
+Separately, CMS historic ICD-10-PCS tables verify that B24
+describes heart ultrasonography and B31 upper-artery fluoroscopy;
+B02/B03 describe central-nervous-system CT/MRI, while B32/B33
+can include upper-artery CT/MRI with body-part qualification.
+Step69's three-character prefix frequencies must therefore NOT
+be reclassified directly into brain/vascular-imaging outcomes.
+Any expanded modality codebook must use exact seven-character
+descriptions and year-effective validity.
+
+## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
 The investigator completed Step68's **single full procedure-table scan**
 with synthetic and full repository test suites passing, source row-count
