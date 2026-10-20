@@ -1,8 +1,30 @@
 # Step77: PCS patient-gain upper bound and restricted clinical code review
 
-**Status:** Read-only implementation and fabricated synthetic tests committed.
-Investigator workstation execution pending. No new procedure source scan,
-new demographic model, patient reclassification or public result export.
+**Status (2026-10-20): COMPLETED on the investigator workstation.**
+The dedicated synthetic tests and **729 total repository tests passed**;
+the frozen Step68/74/76 aggregate report inputs reconciled; the
+theoretical P-specific patient-gain ceiling was computed; and a
+restricted exact-code clinician-review CSV was generated locally
+with all 40 codes still **PENDING**. No new clinical
+source scan, demographic model, patient reclassification,
+or public result export occurred.
+
+**Decision reached:** Even the deliberately impossible assumption
+that every P=1 indexed-IMP candidate PCS source row from both
+overlapping cohorts is a distinct previously CPT14-negative
+patient in the uniform 18–50 cohort cannot close the
+original P0-versus-P1 index-IMP CPT14-coded capture gap.
+This bounds ONLY the identified Step74–76 PCS candidates;
+it does not validate the P marker, hospital/episode attachment,
+actual performed imaging, or other code systems.
+Numerical source-derived result tables remain in the
+authorized LOCAL ONLY output, not this tracked file.
+
+**Next phase:** Follow the
+[post-Step77 measurement decision and clinical review protocol](
+STEP77_POSTRUN_MEASUREMENT_DECISION.md)
+without creating another full-source rescan or automatic
+PCS-inclusive patient-level outcome.
 
 ## Scientific reason for this gate
 
