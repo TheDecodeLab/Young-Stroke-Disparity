@@ -1,7 +1,17 @@
 # Step71: Read-only demographic completeness and CPT14 outcome-feasibility audit
 
-**Status:** Implementation and fabricated-only tests pending investigator
-workstation validation. **No new source ZIP scans or patient-data exports.**
+**Status (2026-10-20):** Completed successfully on the investigator's
+authorized workstation: the Step71 fabricated tests and full
+repository test suite passed, and the read-only demographic
+feasibility audit returned for both cohorts with Step68 counts
+reconciled. **No new source ZIP scans or patient-data exports.**
+Its categorical mapping shows substantial unknown/unmapped race
+and ethnicity as well as marked demographic variation in P
+label, encounter-key quarantine and same-day code capture.
+Unadjusted contrasts are NOT clinical imaging disparities.
+See [Step72 exploratory demographic models](STEP72_EXPLORATORY_DEMOGRAPHIC_MODELS.md)
+for the next locally executed, model-based robustness screen.
+Private source-derived counts remain local-only.
 
 ## Why
 
