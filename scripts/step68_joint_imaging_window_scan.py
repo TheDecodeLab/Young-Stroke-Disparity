@@ -181,25 +181,24 @@ def _batch(db,records,subjects):
             for scope in _scope(ep,e,day,mask):
                 systems[(system,scope)]+=1
                 codes[(system,code,scope)]+=1
-    with db:
-        if flags:
-            db.executemany("""INSERT INTO flags VALUES(?,?,?,?)
-              ON CONFLICT(cohort,patient,modality)
-              DO UPDATE SET mask=(flags.mask | excluded.mask)""",
-              ((*key,value) for key,value in flags.items()))
-        if codes:
-            db.executemany("""INSERT INTO code_profile VALUES(?,?,?,?)
-              ON CONFLICT(system,code,scope)
-              DO UPDATE SET n=n+excluded.n""",
-              ((*key,n) for key,n in codes.items()))
-        if systems:
-            db.executemany("""INSERT INTO system_profile VALUES(?,?,?)
-              ON CONFLICT(system,scope) DO UPDATE SET n=n+excluded.n""",
-              ((*key,n) for key,n in systems.items()))
-        if audit:
-            db.executemany("""INSERT INTO counters VALUES(?,?)
-              ON CONFLICT(name) DO UPDATE SET n=n+excluded.n""",
-              audit.items())
+    if flags:
+        db.executemany("""INSERT INTO flags VALUES(?,?,?,?)
+          ON CONFLICT(cohort,patient,modality)
+          DO UPDATE SET mask=(flags.mask | excluded.mask)""",
+          ((*key,value) for key,value in flags.items()))
+    if codes:
+        db.executemany("""INSERT INTO code_profile VALUES(?,?,?,?)
+          ON CONFLICT(system,code,scope)
+          DO UPDATE SET n=n+excluded.n""",
+          ((*key,n) for key,n in codes.items()))
+    if systems:
+        db.executemany("""INSERT INTO system_profile VALUES(?,?,?)
+          ON CONFLICT(system,scope) DO UPDATE SET n=n+excluded.n""",
+          ((*key,n) for key,n in systems.items()))
+    if audit:
+        db.executemany("""INSERT INTO counters VALUES(?,?)
+          ON CONFLICT(name) DO UPDATE SET n=n+excluded.n""",
+          audit.items())
     return audit
 
 def _scan(db,archive,member,preflight,subjects,chunk=20000,stop_after=None):
@@ -379,12 +378,18 @@ def run(zip_path,stage="all",folder=PRIVATE,chunk=20000,stop_after=None,
                 archive,members,prior,zipfinger=s62.verified_zip(zip_path,preflight)
                 frozen=json.dumps({"policy":POLICY,"s62":snap62,
                                    "s63":snap63,"zip":zipfinger},sort_keys=True)
-            db=sqlite3.connect(str(folder/DB))
+            if (folder/DB).is_symlink():
+                raise ValueError("Step68 database cannot be symlinked")
+            previous_umask=os.umask(0o077)
             try:
-                db.executescript(SCHEMA)
+                db=sqlite3.connect(str(folder/DB))
+            finally:
+                os.umask(previous_umask)
+            try:
+                os.chmod(folder/DB,stat.S_IRUSR|stat.S_IWUSR)
                 db.execute("PRAGMA journal_mode=DELETE")
                 db.execute("PRAGMA synchronous=FULL")
-                os.chmod(folder/DB,stat.S_IRUSR|stat.S_IWUSR)
+                db.executescript(SCHEMA)
                 old=db.execute("SELECT v FROM meta WHERE k='frozen'").fetchone()
                 if old:
                     if stage in ("scan","all") and old[0]!=frozen:
