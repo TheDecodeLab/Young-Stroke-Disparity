@@ -1,6 +1,31 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
+## Updated investigator decision: literature-first analysis (2026-10-20)
+
+The investigator elects to proceed without a routine TriNetX or CTSI
+inquiry. Use official coding files, public TriNetX documentation and
+clinical literature to predefine a versioned, exact-code imaging
+measurement strategy; assess availability in the existing source
+summaries and local cohort data. A captured procedure code is evidence
+of **documented imaging-code utilization**, not proof of a completed
+scan. A missing code does not prove absent care. HCO participation,
+capture and same-hospital ED transfer remain unverified limitations.
+
+Critically, Step62 `P=0` includes secondary, blank and other non-P
+diagnosis indicators, and MUST NOT be identified as a verified
+secondary-stroke cohort. The large P-stratified CPT14 difference
+requires prespecified P/period/encounter-coding sensitivity analyses
+before demographic disparity claims. Source-based explanation is
+a hypothesis, not a verified mechanism.
+
+The [updated Step67 plan](STEP67_MEASUREMENT_VALIDITY_GATE.md)
+supersedes its original wording about mandatory steward approval:
+contact is reserved for material unresolved questions. All source
+access and disclosure conditions remain mandatory; existing
+private outputs are preserved. No new clinical source scan
+has been launched by this decision update.
+
 ## Active decision: Step67 outcome-measurement validity before any further scan
 
 **Step66 is complete.** The investigator confirmed successful corrected
