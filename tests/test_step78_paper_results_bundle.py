@@ -153,8 +153,9 @@ def test_results_narrative_and_private_csv(tmp_path):
     demos=s78.demographic_rows(tab)
     text=s78.narrative(c,d,demos,[])
     assert "NOT publication- or external-disclosure-ready" in text
-    # Meaning matters; the prose starts the sentence with "Documented".
-    assert "documented 14-code CPT neuroimaging" in text.lower()
+    # Both sides must use the same case convention. This checks the
+    # intended outcome statement, not a fragile capitalization detail.
+    assert "documented 14-code cpt neuroimaging" in text.casefold()
     assert "same HCO" in text
     assert "scan completion" in text
     assert "confirmed" not in text.lower().replace(
