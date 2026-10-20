@@ -1,6 +1,33 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
+## Latest execution checkpoint: 2026-10-19
+
+The investigator has now completed Step 62's diagnosis, encounter, patient,
+index, procedure and local-only aggregate-report stages on the authorized
+workstation. The private report and follow-up stratified audit have been
+reviewed under their existing research-governance constraints. These are
+**candidate indexed I63/IMP cohorts with documented same-IMP CPT14 codes**,
+not adjudicated ischemic-stroke admissions or verified imaging.
+
+The investigators' next critical validation issue is the substantial
+difference in documented code capture across the **unvalidated** I63
+`P` indicator, present within calendar years. Race and ethnicity `UNKNOWN`
+categories also require missingness-sensitive analysis. Do **not** run
+sex/race/ethnicity disparity regression or equate missing CPT with absent
+imaging. No site/HCO representativeness or encounter transfer has been
+verified.
+
+New checkpointed [Step63 ED encounter feasibility](STEP63_ED_ENCOUNTER_FEASIBILITY.md)
+is on the draft analysis branch and must pass local synthetic tests before
+any clinical scan. Its initial scope is restricted to an independent
+full encounter-table scan for the already-indexed patients and a
+reciprocal-uniqueness/date-only ED-to-IMP link feasibility report.
+**ED procedure coding and any expanded imaging estimates are NOT yet
+implemented.** Preserve the completed Step62 private database.
+The historical dated checkpoints below remain the audit record; prior
+statements that Step62 has not yet run are no longer current.
+
 ## 1. Current evidence and execution status
 
 **Current research checkpoint (2026-10-19):** Corrected `YYYYMMDD`
