@@ -34,7 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PRIVATE = ROOT / "results/phase1/full_reconstruction_private/step68_procedure_windows_private"
 DB = "step68_procedure_windows_LOCAL_ONLY.sqlite"
 REPORT = "step68_aggregate_LOCAL_ONLY.json"
-POLICY = "STEP68_SINGLE_SCAN_CPT14_WINDOWS_AND_SYSTEM_DISCOVERY_V1"
+POLICY = "STEP68_SINGLE_SCAN_CPT14_WINDOWS_AND_VERSIONED_SYSTEM_DISCOVERY_V2"
 ACK = s62.ACK
 # One patient's same-day code may belong to a different provider/episode.
 IMP, ED, ED_F, NONIMP_PRE2, NONIMP_DAY0, NONIMP_POST2 = (1,2,4,8,16,32)
@@ -48,10 +48,12 @@ CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY,v TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS progress(stage TEXT PRIMARY KEY,seen INTEGER NOT NULL,done INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS flags(cohort TEXT,patient TEXT,modality TEXT,mask INTEGER NOT NULL,
  PRIMARY KEY(cohort,patient,modality));
-CREATE TABLE IF NOT EXISTS code_profile(system TEXT,code TEXT,scope TEXT,n INTEGER NOT NULL,
- PRIMARY KEY(system,code,scope));
-CREATE TABLE IF NOT EXISTS system_profile(system TEXT,scope TEXT,n INTEGER NOT NULL,
- PRIMARY KEY(system,scope));
+CREATE TABLE IF NOT EXISTS code_profile(system TEXT,code TEXT,scope TEXT,
+ service_year TEXT,P INTEGER,n INTEGER NOT NULL,
+ PRIMARY KEY(system,code,scope,service_year,P));
+CREATE TABLE IF NOT EXISTS system_profile(system TEXT,scope TEXT,
+ service_year TEXT,P INTEGER,n INTEGER NOT NULL,
+ PRIMARY KEY(system,scope,service_year,P));
 CREATE TABLE IF NOT EXISTS counters(name TEXT PRIMARY KEY,n INTEGER NOT NULL);
 """
 def _iso(compact):
@@ -180,21 +182,22 @@ def _batch(db,records,subjects):
                 key=(ep["cohort"],p,modality)
                 flags[key]=flags.get(key,0)|mask
             for scope in _scope(ep,e,day,mask):
-                systems[(system,scope)]+=1
-                codes[(system,code,scope)]+=1
+                systems[(system,scope,day[:4],ep["P"])]+=1
+                codes[(system,code,scope,day[:4],ep["P"])]+=1
     if flags:
         db.executemany("""INSERT INTO flags VALUES(?,?,?,?)
           ON CONFLICT(cohort,patient,modality)
           DO UPDATE SET mask=(flags.mask | excluded.mask)""",
           ((*key,value) for key,value in flags.items()))
     if codes:
-        db.executemany("""INSERT INTO code_profile VALUES(?,?,?,?)
-          ON CONFLICT(system,code,scope)
+        db.executemany("""INSERT INTO code_profile VALUES(?,?,?,?,?,?)
+          ON CONFLICT(system,code,scope,service_year,P)
           DO UPDATE SET n=n+excluded.n""",
           ((*key,n) for key,n in codes.items()))
     if systems:
-        db.executemany("""INSERT INTO system_profile VALUES(?,?,?)
-          ON CONFLICT(system,scope) DO UPDATE SET n=n+excluded.n""",
+        db.executemany("""INSERT INTO system_profile VALUES(?,?,?,?,?)
+          ON CONFLICT(system,scope,service_year,P)
+          DO UPDATE SET n=n+excluded.n""",
           ((*key,n) for key,n in systems.items()))
     if audit:
         db.executemany("""INSERT INTO counters VALUES(?,?)
@@ -348,7 +351,7 @@ def _output(db,source,folder):
         "procedure_source_rows_read":_progress(db)[0],
         "patient_cohort_aggregates":serial(),
         "code_system_scope_rows_NOT_patients":list(db.execute(
-            "SELECT system,scope,n FROM system_profile ORDER BY system,scope")),
+            "SELECT system,scope,service_year,P,n FROM system_profile ORDER BY system,scope,service_year,P")),
         "matched_source_row_counters_NOT_patients":dict(db.execute(
             "SELECT name,n FROM counters")),
         "not_for_public_release_without_institutional_review":True,
@@ -465,7 +468,7 @@ def run(zip_path,stage="all",folder=PRIVATE,chunk=20000,stop_after=None,
                     _print(counts)
                     print("\nPRIVATE CODE-SYSTEM DISCOVERY COVERAGE (source rows, not scans)")
                     for system,scope,distinct_codes,n in db.execute(
-                            """SELECT system,scope,COUNT(*),SUM(n)
+                            """SELECT system,scope,COUNT(DISTINCT code),SUM(n)
                             FROM code_profile GROUP BY system,scope
                             ORDER BY system,scope"""):
                         print(system,scope,"distinct exact codes",distinct_codes,
