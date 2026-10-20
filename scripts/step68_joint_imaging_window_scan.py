@@ -299,8 +299,15 @@ def _analyze(db,source):
                 for name,yes in m_checks.items():
                     mc[name]+=int(yes)
                 if not m_checks["imp"]:
-                    mc["new_ed"]+=int(m_checks["ed"])
-                    mc["new_ed_f"]+=int(m_checks["ed_f"])
+                    for name in ("ed","ed_f","pre2","day0_other","pre7",
+                                 "any_pre2","any_day0"):
+                        mc["new_"+name]+=int(m_checks[name])
+                    mc["new_ed_or_pre2_day0"]+=int(
+                        m_checks["ed"] or m_checks["pre2"]
+                        or m_checks["day0_other"])
+                    mc["new_ed_or_pre7_day0"]+=int(
+                        m_checks["ed"] or m_checks["pre7"]
+                        or m_checks["day0_other"])
     # Cross-check original same-IMP CPT14 baseline against Step62.
     for cohort in s62.COHORTS:
         baseline=source.execute("""SELECT COUNT(*) FROM idx i
@@ -456,7 +463,7 @@ def run(zip_path,stage="all",folder=PRIVATE,chunk=20000,stop_after=None,
                         else:
                             counts=_analyze(db,original)
                     _print(counts)
-                    print("\\nPRIVATE CODE-SYSTEM DISCOVERY COVERAGE (source rows, not scans)")
+                    print("\nPRIVATE CODE-SYSTEM DISCOVERY COVERAGE (source rows, not scans)")
                     for system,scope,distinct_codes,n in db.execute(
                             """SELECT system,scope,COUNT(*),SUM(n)
                             FROM code_profile GROUP BY system,scope
