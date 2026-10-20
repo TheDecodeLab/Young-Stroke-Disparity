@@ -1,8 +1,12 @@
 # Step 65: Date-provenance check for ED-linked index encounters (LOCAL ONLY)
 
-**Status:** Synthetic-only implementation, pending investigator workstation
-test confirmation. The script reads ONLY previously completed Step62
-and Step63 private SQLite databases and produces a console-only aggregate.
+**Status (2026-10-19):** The synthetic checks and investigator's
+read-only Step65 date-provenance audit completed successfully.
+The console-only aggregate revealed calendar-year and unvalidated-P-label
+differences in TriNetX date-derivation flags. This is a source-quality
+observation, not proof of ED transfer or procedure performance.
+The script reads ONLY previously completed Step62 and Step63
+private SQLite databases and does not write patient-level outputs.
 No source ZIP scan, checkpoint modification, imaging ascertainment
 change, or patient/encounter identifiers are emitted.
 
