@@ -1,6 +1,25 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
+## Current next decision gate: Step64 no-rescan ED capture ceiling
+
+Step63's encounter and date-only reciprocal-uniqueness link stages have
+completed locally with synthetic tests passing. A substantial subset
+of original index patients are held from the strict ED linkage because
+other encounter keys are quarantined; missing or ambiguous linkage is
+**not** evidence of missing imaging. The frozen link definition remains
+unverified as a same-hospital transfer.
+
+Before scanning the entire procedure source again, perform the
+[Step64 read-only ED CPT14 capture-ceiling audit](STEP64_ED_CAPTURE_CEILING.md).
+This checks the theoretical *maximum incremental patient-level coded
+capture*, stratified by year and the unvalidated P label, when unique
+ED links are allowed to contribute new codes. It only joins completed
+private Step62/63 databases and does not modify their checkpoints.
+No ED procedure scan or disparity regression is currently authorized
+by the reconstruction evidence alone. No source-derived cohort counts
+are recorded in this repository document.
+
 ## Latest execution checkpoint: 2026-10-19
 
 The investigator has now completed Step 62's diagnosis, encounter, patient,
