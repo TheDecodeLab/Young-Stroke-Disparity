@@ -360,7 +360,8 @@ def plots(table2,folder):
     ax.set_xticks(idx)
     ax.set_xticklabels(labels,rotation=14,ha="right")
     ax.legend(frameon=False)
-    ax.spines[["top","right"]].set_visible(False)
+    for side in ("top","right"):
+        ax.spines[side].set_visible(False)
     f.tight_layout()
     f.savefig(folder/"figure1_coded_capture_by_encounter.png",dpi=200)
     plt.close(f)
@@ -377,7 +378,8 @@ def plots(table2,folder):
     ax.set_xticks(idx)
     ax.set_xticklabels(labels,rotation=14,ha="right")
     ax.legend(frameon=False)
-    ax.spines[["top","right"]].set_visible(False)
+    for side in ("top","right"):
+        ax.spines[side].set_visible(False)
     f.tight_layout()
     f.savefig(folder/"figure2_source_quality_standardization.png",dpi=200)
     plt.close(f)
