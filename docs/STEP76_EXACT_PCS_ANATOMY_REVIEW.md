@@ -1,53 +1,41 @@
 # Step76: Exact ICD-10-PCS anatomy review, year trends and codebook decision
 
-**Status (2026-10-20):** Completed successfully on the
-investigator's authorized workstation: six Step76 synthetic
-tests, **721 total repository tests**, read-only
-reconciliation and private exact-code review queue generation
-all succeeded. **NO source procedure ZIP rescan.**
+**Status (2026-10-20):** Completed on the authorized workstation:
+all new synthetic checks and the full repository suite passed,
+the Step74 exact-code profiles reconciled, and a LOCAL ONLY
+source-derived exact-code review queue was generated.
+No original procedure-source scan took place.
 
-The local Step76 result comprises 40 exact candidate codes
-and 5,670 source procedure row×overlapping-cohort
-memberships: 5,575 index-IMP, 77 non-index same-day,
-18 uniquely linked ED. Candidate classes: 728 CNS CT,
-1,253 CNS MR, 3,133 upper-arterial CT,
-556 upper-arterial MR. All passed a rule-based
-anatomy screen but this is **NOT independent
-clinical validation** because Step74 already
-screened using anatomy keywords. The source-row
-candidate fraction among index-IMP B-section rows
-is 11.02% (2016–18), 4.04% (2019–21),
-and 4.46% (2022–24): a source-coding
-mix pattern, NOT patient imaging utilization.
+**Interpretation:** Candidates were preselected by Step74's
+anatomy keywords, so a 100% positive repeat keyword screen
+in Step76 is not independent clinical validation.
+A marked change in candidate-code source-row fractions over
+time is a source coding representation signal, not a
+patient imaging utilization trend.
 
-The next [Step77 source-count ceiling and clinical
-review worksheet](STEP77_PCS_CAPTURE_CEILING_AND_REVIEW.md)
-shows why further processing cannot be justified
-based only on these candidate source rows.
+[Step77](STEP77_PCS_CAPTURE_CEILING_AND_REVIEW.md) computes an
+unrealistically generous patient-gain upper bound and builds
+the restricted clinician codebook-review worksheet.
+The quantitative Step76 results and exact observed-source
+code list remain LOCAL ONLY and require release approval
+before public use.
 
-## Step75 result that motivates this step
+## Step75 / Step76 source evidence for this gate
 
-Step75 completed on the authorized workstation with seven dedicated
-tests and **715 repository tests** passing. Section-B-specific,
-year-adjacent CMS matching reconciled exactly to Step74.
+Step75 resolved the CMS imaging-section denominator issue and
+demonstrated strong year-neighbor catalog matches among
+syntactically well-formed section-B source rows.
+Step76 then identified a restricted set of exact PCS codes with
+plausible CNS/head-neck vascular titles, but the underlying
+source procedure rows can duplicate people and occur in two
+overlapping cohort definitions.
 
-The previous apparent CMS validity problem was a denominator
-artifact: out of **447,495** indexed-IMP ICD-10-PCS source
-row×cohort memberships, only **85,480** were imaging-section
-B rows. **85,445 / 85,480 = 99.96%** were well-formed,
-matching the FY Y or Y+1 code-title catalogs; 35 B rows
-were malformed. ED and same-day non-index B rows were
-100% matched among the source-year-neighbor catalogs.
-
-The **5,575** inpatient source-row candidate tags
-(718 B02 CNS CT, 1,236 B03 CNS MRI, 3,069 B32
-upper-artery CT, 552 B33 upper-artery MRI)
-are **NOT 5,575 new imaged patients**. They include
-repeat codes, overlapping cohort membership, known
-cross-system non-independence and uncertain same-HCO
-episode linkage. Step75's broad B section includes
-many imaging sites unrelated to stroke. Codebook
-anatomy and specificity must be established first.
+The exact source-derived candidate counts and source-row
+time-profile evidence are retained in the completed
+PRIVATE local Step74–Step76 reports. They are not
+equivalent to distinct additional imaging patients.
+No automatic expansion of the original frozen CPT14
+imaging-code outcome is authorized by these screens.
 
 ## Independent public source rules
 
