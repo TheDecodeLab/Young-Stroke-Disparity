@@ -90,17 +90,19 @@ completed Step62/63 staging to test Step66.
 ## Execution (investigator's authorized workstation only)
 
 ```bash
-set -e
-git pull --ff-only origin analysis-rebuild-phase1-audit
-python -m py_compile scripts/step66_provenance_sensitive_ceiling.py
-python -m pytest -q tests/test_step66_provenance_sensitive_ceiling.py
-python -m pytest -q
-python scripts/step66_provenance_sensitive_ceiling.py
+(
+  set -e
+  git pull --ff-only origin analysis-rebuild-phase1-audit
+  python -m py_compile scripts/step66_provenance_sensitive_ceiling.py
+  python -m pytest -q tests/test_step66_provenance_sensitive_ceiling.py
+  python -m pytest -q
+  python scripts/step66_provenance_sensitive_ceiling.py
+)
 ```
 
-Using `set -e` here is intentional: stop on the first failed
-compile or test rather than launching another analysis in the same
-pasted command after a failure.
+The parenthesized **subshell** stops at the first failed compile or
+test, so the analysis will never launch after an earlier failure.
+Its `set -e` does not change the investigator's interactive shell.
 
 Both databases are opened in read-only mode:
 
