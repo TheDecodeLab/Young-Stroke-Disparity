@@ -1,9 +1,18 @@
 # Step68: One-pass ED-versus-inpatient CPT14 timing test and code discovery
 
-**Status:** Python 3.9 synthetic-only implementation awaiting investigator
-workstation tests. The new procedure source scan has NOT yet been run.
-Do not run if tests fail. Outputs are strictly LOCAL ONLY and must never
-be committed or uploaded without institutional review.
+**Status (2026-10-20):** The investigator confirmed that the
+Python 3.9 synthetic and full repository test suites passed,
+the complete procedure-source scan finished and reconciled its
+source-row count and same-IMP CPT14 baseline to Step62.
+The local-only aggregate report and private exact-code profile
+are preserved. **DO NOT rerun this 993-million-row source scan**.
+The linked ED hypothesis recovered relatively few otherwise-negative
+coded patients; another-encounter **same-day CPT14** captured many
+more, with strong heterogeneity by unvalidated P label. This is a
+measurement/encounter-linkage signal, not verified performed imaging.
+Use [Step69 read-only follow-up](STEP69_SAME_DAY_ATTACHMENT_QA.md)
+to decompose it further. Outputs remain strictly LOCAL ONLY
+and must not be committed or uploaded without disclosure review.
 
 ## Research hypotheses
 
