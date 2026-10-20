@@ -5,32 +5,37 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## CURRENT STEP: Step62 checkpointed provisional cohort pipeline
+## CURRENT WORK: Step78 manuscript results for CPT14 encounter ascertainment
 
-**2026-10-19:** All three corrected Step59 `DATEFIX_V2` source-wide
-QA reports completed on the approved local workstation; their Step60 v2
-aggregate reconciliation also completed and was reviewed. The original
-`YYYYMMDD` date-format bug has been corrected. Encounter, diagnosis
-and procedure tables show records in 2016–2025; the synchronized ~half-
-volume drop in 2025 favors using **2016–2024 provisionally** while
-complete-year/HCO participation checks remain outstanding.
+**Status 2026-10-20:** The investigator completed the read-only
+Step62–77 reconstruction and validation sequence on their
+authorized workstation. The current manuscript direction is
+**recorded neuroimaging code ascertainment and encounter
+attribution** in a provisional ages 18–50 inpatient I63-coded
+cohort, not verified performed imaging or care disparities.
 
-**New code:** [Step62 checkpointed young-stroke cohort extractor](docs/STEP62_CHECKPOINTED_COHORT_PIPELINE.md)
-([script](scripts/step62_checkpointed_cohort.py),
-[synthetic tests](tests/test_step62_checkpointed_cohort.py)).
-Its **GitHub Actions synthetic-only Python 3.9 test job passed**
-([workflow](.github/workflows/step62_synthetic.yml)).
-Step62 has **not yet run on actual clinical records**.
+**Current script:** [Step78 private paper exhibit package](
+docs/STEP78_PAPER_RESULTS_PACKAGE.md),
+[script](scripts/step78_paper_results_bundle.py),
+[synthetic tests](tests/test_step78_paper_results_bundle.py),
+[manuscript scaffold](docs/MANUSCRIPT_ASCERTAINMENT_WORKING_DRAFT.md),
+and [active decision register](
+docs/ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md).
+Synthetic tests and local execution of Step78 are PENDING.
+All earlier heavy source scans are frozen and must not
+be repeated as a default next step.
 
-It independently stages I63.* candidates, matches exact `IMP` admissions
-and patient YOB, selects earliest definitely-age-eligible admission for
-each overlapping co-primary cohort, and assigns same-IMP CPT14 recorded
-imaging codes. It handles row-level continuation via a private SQLite
-checkpoint. The source archive and private SQLite stay on the approved
-workstation and outside GitHub. The final report is **provisional**
-and is not a validated stroke phenotype, performed-imaging rate or
-disparity estimate. The old Step45 scanner remains hard-disabled; PR #1
-is **DRAFT/unmerged**.
+The script reuses frozen Step62/63/68 private SQLite databases and
+the existing tested Step69–73 summaries/model estimands.
+It outputs an **internal-only** five-table, two-figure
+draft-Results package inside gitignored private results.
+Do not commit the private source-derived outputs.
+The 14 CPT code definitions describe **documented
+procedure-code capture**, not proven imaging completion;
+P=0 includes nonprincipal/blank/unmarked I63 records.
+The historical age cohort overlaps and is sensitivity only.
+PCS candidates are not included without independent
+clinical code adjudication.
 
 ## HISTORICAL CHECKPOINT: DATEFIX_V2 for YYYYMMDD calendar dates
 
