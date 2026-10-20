@@ -1,6 +1,28 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
+## Next no-scan validation gate: Step66 ED date-provenance ceiling
+
+The investigator completed the Step65 date-provenance QA on the
+authorized workstation, with the full synthetic suite passing.
+The aggregate results reveal marked **calendar-year x unvalidated
+P-label** heterogeneity in how uniquely linked ED end dates were
+marked TriNetX-derived. The same unvalidated P strata also differ
+in missing/quarantined Step63 index encounters. Exact source-derived
+counts remain LOCAL ONLY, outside this repository.
+
+Thus neither the overall Step64 ED capture ceiling nor Step63's
+0-1-day date-only predecessor linkage is a validated clinical episode.
+[Step66](STEP66_PROVENANCE_SENSITIVE_ED_CEILING.md) now computes,
+without rescanning the ZIP, hypothetical incremental CPT14 capture
+ceilings under existing reciprocal-unique links whose ED end and
+index IMP start dates are both flagged `F`, plus stricter all-ED
+provenance and 0-vs-1-day timing scenarios. Denominators and Step62
+inpatient outcomes remain frozen. This is a quality/sensitivity
+decision gate, not performed imaging, clinical validation, or an
+inferential result. **Step66 local tests and analysis have not
+yet been verified by the investigator.**
+
 ## Current local validation gate: Step65 date-provenance audit
 
 The [Step65 local-only derived-date flag audit](STEP65_DATE_PROVENANCE_AUDIT.md)
