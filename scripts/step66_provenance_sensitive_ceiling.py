@@ -45,6 +45,7 @@ def analyze(db):
           ON ip.patient=l.patient AND ip.encounter=l.imp
         WHERE i.patient IS NULL OR ed.patient IS NULL OR ip.patient IS NULL
           OR l.imp!=i.encounter OR ed.kind!='EMER' OR ip.kind!='IMP'
+          OR ed.end<ed.start OR ip.end<ip.start
           OR ed.start!=l.ed_start OR ed.end!=l.ed_end
           OR ip.start!=substr(i.start,1,4)||'-'||substr(i.start,5,2)||'-'||substr(i.start,7,2)
           OR ip.end!=substr(i.end,1,4)||'-'||substr(i.end,5,2)||'-'||substr(i.end,7,2)
