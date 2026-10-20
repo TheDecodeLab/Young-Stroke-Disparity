@@ -1,8 +1,20 @@
 # Step73: Model-based uncertainty and covariate-support diagnostics
 
-**Status:** Synthetic-only Python implementation and tests committed,
-pending investigator local execution. All Step62/63/68 databases are
-read-only; no further source procedure scan is needed.
+**Status (2026-10-20):** Completed successfully on the authorized
+workstation: Step73 standalone and full repository tests passed
+(704 total), all prescribed models and comparisons returned
+without failures, and frozen Step62/63/68 read-only
+reconciliation succeeded. No source procedure scan was
+performed. Many grouped-binomial residual deviance/df ratios
+exceed 1 (roughly 1.5–3 across models), so the nominal intervals
+understate possible extra-binomial variation and do not account
+for HCO clustering. The primary-cohort AIAN contrasts include
+a P×quarantine subgroup under 11 in some model populations.
+The broad P×quarantine cross-tab check is not a full covariate
+overlap test. The next [Step74 official CMS exact-code
+screen](STEP74_CMS_PCS_CODEBOOK_REVIEW.md) prioritizes
+outcome validity and a supplementary quasi-binomial interval
+inflation check. All source-derived counts stay LOCAL ONLY.
 
 ## Source of the decision
 
