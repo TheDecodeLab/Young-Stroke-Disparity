@@ -90,6 +90,9 @@ def test_day0_unlinked_vs_ED_linked_P(fake):
 def test_original_baseline_and_windows_reconcile(fake):
     c=s69.aggregate(fake)
     assert s69.verify_aggregate(fake,c)
+    # The reference report always includes both overlapping cohorts.
+    # Build the whole synthetic reference before reconciling either.
+    published={"patient_cohort_aggregates":{}}
     for cohort in s62.COHORTS:
         a=c[("COHORT",cohort)]
         assert a["n"]==6
@@ -101,24 +104,34 @@ def test_original_baseline_and_windows_reconcile(fake):
         assert a["union_ed_or_pre2_day0"]==4
         assert a["union_ed_or_pre7_day0"]==4
         assert a["union_ed_or_pre2_day0_post2"]==4
-        published={"patient_cohort_aggregates":{
-            "COHORT|"+cohort:{
-                "n":a["n"],"imp":a["inpatient"],"new_ed":a["new_ed"],
-                "new_ed_f":a["new_ed_f"],
-                "new_day0_other":a["new_other_day0"],
-                "new_pre2":a["new_pre2"],
-                "new_post2_other":a["new_post2"],
-                "new_pre7":a["new_pre7"],
-                "new_ed_or_pre2_day0":a["union_ed_or_pre2_day0"],
-                "new_ed_or_pre7_day0":a["union_ed_or_pre7_day0"],
-                "new_ed_or_pre2_day0_post2":
-                    a["union_ed_or_pre2_day0_post2"]}}}
-        assert s69.verify_aggregate(fake,c,published) is True
+        published["patient_cohort_aggregates"]["COHORT|"+cohort]={
+            "n":a["n"],"imp":a["inpatient"],"new_ed":a["new_ed"],
+            "new_ed_f":a["new_ed_f"],
+            "new_day0_other":a["new_other_day0"],
+            "new_pre2":a["new_pre2"],
+            "new_post2_other":a["new_post2"],
+            "new_pre7":a["new_pre7"],
+            "new_ed_or_pre2_day0":a["union_ed_or_pre2_day0"],
+            "new_ed_or_pre7_day0":a["union_ed_or_pre7_day0"],
+            "new_ed_or_pre2_day0_post2":
+                a["union_ed_or_pre2_day0_post2"]}
+    assert set(published["patient_cohort_aggregates"]) == {
+        "COHORT|"+cohort for cohort in s62.COHORTS}
+    assert s69.verify_aggregate(fake,c,published) is True
+    # A changed baseline must fail a complete two-cohort reference.
     changed={"patient_cohort_aggregates":{
-        "COHORT|"+cohort:{
-            "imp":99999} for cohort in s62.COHORTS}}
+        k:dict(v) for k,v in published["patient_cohort_aggregates"].items()}}
+    changed["patient_cohort_aggregates"][
+        "COHORT|"+s62.COHORTS[0]]["imp"]=99999
     with pytest.raises(ValueError,match="discrepancy"):
         s69.verify_aggregate(fake,c,changed)
+
+    # An incomplete reference report must never silently pass a cohort.
+    incomplete={"patient_cohort_aggregates":{
+        "COHORT|"+s62.COHORTS[0]:
+            published["patient_cohort_aggregates"]["COHORT|"+s62.COHORTS[0]]}}
+    with pytest.raises((KeyError, ValueError)):
+        s69.verify_aggregate(fake,c,incomplete)
 
 
 def test_rejects_inconsistent_mask(fake):
