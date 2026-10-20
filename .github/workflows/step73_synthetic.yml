@@ -1,0 +1,30 @@
+name: Step73 synthetic uncertainty and support audit
+
+on:
+  push:
+    branches:
+      - analysis-rebuild-phase1-audit
+    paths:
+      - "scripts/step73_uncertainty_support_diagnostics.py"
+      - "tests/test_step73_uncertainty_support_diagnostics.py"
+      - ".github/workflows/step73_synthetic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fabricated-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install scientific dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile scripts/step73_uncertainty_support_diagnostics.py
+      - name: Fabricated synthetic tests
+        run: python -m pytest -q tests/test_step73_uncertainty_support_diagnostics.py
