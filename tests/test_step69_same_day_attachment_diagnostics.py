@@ -130,7 +130,7 @@ def test_original_baseline_and_windows_reconcile(fake):
     incomplete={"patient_cohort_aggregates":{
         "COHORT|"+s62.COHORTS[0]:
             published["patient_cohort_aggregates"]["COHORT|"+s62.COHORTS[0]]}}
-    with pytest.raises((KeyError, ValueError)):
+    with pytest.raises(ValueError,match="reference report missing cohort"):
         s69.verify_aggregate(fake,c,incomplete)
 
 
