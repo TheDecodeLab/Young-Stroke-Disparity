@@ -91,12 +91,22 @@ def test_source_rows_above_population_use_population_ceiling(data):
     bad=deepcopy(p)
     updated=bad["source_row_aggregates_LOCAL_ONLY"]["2018|1|INDEX_IMP"]
     updated["REVIEW_ONLY_potential_neuroimaging_source_rows"]=100
+    updated["source_rows"]=130
     changed=deepcopy(q)
     changed["review_queue_LOCAL_ONLY"][1][
         "observed_source_rows_cohort_memberships"]=102
     rows,_,_=s77.analysis(b,bad,changed,s62.COHORTS[0])
     assert rows[1]["MAX_new_patients_PCS_INDEX_only_unrealistic"]==16
     assert rows[1]["MAX_index_CPT14_or_PCS_candidate_pct_UNREALISTIC"]==100
+
+
+def test_source_candidate_count_cannot_exceed_all_PCS_rows(data):
+    b,p,q=data
+    changed=deepcopy(p)
+    changed["source_row_aggregates_LOCAL_ONLY"]["2018|1|INDEX_IMP"][
+        "REVIEW_ONLY_potential_neuroimaging_source_rows"]=17
+    with pytest.raises(ValueError,match="candidate/source-row containment"):
+        s77.analysis(b,changed,q,s62.COHORTS[0])
 
 
 def test_review_file_is_pending_private_atomic_and_nonoverwriting(tmp_path,data):
