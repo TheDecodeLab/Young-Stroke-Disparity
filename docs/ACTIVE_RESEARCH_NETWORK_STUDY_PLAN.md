@@ -1,46 +1,43 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Next no-scan validation gate: Step66 ED date-provenance ceiling
+## Active decision: Step67 outcome-measurement validity before any further scan
 
-The investigator completed the Step65 date-provenance QA on the
-authorized workstation, with the full synthetic suite passing.
-The aggregate results reveal marked **calendar-year x unvalidated
-P-label** heterogeneity in how uniquely linked ED end dates were
-marked TriNetX-derived. The same unvalidated P strata also differ
-in missing/quarantined Step63 index encounters. Exact source-derived
-counts remain LOCAL ONLY, outside this repository.
+**Step66 is complete.** The investigator confirmed successful corrected
+synthetic tests and the full suite, and the optimized read-only
+provenance-restricted ED ceiling calculations returned all cohort,
+unvalidated P-flag and annual strata. This is a hypothetical upper
+bound on **recorded CPT14 code capture**, not observed ED imaging or
+clinically performed scans. The critical-date source-flag `F`
+restriction reduces the bound, particularly for earlier years;
+most of the remaining potential capture is from **same-day** unique
+ED-to-IMP links. The age cohorts overlap. No actual ED procedures
+were examined in Steps 63-66. No source-derived numerical results are
+included in the GitHub history by this update.
 
-Thus neither the overall Step64 ED capture ceiling nor Step63's
-0-1-day date-only predecessor linkage is a validated clinical episode.
-[Step66](STEP66_PROVENANCE_SENSITIVE_ED_CEILING.md) now computes,
-without rescanning the ZIP, hypothetical incremental CPT14 capture
-ceilings under existing reciprocal-unique links whose ED end and
-index IMP start dates are both flagged `F`, plus stricter all-ED
-provenance and 0-vs-1-day timing scenarios. Denominators and Step62
-inpatient outcomes remain frozen. This is a quality/sensitivity
-decision gate, not performed imaging, clinical validation, or an
-inferential result. **First local Step66 attempt failed one synthetic-output test because
-all fabricated reporting groups were below the suppression threshold;
-the full suite and real read-only query were interrupted without a
-completed result.** The new corrected tests cover both suppressed and
-non-suppressed display, reconcile the unrestricted ceiling independently
-against Step64, and the two-pass query confines ED event joins to the
-small frozen linked subset. The corrected Step66 code/tests still
-require local investigator verification. No Step62/63 state was changed.
+The [Step67 measurement-validity gate](STEP67_MEASUREMENT_VALIDITY_GATE.md)
+is now active: resolve code-system/source coverage and whether a
+procedure row denotes performance, freeze independently verified
+year-specific ICD-10-PCS section B and other approved modality mappings,
+and seek an authorized HCO/coding completeness assessment.
+Only after scientific review should we consider another ~993-million-row
+procedure scan or sex/race/ethnicity disparity regression. Continue
+preserving completed Step62 and Step63 databases. Do **not** interpret
+absent CPT14 as absence of imaging.
 
-## Current local validation gate: Step65 date-provenance audit
+## Completed audit trail: Step65-66 date-provenance quality checks
 
-The [Step65 local-only derived-date flag audit](STEP65_DATE_PROVENANCE_AUDIT.md)
-has been implemented to check whether Step63's uniquely linked
-EMER->IMP encounter dates are marked as TriNetX-derived. It reuses the
-completed Step62/63 SQLite databases, performs no clinical ZIP scan,
-preserves both database checkpoints and reports only bounded,
-cohort/P/year aggregate flag counts after verifying frozen linkage
-policy. **New Step65 synthetic tests and the real-local audit still
-need investigator execution and review.** This gate precedes a
-decision whether to reprocess ~993 million procedure rows for the ED
-sensitivity and precedes all disparity regression.
+Step65 documented P- and year-related differences in retained
+ED encounter date-derivation flags and quarantined index records.
+Step66 subsequently compared the hypothetical original ED capture
+ceiling with retained unique links whose linking ED end and IMP start
+dates were flagged `F` and with same-day versus next-day windows.
+The first Step66 test/analysis attempt was interrupted; corrected
+tests and two-pass SQL later passed and produced the completed report.
+See [Step65](STEP65_DATE_PROVENANCE_AUDIT.md) and
+[Step66](STEP66_PROVENANCE_SENSITIVE_ED_CEILING.md).
+These remain **read-only local-only research QA outputs** and provide
+no same-HCO or performed-imaging validation.
 
 ## External terminology clarification and Step64 decision (2026-10-19)
 
@@ -83,7 +80,7 @@ Prioritize a read-only local **derived-date provenance audit**, then
 institutional source semantics/code-system consultation; do not perform
 sex/race/ethnicity disparity inference from unvalidated imaging capture.
 
-## Current next decision gate: Step64 no-rescan ED capture ceiling
+## Completed prior decision gate: Step64 no-rescan ED capture ceiling
 
 Step63's encounter and date-only reciprocal-uniqueness link stages have
 completed locally with synthetic tests passing. A substantial subset
@@ -92,7 +89,7 @@ other encounter keys are quarantined; missing or ambiguous linkage is
 **not** evidence of missing imaging. The frozen link definition remains
 unverified as a same-hospital transfer.
 
-Before scanning the entire procedure source again, perform the
+The investigator completed the
 [Step64 read-only ED CPT14 capture-ceiling audit](STEP64_ED_CAPTURE_CEILING.md).
 This checks the theoretical *maximum incremental patient-level coded
 capture*, stratified by year and the unvalidated P label, when unique
@@ -102,7 +99,7 @@ No ED procedure scan or disparity regression is currently authorized
 by the reconstruction evidence alone. No source-derived cohort counts
 are recorded in this repository document.
 
-## Latest execution checkpoint: 2026-10-19
+## Prior execution checkpoint: Step62 completion
 
 The investigator has now completed Step 62's diagnosis, encounter, patient,
 index, procedure and local-only aggregate-report stages on the authorized
@@ -119,15 +116,13 @@ sex/race/ethnicity disparity regression or equate missing CPT with absent
 imaging. No site/HCO representativeness or encounter transfer has been
 verified.
 
-New checkpointed [Step63 ED encounter feasibility](STEP63_ED_ENCOUNTER_FEASIBILITY.md)
-is on the draft analysis branch and must pass local synthetic tests before
-any clinical scan. Its initial scope is restricted to an independent
-full encounter-table scan for the already-indexed patients and a
-reciprocal-uniqueness/date-only ED-to-IMP link feasibility report.
-**ED procedure coding and any expanded imaging estimates are NOT yet
-implemented.** Preserve the completed Step62 private database.
-The historical dated checkpoints below remain the audit record; prior
-statements that Step62 has not yet run are no longer current.
+The [Step63 ED encounter feasibility](STEP63_ED_ENCOUNTER_FEASIBILITY.md)
+was subsequently completed using the independent checkpointed local
+encounter scan and frozen reciprocal-uniqueness/date-only link audit.
+**Actual ED procedure coding is still NOT implemented**; Steps64-66
+report hypothetical ceilings only. Preserve all completed private
+Step62 and Step63 database checkpoints. The historical dated
+checkpoints below remain an audit record, not active instructions.
 
 ## 1. Current evidence and execution status
 
