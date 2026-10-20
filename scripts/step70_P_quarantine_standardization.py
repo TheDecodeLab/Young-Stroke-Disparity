@@ -48,6 +48,8 @@ def strata(counts,cohort,kind):
     Do not parse patient IDs: encoded label contains only cohort/year/P
     and the binary quarantine-status string.
     """
+    if kind not in DIMENSIONS:
+        raise ValueError("Unsupported source-quality dimension: "+kind)
     prefix=DIMENSIONS[kind]
     out={}
     for (group,label),c in counts.items():
@@ -100,6 +102,14 @@ def standardized(counts,cohort,fields,kind):
             "stratum and full cohort coverage: "+kind+
             ", missing="+str(len(missing))+
             ", covered="+str(weights_n)+", cohort="+str(origin))
+    # This independently checks that the per-P cells exhaust their
+    # respective frozen membership and coded-outcome numerators.
+    for p in (0,1):
+        a=counts[("P",cohort+"|P="+str(p))]
+        total_n=sum(x[p]["n"] for x in group.values())
+        total_positive=sum(numerator(x[p],fields) for x in group.values())
+        if total_n!=a["n"] or total_positive!=numerator(a,fields):
+            raise ValueError("Standardization cells do not reconcile to P totals")
     pct={p:100*totals[p]/weights_n for p in (0,1)}
     return pct[0],pct[1],pct[1]-pct[0]
 
