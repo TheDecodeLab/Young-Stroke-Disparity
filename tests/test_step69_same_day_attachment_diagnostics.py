@@ -174,3 +174,24 @@ def test_small_group_suppression_and_big_group_print(fake,capsys):
         counts[("P",cohort+"|P=1")]=Counter(n=15,inpatient=4)
     s69.display(counts)
     assert "IMP_or_DAY0_pct" in capsys.readouterr().out
+
+
+def test_year_cross_quarantine_and_ed_link_groups_partition(fake):
+    """The added joint strata must exhaust the original P cohort without
+    duplicating patient memberships. All synthetic dates are in 2020."""
+    counts=s69.aggregate(fake)
+    for cohort in s62.COHORTS:
+        for p in (0,1):
+            parent=counts[("P",cohort+"|P="+str(p))]
+            a=counts[("YEAR_QUARANTINE_P",
+                      cohort+"|2020|P="+str(p)+"|ANY_AMBIG")]
+            b=counts[("YEAR_QUARANTINE_P",
+                      cohort+"|2020|P="+str(p)+"|NONE")]
+            c=counts[("YEAR_EDLINK_P",
+                      cohort+"|2020|P="+str(p)+"|UNIQUE_ED")]
+            d=counts[("YEAR_EDLINK_P",
+                      cohort+"|2020|P="+str(p)+"|NO_UNIQUE_ED")]
+            for key in ("n","inpatient","new_other_day0","new_ed"):
+                assert a[key]+b[key]==parent[key]
+                assert c[key]+d[key]==parent[key]
+            assert a["new_ed"]==0  # quarantined patients cannot be linked
