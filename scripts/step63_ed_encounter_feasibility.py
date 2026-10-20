@@ -19,7 +19,11 @@ import sqlite3
 import stat
 import tempfile
 
-from scripts import step62_checkpointed_cohort as s62
+try:
+    from scripts import step62_checkpointed_cohort as s62
+except ModuleNotFoundError:
+    # python scripts/step63_ed_encounter_feasibility.py
+    import step62_checkpointed_cohort as s62
 
 ROOT = Path(__file__).resolve().parents[1]
 PRIVATE = ROOT / "results/phase1/full_reconstruction_private/step63_ed_sensitivity_private"
