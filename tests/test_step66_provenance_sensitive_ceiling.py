@@ -103,13 +103,15 @@ def test_year_and_P_labels_preserved(data):
 def test_invalid_ED_window_rejected(data):
     data.execute("UPDATE evt SET end='2020-01-01' "
                  "WHERE patient='PATD' AND encounter='ED_PATD'")
+    data.execute("UPDATE linked SET ed_end='2020-01-01' "
+                 "WHERE patient='PATD' AND ed='ED_PATD'")
     with pytest.raises(ValueError,match="outside frozen"):
         s.analyze(data)
 
 
 def test_orphaned_ED_event_rejected(data):
     data.execute("DELETE FROM evt WHERE patient='PATB' AND encounter='ED_PATB'")
-    with pytest.raises(ValueError,match="linked ED event missing"):
+    with pytest.raises(ValueError,match="Frozen Step63"):
         s.analyze(data)
 
 
@@ -117,7 +119,28 @@ def test_prints_no_identifiers(data,capsys):
     s.show(s.analyze(data))
     out=capsys.readouterr().out
     assert "provenance-sensitive" in out
-    assert "max_new" in out
+    # All fabricated cohorts are <11, so no count-bearing line is emitted.
+    assert "max_new" not in out
     assert "suppressed:" in out
     for val in ("PATA","PATB","IP_PATA","ED_PATB"):
         assert val not in out
+
+
+def test_prints_large_synthetic_aggregate_without_ids(data,capsys):
+    # Validate the non-suppressed branch using a fabricated summary row.
+    # This is only presentation QA, not a real-data report.
+    row = dict(s.analyze(data)[0])
+    row["indexed"] = 12
+    s.show([row])
+    output = capsys.readouterr().out
+    assert "max_new" in output
+    assert "max_change_pp" in output
+    for val in ("PATA", "PATB", "IP_PATA", "ED_PATB"):
+        assert val not in output
+
+
+def test_rejects_ED_event_dates_modified_after_frozen_link(data):
+    data.execute("UPDATE evt SET end='2020-01-01' "
+                 "WHERE patient='PATD' AND encounter='ED_PATD'")
+    with pytest.raises(ValueError,match="Frozen Step63"):
+        s.analyze(data)
