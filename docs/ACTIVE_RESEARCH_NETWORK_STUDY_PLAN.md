@@ -20,8 +20,14 @@ index IMP start dates are both flagged `F`, plus stricter all-ED
 provenance and 0-vs-1-day timing scenarios. Denominators and Step62
 inpatient outcomes remain frozen. This is a quality/sensitivity
 decision gate, not performed imaging, clinical validation, or an
-inferential result. **Step66 local tests and analysis have not
-yet been verified by the investigator.**
+inferential result. **First local Step66 attempt failed one synthetic-output test because
+all fabricated reporting groups were below the suppression threshold;
+the full suite and real read-only query were interrupted without a
+completed result.** The new corrected tests cover both suppressed and
+non-suppressed display, reconcile the unrestricted ceiling independently
+against Step64, and the two-pass query confines ED event joins to the
+small frozen linked subset. The corrected Step66 code/tests still
+require local investigator verification. No Step62/63 state was changed.
 
 ## Current local validation gate: Step65 date-provenance audit
 
