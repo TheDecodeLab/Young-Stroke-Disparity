@@ -1,58 +1,71 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Next investigator run: Step74 CMS exact PCS code screening (no source scan)
+## Next investigator run: Step75 B-section denominator validation (no source scan)
 
-Step73 **completed locally** with 704 repository tests passing and
-all prescribed grouped-binomial point, interval and P×quarantine
-overlap checks returned without failures. The original
-64,721-person 18-50 cohort CPT14-coded imaging results remain
-unchanged. Some demographic associations in documented
-index-IMP CPT14 capture are large and persist across multiple
-recorded-code definitions, but **do not establish clinical
-imaging disparities**. NHPI and ethnicity effects show strong
-sample/encounter sensitivity, and AIAN has a small P×quarantine
-cell in the primary cohort. Nominal model intervals omit HCO
-clustering, case-mix, and overdispersion (frequent residual
-deviance/df >1). Source-quality P/ambiguity labels are not
-validated clinical patient traits.
+Step74 **completed** on the investigator's authorized workstation:
+four dedicated and all 708 repository tests passed; the
+quasi-binomial 95%-interval inflation diagnostic completed,
+official CMS FY2016–2025 ICD-10-PCS public ZIPs were
+downloaded/cached and verified, and the local-only
+exact-code crosswalk completed from Step68's already
+recorded cohort-context code-profile table.
+No clinical procedure source was reread.
 
-**Decision:** Stop iterating increasingly similar demographic
-GLMs until outcome-code validity is addressed. The new
-[Step74 CMS public ICD-10-PCS screening plan](
-STEP74_CMS_PCS_CODEBOOK_REVIEW.md) bundles in ONE
-read-only local round:
+**Critical codebook interpretation:** Step74's
+`all_PCS_source_rows` includes codes from *every*
+ICD-10-PCS section, but its CMS title parser
+intentionally indexes only codes beginning with
+`B` (the imaging section). The originally printed
+`valid_neighbor_FY_rows / all_PCS_source_rows`
+fraction therefore cannot measure validity of
+all source PCS codes. Step74's REVIEW_ONLY
+candidate source rows, including overlapping
+cohort memberships, cannot be treated as
+additional imaged patients or proven scans.
+The first-character section structure and
+seven-character code rules are documented in
+official CMS PCS training and guidelines.
 
-1. A rough quasi-binomial interval-width sensitivity for
-   the original primary-cohort inpatient and same-day CPT14
-   model contrasts (not a substitute for HCO adjustment).
-2. Public download of official CMS FY2016–FY2025 ICD-10-PCS
-   long-title ZIP files and archived URLs/SHA256 receipts.
-3. Comparison of exact seven-character codes in the
-   **already completed private Step68 `code_profile`**
-   against the official titles, by procedure calendar year,
-   P and matched encounter context. Conservative B02/B03/
-   B32/B33 body-part/title screening only flags
-   **REVIEW-ONLY candidate neurovascular imaging source rows**.
-4. Preservation of candidate exact codes and CMS descriptions
-   in a new **LOCAL ONLY** private JSON for subsequent
-   official/clinical validation; printed output only
-   reports aggregate code-source row frequencies.
+The new [Step75 section-B denominator audit](
+STEP75_PCS_SECTION_DENOMINATOR_AUDIT.md)
+runs **one strictly read-only local pass** over
+cached CMS FY code titles, Step74 private JSON,
+and Step68 **already indexed** exact-code
+profiles. It computes imaging-section B
+proportions, seven-character syntax,
+B-section-specific official catalog match
+rates, three-character unmatched family
+patterns, and conservative neurovascular
+review-only counts by year, P and encounter
+scope. Every source-row count must reconcile
+to the saved Step74 crosswalk. This resolves
+the interpretation artifact **without**
+another 993-million-row source scan.
 
-No new procedure source ZIP read and no additional TriNetX
-contact are required. **The ICD-10-PCS procedure code
-validity is officially discharge-date/version specific**.
-Step68's aggregated calendar-year profile cannot validate
-a particular patient's correct fiscal year, HCO or
-performed imaging status. B24 cardiac ultrasound,
-B31 fluoroscopy and generic B-prefixed rows do
-not count automatically as brain CT/MRI/CTA/MRA.
+Step74 also showed overdispersion; the
+inflated intervals are still NOT
+hospital-cluster-robust. The earlier model
+differences cannot be described as confirmed
+care-quality disparities in performed imaging.
 
-**Step74 tests and local execution are still PENDING.**
-The desired next handoff is **TERMINAL OUTPUT ONLY**;
-never upload private ZIPs/SQLite or
-`step74_cms_pcs_crosswalk_LOCAL_ONLY.json` without
-the applicable institutional disclosure approval.
+**Step75 tests and investigator execution
+are PENDING.** Next handoff is
+**TERMINAL OUTPUT ONLY**. No ZIP, local
+SQLite, or private crosswalk JSON requested.
+
+If the B-specific matching is good, the
+substantive next gate is reviewing exact
+CMS titles/effective years for B02/B03/B32/B33
+against the target cerebral/head-neck
+modalities. A new patient-level source
+pass would require a reviewed codebook
+and a measurable scientific benefit. We
+still lack HCO identity, independent
+stroke clinical adjudication, case-mix
+severity, and verified completed scans.
+Contacting TriNetX staff is **not**
+a routine prerequisite.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
