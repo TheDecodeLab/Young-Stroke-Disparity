@@ -223,39 +223,51 @@ def _link(db):
         raise ValueError("Run prior stage first: encounter")
     if _progress(db, "link")[1]:
         raise ValueError("Stage already completed; no rerun")
-    # Step62's selected IMP must still be a well-formed, unambiguous row.
-    invalid = db.execute("""SELECT COUNT(*) FROM idx i
-      LEFT JOIN evt e ON e.patient=i.patient AND e.encounter=i.encounter
-      WHERE e.patient IS NULL OR e.kind!='IMP' OR
-            e.start!=substr(i.start,1,4)||'-'||substr(i.start,5,2)||'-'||substr(i.start,7,2)
-         OR e.end!=substr(i.end,1,4)||'-'||substr(i.end,5,2)||'-'||substr(i.end,7,2)
+    # Quarantined index keys are unassessable, not imaging-negative.
+    # Truly missing keys and discordant retained spans remain fatal.
+    unexpected = db.execute("""SELECT COUNT(*) FROM idx i
+        LEFT JOIN evt e ON e.patient=i.patient AND e.encounter=i.encounter
+        LEFT JOIN ambiguous a ON a.patient=i.patient AND a.encounter=i.encounter
+        WHERE e.patient IS NULL AND a.patient IS NULL""").fetchone()[0]
+    if unexpected:
+        raise ValueError("Unexplained index absence without quarantine: " +
+                         str(unexpected) + "; no ED linkage created")
+    mismatch = db.execute("""SELECT COUNT(*) FROM idx i JOIN evt e
+        ON e.patient=i.patient AND e.encounter=i.encounter
+        WHERE e.kind!='IMP'
+          OR e.start!=substr(i.start,1,4)||'-'||substr(i.start,5,2)||'-'||substr(i.start,7,2)
+          OR e.end!=substr(i.end,1,4)||'-'||substr(i.end,5,2)||'-'||substr(i.end,7,2)
     """).fetchone()[0]
-    if invalid:
+    if mismatch:
         raise ValueError(
-            "Step63 identified " + str(invalid) +
-            " index rows with missing/conflicting IMP spans. Review source "
-            "encounter semantics before ED linkage; no rows were linked.")
+            "Step63 index rows with conflicting IMP spans: " +
+            str(mismatch) + "; no ED linkage created")
+    # Quarantine of any other EMER/IMP key in the patient's source could
+    # hide a competing pair. Restrict strict reciprocal uniqueness to
+    # patients with NO quarantined keys. No missing link is called negative.
     with db:
         db.execute("""INSERT INTO pair
           SELECT ed.patient,ed.encounter,ip.encounter
           FROM evt ed
           JOIN evt ip ON ip.patient=ed.patient AND ip.kind='IMP'
                        AND ip.start>=ed.end AND ip.start<=date(ed.end,'+1 day')
-          WHERE ed.kind='EMER' AND ed.encounter!=ip.encounter""")
-        # Two-way uniqueness is evaluated among ALL IMPs of indexed patients,
-        # not merely the selected index IMPs and not conditional on imaging.
+          WHERE ed.kind='EMER' AND ed.encounter!=ip.encounter
+            AND NOT EXISTS (SELECT 1 FROM ambiguous a
+                            WHERE a.patient=ed.patient)""")
+        # Compare all retained inpatient competitors (not just index IMP).
         db.execute("""INSERT INTO linked
           SELECT i.cohort,i.patient,p.ed,p.imp,e.start,e.end
           FROM idx i
           JOIN pair p ON p.patient=i.patient AND p.imp=i.encounter
           JOIN evt e ON e.patient=p.patient AND e.encounter=p.ed
-          WHERE (SELECT COUNT(*) FROM pair q
+          WHERE NOT EXISTS (SELECT 1 FROM ambiguous a
+                            WHERE a.patient=i.patient)
+            AND (SELECT COUNT(*) FROM pair q
                  WHERE q.patient=p.patient AND q.ed=p.ed)=1
             AND (SELECT COUNT(*) FROM pair q
                  WHERE q.patient=p.patient AND q.imp=p.imp)=1""")
         db.execute("INSERT INTO progress VALUES('link',0,1)")
     return True
-
 
 def _report(db, folder):
     counts = {}
@@ -263,19 +275,51 @@ def _report(db, folder):
         n = db.execute("SELECT COUNT(*) FROM idx WHERE cohort=?", (cohort,)).fetchone()[0]
         linked = db.execute(
             "SELECT COUNT(*) FROM linked WHERE cohort=?", (cohort,)).fetchone()[0]
+        index_quarantined = db.execute("""
+            SELECT COUNT(*) FROM idx i WHERE i.cohort=?
+              AND EXISTS (SELECT 1 FROM ambiguous a
+                          WHERE a.patient=i.patient
+                            AND a.encounter=i.encounter)
+            """, (cohort,)).fetchone()[0]
+        held = db.execute("""
+            SELECT COUNT(*) FROM idx i WHERE i.cohort=?
+              AND EXISTS (SELECT 1 FROM ambiguous a
+                          WHERE a.patient=i.patient)
+            """, (cohort,)).fetchone()[0]
         year_rows = list(db.execute("""
           SELECT substr(i.start,1,4),COUNT(*),
+            SUM(CASE WHEN EXISTS (SELECT 1 FROM ambiguous a
+                WHERE a.patient=i.patient) THEN 1 ELSE 0 END),
             SUM(CASE WHEN l.patient IS NOT NULL THEN 1 ELSE 0 END)
           FROM idx i LEFT JOIN linked l
              ON i.cohort=l.cohort AND i.patient=l.patient
-          WHERE i.cohort=? GROUP BY substr(i.start,1,4)
-          ORDER BY 1""", (cohort,)))
+          WHERE i.cohort=? GROUP BY substr(i.start,1,4) ORDER BY 1""",
+          (cohort,)))
+        p_rows = list(db.execute("""
+          SELECT i.principal,COUNT(*),
+            SUM(CASE WHEN EXISTS (SELECT 1 FROM ambiguous a
+                WHERE a.patient=i.patient) THEN 1 ELSE 0 END),
+            SUM(CASE WHEN l.patient IS NOT NULL THEN 1 ELSE 0 END)
+          FROM idx i LEFT JOIN linked l
+             ON i.cohort=l.cohort AND i.patient=l.patient
+          WHERE i.cohort=? GROUP BY i.principal ORDER BY 1""",
+          (cohort,)))
         counts[cohort] = {
             "step62_indexed_patients_NOT_validated": n,
+            "index_keys_directly_quarantined_NOT_ED_negative": index_quarantined,
+            "patients_held_any_ambiguous_EMER_IMP_key_NOT_ED_negative": held,
+            "evaluable_patients_no_ambiguous_key": n - held,
             "uniquely_linked_ED_patients_date_only": linked,
             "by_year_NOT_hospital_confirmed": {
-                y: {"indexed": total, "date_only_unique_ED": linked_year or 0}
-                for y, total, linked_year in year_rows},
+                y: {"indexed": total, "held_any_ambiguous": yheld or 0,
+                    "evaluable": total - (yheld or 0),
+                    "date_only_unique_ED": linked_year or 0}
+                for y, total, yheld, linked_year in year_rows},
+            "by_unvalidated_P_label_NOT_hospital_confirmed": {
+                str(p): {"indexed": total, "held_any_ambiguous": pheld or 0,
+                         "evaluable": total - (pheld or 0),
+                         "date_only_unique_ED": linked_p or 0}
+                for p, total, pheld, linked_p in p_rows},
         }
     record = {
         "stage": VERSION, "ED_procedure_scanned": False,
@@ -285,6 +329,10 @@ def _report(db, folder):
         "all_IMP_competitors_examined_for_indexed_patients": True,
         "source_type_other_than_EMER_IMP_collisions_not_exhaustively_checked": True,
         "duplicate_dates_quarantined": True,
+        "patient_with_ANY_ambiguous_key_held_from_ED_linkage": True,
+        "held_index_UNASSESSABLE_not_imaging_negative": True,
+        "quarantine_reason_not_recorded_in_step63_v1": True,
+        "linkage_evaluable_denominator_differs_from_step62": True,
         "not_for_public_release_without_disclosure_review": True,
         "indexed_cohorts": counts,
         "distinct_patients_examined": db.execute(
@@ -297,8 +345,11 @@ def _report(db, folder):
             kind: db.execute("SELECT COUNT(*) FROM evt WHERE kind=?",
                              (kind,)).fetchone()[0]
             for kind in ("EMER","IMP")},
-        "interpretation": "Date-only uniqueness among candidate EMER-to-IMP "
-           "matches, never proof of same-hospital transfer or ED imaging.",
+        "interpretation": "Date-only reciprocal uniqueness restricted to "
+           "indexed patients with NO quarantined EMER/IMP encounter keys. "
+           "All held patients are unassessable for ED linkage, not negative "
+           "for ED care or imaging. Same-hospital transfer and performed "
+           "imaging are not verified.",
     }
     dest = folder / REPORT
     if dest.exists():
