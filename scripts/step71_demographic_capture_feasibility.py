@@ -17,7 +17,6 @@ try:
     from scripts import step63_ed_encounter_feasibility as s63
     from scripts import step64_ed_capture_ceiling as s64
     from scripts import step68_joint_imaging_window_scan as s68
-    from scripts import step69_same_day_attachment_diagnostics as s69
 except ModuleNotFoundError:
     import step62_checkpointed_cohort as s62
     import step63_ed_encounter_feasibility as s63
