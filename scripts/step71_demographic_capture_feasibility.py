@@ -243,7 +243,22 @@ def display(counts):
                   "%.2f"%pct(sum(c["n"] for label,c in rows if label in
                        ("UNKNOWN_MISSING","OTHER_OR_UNMAPPED")),b["n"]))
         if cohort==s62.COHORTS[0]:
-            print("\nPRIMARY COHORT: sex/race/ethnicity coding heterogeneity")
+            print("\nPRIMARY COHORT: demographic capture by unvalidated P label")
+            for kind in ("SEX","RACE","ETHNICITY"):
+                for P in (0,1):
+                    for (k,label),c in sorted(counts.items()):
+                        if (k!=kind+"_P" or not label.startswith(cohort+"|")
+                                or not label.endswith("|P="+str(P))):
+                            continue
+                        if c["n"]<11:
+                            print(" ",kind,"P="+str(P),"SUPPRESSED n<11")
+                            continue
+                        n=c["n"]
+                        print(" ",kind,label[len(cohort)+1:],
+                              "n",n,"any_ambig_pct","%.1f"%pct(c["held"],n),
+                              "IMP_any_pct","%.1f"%pct(c["imp_any"],n),
+                              "SAME_DAY_any_pct","%.1f"%pct(c["same_day_any"],n))
+            print("\nPRIMARY COHORT: sex/race/ethnicity coding by encounter quarantine")
             for kind in ("SEX","RACE","ETHNICITY"):
                 for subgroup in ("NONE","ANY_AMBIG"):
                     print(" ",kind,subgroup)
