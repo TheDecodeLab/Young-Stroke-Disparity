@@ -81,7 +81,10 @@ def analysis(reference,profiles,queue_doc,cohort):
         if not (2016<=int(year)<=2024 and P in ("0","1")
                 and scope in s74.SCOPES):
             raise ValueError("Unexpected Step74 year/P/scope key")
-        count=int(record["REVIEW_ONLY_potential_neuroimaging_source_rows"])
+        # Step74 serializes Counter objects as dictionaries: a zero
+        # candidate count is omitted, while "source_rows" is mandatory.
+        # Missing review-only count means zero, NOT missing source data.
+        count=int(record.get("REVIEW_ONLY_potential_neuroimaging_source_rows",0))
         all_pcs=int(record["source_rows"])
         if count<0 or all_pcs<0 or count>all_pcs:
             raise ValueError("Invalid Step74 PCS candidate/source-row containment")
