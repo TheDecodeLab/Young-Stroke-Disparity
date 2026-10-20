@@ -439,7 +439,22 @@ def main(argv=None):
     if args.stage == "link":
         print("Unique ED link memberships across cohorts:",
               result["linked_patient_cohort_rows_LOCAL_ONLY"])
-        print("LOCAL ONLY aggregate report:", result["private_directory"] + "/" + REPORT)
+        with (Path(result["private_directory"]) / REPORT).open(
+                "r", encoding="utf-8") as handle:
+            aggregate = json.load(handle)
+        for cohort, info in sorted(aggregate["indexed_cohorts"].items()):
+            print("Cohort:", cohort)
+            print("  Step62 indexed:", info["step62_indexed_patients_NOT_validated"])
+            print("  Directly quarantined index keys:",
+                  info["index_keys_directly_quarantined_NOT_ED_negative"])
+            print("  Patients held for any ambiguous encounter:",
+                  info["patients_held_any_ambiguous_EMER_IMP_key_NOT_ED_negative"])
+            print("  Evaluable for strict ED-link feasibility:",
+                  info["evaluable_patients_no_ambiguous_key"])
+            print("  Uniquely linked ED under date-only rule:",
+                  info["uniquely_linked_ED_patients_date_only"])
+        print("LOCAL ONLY aggregate report:",
+              result["private_directory"] + "/" + REPORT)
     print("Date-only study feasibility. No same-hospital or imaging validation.")
 
 
