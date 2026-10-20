@@ -1,9 +1,29 @@
 # Step76: Exact ICD-10-PCS anatomy review, year trends and codebook decision
 
-**Status:** Read-only code and fabricated-only tests committed.
-The investigator has not yet executed Step76 locally. Uses only
-completed Step68, Step74, Step75 local results and cached public
-CMS FY2016–FY2025 catalogs. **NO source procedure ZIP rescan.**
+**Status (2026-10-20):** Completed successfully on the
+investigator's authorized workstation: six Step76 synthetic
+tests, **721 total repository tests**, read-only
+reconciliation and private exact-code review queue generation
+all succeeded. **NO source procedure ZIP rescan.**
+
+The local Step76 result comprises 40 exact candidate codes
+and 5,670 source procedure row×overlapping-cohort
+memberships: 5,575 index-IMP, 77 non-index same-day,
+18 uniquely linked ED. Candidate classes: 728 CNS CT,
+1,253 CNS MR, 3,133 upper-arterial CT,
+556 upper-arterial MR. All passed a rule-based
+anatomy screen but this is **NOT independent
+clinical validation** because Step74 already
+screened using anatomy keywords. The source-row
+candidate fraction among index-IMP B-section rows
+is 11.02% (2016–18), 4.04% (2019–21),
+and 4.46% (2022–24): a source-coding
+mix pattern, NOT patient imaging utilization.
+
+The next [Step77 source-count ceiling and clinical
+review worksheet](STEP77_PCS_CAPTURE_CEILING_AND_REVIEW.md)
+shows why further processing cannot be justified
+based only on these candidate source rows.
 
 ## Step75 result that motivates this step
 
