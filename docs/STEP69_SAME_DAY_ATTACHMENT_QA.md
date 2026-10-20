@@ -1,7 +1,19 @@
 # Step69: Investigate same-day cross-encounter imaging-code attachment
 
-**Status:** Read-only Python implementation and fabricated synthetic tests
-committed. The real local execution has NOT yet been run.
+**Status (2026-10-20):** Corrected synthetic tests and the full
+repository suite passed on the investigator's authorized workstation.
+The Step69 read-only analysis completed using frozen Step62/63/68
+checkpoints, successfully reconciling its baseline and expanded
+coded-imaging counts to Step68. No source ZIP was reread. It shows
+a marked association of the unvalidated I63 P label with
+quarantined-encounter prevalence and same-day cross-encounter
+CPT14 capture. The overall P-stratum capture reversal disappears
+among patients without any quarantined encounter keys. This is
+source-quality/coding representation evidence, not proof of
+same-hospital or performed imaging. The next
+[Step70 read-only standardization](STEP70_P_QUARANTINE_STANDARDIZATION.md)
+tests how robust the contrast is to equal year and quarantine
+distributions.
 
 ## Why Step69 follows Step68
 
