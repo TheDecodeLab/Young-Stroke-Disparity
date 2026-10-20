@@ -1,8 +1,11 @@
 # Step66: ED imaging-code ceiling after date-provenance restriction
 
-**Status:** Synthetic-only implementation pending local tests and local
-validation. **No clinical source ZIP scan; no local patient-level files
-are uploaded to GitHub.**
+**Status:** Corrected synthetic-only implementation pending investigator
+retest. The original Step66 print test expected an unsuppressed output
+despite only having synthetic groups with n<11; the original one-query
+analysis was also interrupted before completion. Both problems were
+repaired on the draft branch. **No clinical source ZIP scan, no
+patient-level files uploaded to GitHub, and no local database writes.**
 
 ## Question
 
@@ -58,20 +61,46 @@ identifiers are printed or saved. Grouped output includes cohort,
 unvalidated `P` label and index year, with group n<11 suppressed.
 This does not constitute a disclosure-cleared aggregate artifact.
 
+## Query optimization and regression tests
+
+The current Step66 implementation first aggregates the complete frozen
+Step62 index and its recorded `ANY_CPT14` flag using indexed existence
+lookups. A **separate** aggregation then joins date-provenance fields
+only for the much smaller **frozen Step63 unique-ED link subset**.
+This replaces an expensive single SQL query joining the full
+index population through ED and IMP event records.
+
+Before showing results it checks that the frozen ED/IMP event rows
+still exist and agree with Step63 linked encounter/date keys, that
+ED/IMP date spans are internally valid, that linked date gaps stay
+within 0-1 calendar days, and that source-provenance scenario
+subsets are properly nested. The original Step62 denominator stays
+fixed, including ED-linkage-unassessable patients.
+
+The synthetic suite now tests both groups under 11 (correctly
+suppressed) and non-suppressed display, modified/frozen ED event
+dates, gap-boundary failures, and **independent reconciliation**
+of Step66's unrestricted ceiling against Step64's separately
+implemented synthetic metrics.
+
+No full runtime or performance claim is made until the investigator
+runs this revision locally. Do not run the source ZIP or rerun
+completed Step62/63 staging to test Step66.
+
 ## Execution (investigator's authorized workstation only)
 
 ```bash
+set -e
 git pull --ff-only origin analysis-rebuild-phase1-audit
 python -m py_compile scripts/step66_provenance_sensitive_ceiling.py
 python -m pytest -q tests/test_step66_provenance_sensitive_ceiling.py
 python -m pytest -q
-```
-
-Only after both test commands pass:
-
-```bash
 python scripts/step66_provenance_sensitive_ceiling.py
 ```
+
+Using `set -e` here is intentional: stop on the first failed
+compile or test rather than launching another analysis in the same
+pasted command after a failure.
 
 Both databases are opened in read-only mode:
 
