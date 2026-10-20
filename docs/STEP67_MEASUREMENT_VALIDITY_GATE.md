@@ -18,6 +18,34 @@ The [header-only versioned codebook template](references/STEP67_VERSIONED_CODEBO
 contains no executable PCS/SNOMED mappings or source-derived codes.
 Do not mistake the template for approval of expanded imaging outcomes.
 
+## Investigator methodological decision (2026-10-20)
+
+Proceed using public TriNetX descriptions, published scientific work and
+official versioned codebooks rather than requiring a data-steward email.
+The existing contact packet is optional and has NOT been sent.
+
+Primary endpoint wording should describe **documented imaging procedure
+code capture**, not independently confirmed completed scans or absence
+of imaging. Broad same-IMP ICD-10-CM I63 diagnoses are coded stroke
+candidates; the date-only ED link is a sensitivity, not proven transfer.
+HCO participation and coding coverage may vary and should be reported
+as limitations, without implying nationally representative sampling.
+
+**P-label caution:** Step62's P=1 means a matched I63 diagnosis marked
+primary; P=0 includes S, blank and other non-P observations, so it
+cannot be called a validated secondary-stroke group. The large
+difference in recorded inpatient CPT14 capture across P strata is an
+unexplained measurement finding. Test source/encounter and annual
+patterns rather than treating it as a real difference in care.
+
+Next: use official CMS fiscal-year ICD-10-PCS code definitions and
+already-verified CPT14 meanings to construct an exact, version-aware
+imaging codebook. Check actual code availability and modality-specific
+overlap before one additional justified checkpointed procedure scan.
+Preserve all Step62-66 outputs and predefine uniform ages 18-50 as
+the preferred primary cohort, historical sex-specific limits as
+sensitivity unless a precommitted protocol states otherwise.
+
 ## Why this gate now
 
 Steps 62-66 established two overlapping, provisional I63/IMP indexed
