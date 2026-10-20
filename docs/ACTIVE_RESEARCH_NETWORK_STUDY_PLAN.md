@@ -1,6 +1,33 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
+## Next bundled investigator run: Step68 imaging-code capture mechanisms
+
+The investigator requested fewer, more comprehensive local execution
+rounds, and explicitly approved empirical tests of the unusual
+I63 P-labelled same-IMP CPT14 difference using ED encounters and
+alternative timing windows. The new
+[Step68 single-pass procedure test](STEP68_JOINT_IMAGING_TIMING_ANALYSIS.md)
+bundles: (a) actual CPT14 on frozen reciprocal-unique preceding ED
+encounters, including critical ED/IP date provenance `F` sensitivity;
+(b) patient-level outside-index IMP windows on days -2, -1, 0,
++1, +2 and a 7-day pre-index sensitivity, with explicit non-index
+encounter checks and non-additive unions; (c) modality x P and
+year x P analyses; (d) exact-code source-frequency discovery in
+CPT/ICD-10-PCS/HCPCS/SNOMED, by procedure year and P stratum,
+for a later source-aware literature codebook.
+
+**Implementation/tests are synthetic-only and still need the user's
+workstation verification.** The full source procedure file has not
+been scanned for Step68. If local tests pass and existing data-use
+approvals cover the reconstruction, one **checkpointed** procedure-only
+scan replaces multiple costly follow-ups. Both frozen Step62/Step63
+databases must reconcile to the same-IMP CPT14 baseline. No
+non-CPT14 candidate code is yet an imaging outcome. The desired
+next handoff is **TERMINAL OUTPUT ONLY**; no private files or
+ZIP results are requested. Avoid prior assumptions that the
+P discrepancy is already explained by ED attachment.
+
 ## Updated investigator decision: literature-first analysis (2026-10-20)
 
 The investigator elects to proceed without a routine TriNetX or CTSI
