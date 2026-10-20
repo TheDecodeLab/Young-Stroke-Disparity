@@ -1,43 +1,56 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Next investigator run: Step71 demographic capture feasibility (no source scan)
+## Next investigator run: Step72 exploratory demographic code-capture associations
 
-Step70 completed successfully on the authorized workstation, with
-synthetic and full test suites passing and NO additional clinical
-source table scans. Its descriptive patient-level P-label contrasts
-were computed across four CPT14 encounter-window definitions,
-calendar-year strata, patient-level Step63 ambiguous-key
-quarantine and their pooled-weight joint distribution.
+Step71 **completed** on the authorized workstation with fabricated
+tests and 696 total repository tests passing, full source-snapshot
+checks and reconciliation against frozen Step68. The primary uniform
+18–50 cohort contains 64,721 indexed patients; independent demographic
+QA identified meaningful unknown/unmapped race and ethnicity and
+strong variation in unvalidated `P`, Step63 patient-level encounter
+quarantine, and recorded CPT14 code capture among demographic groups.
+A particularly notable NHPI stratum has unusually high P and
+ambiguous-key prevalence and sharply different inpatient-versus-
+same-day coding rates. This is an **ascertainment/measurement risk**,
+not demonstrated inequity in imaging received by NHPI patients.
+The same-day result cannot identify same hospital or confirm
+performed imaging. All numerical source evidence remains LOCAL ONLY.
 
-**Qualitative conclusion:** The apparent crude P-labelled
-same-day cross-encounter advantage is NOT robust: common
-year×quarantine standardization changes its direction, as
-does restricting to patients without any quarantined
-encounter key. Standardizing to year alone did NOT materially
-alter the crude same-day direction. This establishes a strong
-source-quality sensitivity, not mediation or causal explanation.
-The primary same-IMP CPT14 code capture still shows a sizeable
-negative P1 vs P0 association after source-quality standardization.
-No clinically performed imaging or same-HCO episode is verified.
+The new [Step72 exploratory adjusted code-capture model screen](
+STEP72_EXPLORATORY_DEMOGRAPHIC_MODELS.md) bundles one local
+**read-only** run of:
+- Marginal-standardized binomial point estimates for sex,
+  race and ethnicity associated with same-index IMP any-CPT14
+  or advanced-imaging CPT14 recorded-code capture;
+- Parallel exploratory same-day another-encounter outcomes
+  (NOT verified clinical care);
+- Adjustment for index year and approximate year-of-birth age
+  bands, comparing demographics-only versus models additionally
+  conditioning on P and patient-level ambiguous encounter keys;
+- Sensitivities excluding ANY ambiguous-key patient and
+  restricting to recorded/recognized demographics, plus the
+  historical sex-specific cohort and selected modality outcomes.
 
-[Step71](STEP71_DEMOGRAPHIC_FEASIBILITY.md) now uses only the
-completed **read-only** Step62, Step63 and Step68 private databases.
-It bundles preliminary sex/race/ethnicity **source-label completeness**,
-P/quarantine imbalance, original inpatient and exploratory
-same-day *documented CPT14* outcome sensitivity, and separately
-advanced neurovascular-imaging coding, across both overlapping age
-cohorts. Its new fabricated-only tests and local execution
-remain **PENDING**. The next handoff is **TERMINAL OUTPUT ONLY**.
-Step71 does NOT fit adjusted demographic disparity models or
-change frozen source/encounter/imaging checkpoints.
+These are **exploratory associations only**, without an HCO
+identifier, patient-level imaging completion, independently
+validated cohort diagnoses, clinical stroke severity, or a
+hospital-cluster variance estimator. The script intentionally
+reports no p-values or confidence intervals. It does NOT
+establish clinically delivered imaging disparities.
+Step72 synthetic tests and local execution are **PENDING**.
+Existing Step62/63/68 databases remain unchanged and
+the original ~993-million-row procedure source MUST NOT
+be rescanned for this Step72 run.
 
-Before final adjusted disparities inference, freeze primary
-outcome and explicit measurement limitations; use official
-year-specific ICD-10-PCS full code definitions rather than
-the unreviewed B-prefix row frequencies in Step69. Avoid
-assuming that unknown/other/unrecognized demographic values
-are automatically valid categories.
+The separate clinically reviewed **exact year-valid ICD-10-PCS
+imaging codebook** remains an open research requirement.
+No unreviewed B-prefix code is treated as MRI/CT/CTA/MRA,
+and the documented CPT14-only outcome must not be described
+as all actual neurovascular imaging.
+
+Next handoff: **TERMINAL OUTPUT ONLY**. No ZIP, JSON,
+SQLite or patient-level file is requested.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
