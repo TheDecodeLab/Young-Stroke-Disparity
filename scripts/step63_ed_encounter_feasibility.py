@@ -31,6 +31,7 @@ DATABASE = "step63_ed_feasibility_LOCAL_ONLY.sqlite"
 REPORT = "step63_ed_feasibility_LOCAL_ONLY.json"
 STAGES = ("encounter", "link")
 VERSION = "STEP63_ED_FEASIBILITY_V1"
+LINK_POLICY = "STEP63_LINK_V2_PATIENT_QUARANTINE_HOLD"
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS progress(stage TEXT PRIMARY KEY, seen INTEGER NOT NULL, done INTEGER NOT NULL);
@@ -223,6 +224,9 @@ def _link(db):
         raise ValueError("Run prior stage first: encounter")
     if _progress(db, "link")[1]:
         raise ValueError("Stage already completed; no rerun")
+    policy = db.execute("SELECT v FROM meta WHERE k='link_policy'").fetchone()
+    if policy is not None and policy[0] != LINK_POLICY:
+        raise ValueError("Step63 linkage-policy mismatch; manual review required")
     # Quarantined index keys are unassessable, not imaging-negative.
     # Truly missing keys and discordant retained spans remain fatal.
     unexpected = db.execute("""SELECT COUNT(*) FROM idx i
@@ -266,6 +270,8 @@ def _link(db):
                  WHERE q.patient=p.patient AND q.ed=p.ed)=1
             AND (SELECT COUNT(*) FROM pair q
                  WHERE q.patient=p.patient AND q.imp=p.imp)=1""")
+        db.execute("INSERT INTO meta VALUES('link_policy',?) "
+                   "ON CONFLICT(k) DO UPDATE SET v=excluded.v", (LINK_POLICY,))
         db.execute("INSERT INTO progress VALUES('link',0,1)")
     return True
 
@@ -322,7 +328,8 @@ def _report(db, folder):
                 for p, total, pheld, linked_p in p_rows},
         }
     record = {
-        "stage": VERSION, "ED_procedure_scanned": False,
+        "stage": VERSION, "link_policy": LINK_POLICY,
+        "ED_procedure_scanned": False,
         "performed_imaging_verified": False, "same_HCO_verified": False,
         "date_only_lookback_days": [0,1],
         "source_id_as_HCO": False,
