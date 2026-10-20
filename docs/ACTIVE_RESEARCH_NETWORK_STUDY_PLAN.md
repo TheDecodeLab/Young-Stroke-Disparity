@@ -1,6 +1,47 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
+## External terminology clarification and Step64 decision (2026-10-19)
+
+The investigator's Step64 no-rescan ceiling audit has completed locally.
+It supports a *bounded* potential increase in CPT14 recorded-code capture
+from unique date-only ED links, but cannot validate performed imaging
+or repair missing linkage for quarantined encounters. This ceiling is
+hypothetical; **no ED procedure records have been analyzed** in Step64.
+Avoid another whole-source procedure scan until documenting what such
+a scan would change scientifically. Actual source-derived ceiling counts
+remain outside GitHub and are not reproduced here.
+
+Additional **external** evidence, applicable with caution to this specific
+export, clarifies terminology:
+
+- Penn State CTSI TriNetX guide
+  (https://ctsi.psu.edu/services/research/trinetx) calls ICD-10 codes
+  relevant for inpatient procedures and CPT codes relevant for
+  outpatient procedures. This is an informational coding distinction,
+  **not** proof that CPT imaging records on IMP encounters are invalid
+  or that ICD-10-PCS uniquely captures all inpatient CT/MRI.
+  It does motivate evaluating encounter and code-system reporting.
+- Published TriNetX **July 2021** Data Dictionary (a historical version;
+  verify current export schema with the data steward) defines
+  `principal_diagnosis_indicator` values P/S as primary/secondary
+  *reasons for an encounter*. The definition does not validate
+  completeness, coding consistency, or whether treating blank as
+  nonprincipal is justified for this Research Network extract.
+  `admitting_diagnosis` is a distinct field, not interchangeable with P.
+- The same dictionary identifies `source_id` as data provenance
+  (HCO/TriNetX/HCO-NLP categories), **not** an HCO identifier.
+  `derived_by_TriNetX`, `start_date_derived_by_TriNetX` and
+  `end_date_derived_by_TriNetX` have T/F provenance semantics.
+  Step63 retained those fields for source rows, making a **no-rescan**
+  by-index and by-linked-ED derivation-flag QA an appropriate next gate.
+
+These published definitions are external evidence and do not prove the
+value distributions or complete ascertainment in the private dataset.
+Prioritize a read-only local **derived-date provenance audit**, then
+institutional source semantics/code-system consultation; do not perform
+sex/race/ethnicity disparity inference from unvalidated imaging capture.
+
 ## Current next decision gate: Step64 no-rescan ED capture ceiling
 
 Step63's encounter and date-only reciprocal-uniqueness link stages have
