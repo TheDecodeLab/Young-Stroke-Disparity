@@ -1,52 +1,58 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Next investigator run: Step73 model uncertainty and P×quarantine overlap
+## Next investigator run: Step74 CMS exact PCS code screening (no source scan)
 
-Step72 completed successfully on the investigator's authorized
-workstation: standalone synthetic tests and all 699 repository
-tests passed, and 17/17 grouped-binomial exploratory association
-models converged. Inputs were frozen local-only Step62, Step63
-and Step68 SQLite checkpoints with baseline reconciliation.
-No original procedure-source ZIP was rescanned.
+Step73 **completed locally** with 704 repository tests passing and
+all prescribed grouped-binomial point, interval and P×quarantine
+overlap checks returned without failures. The original
+64,721-person 18-50 cohort CPT14-coded imaging results remain
+unchanged. Some demographic associations in documented
+index-IMP CPT14 capture are large and persist across multiple
+recorded-code definitions, but **do not establish clinical
+imaging disparities**. NHPI and ethnicity effects show strong
+sample/encounter sensitivity, and AIAN has a small P×quarantine
+cell in the primary cohort. Nominal model intervals omit HCO
+clustering, case-mix, and overdispersion (frequent residual
+deviance/df >1). Source-quality P/ambiguity labels are not
+validated clinical patient traits.
 
-**Qualitative findings, not clinical care claims:** sex has small
-standardized CPT14-coded imaging contrasts across most endpoints;
-some race categories have much larger negative model-based
-contrasts compared with White in both original same-index IMP
-and exploratory same-day encounter-inclusive outcomes. NHPI
-and Hispanic contrasts change materially with encounter
-definition, source-quality adjustment and complete-demographic
-restriction. Thus outcome/source representation and large
-unknown/unmapped demographic categories are central
-limitations. No institution/HCO, clinical stroke severity,
-patient-level performed radiology, or valid inference on
-countrywide care equity is available.
+**Decision:** Stop iterating increasingly similar demographic
+GLMs until outcome-code validity is addressed. The new
+[Step74 CMS public ICD-10-PCS screening plan](
+STEP74_CMS_PCS_CODEBOOK_REVIEW.md) bundles in ONE
+read-only local round:
 
-[Step73 uncertainty and support audit](
-STEP73_UNCERTAINTY_SUPPORT_GATE.md) now provides a **single
-read-only bundled run** covering the same 17 model
-specifications. It checks convergence and compares marginal
-standardized point estimates independently against Step72
-using fabricated data, derives **NOMINAL working-binomial
-delta-method 95% intervals**, and detects sparse or absent
-demographic-specific P×ambiguous-key cells that may drive
-unreliable extrapolation. It explicitly excludes hospital-
-cluster uncertainty and causal claims. The new synthetic
-tests and investigator execution are still PENDING.
+1. A rough quasi-binomial interval-width sensitivity for
+   the original primary-cohort inpatient and same-day CPT14
+   model contrasts (not a substitute for HCO adjustment).
+2. Public download of official CMS FY2016–FY2025 ICD-10-PCS
+   long-title ZIP files and archived URLs/SHA256 receipts.
+3. Comparison of exact seven-character codes in the
+   **already completed private Step68 `code_profile`**
+   against the official titles, by procedure calendar year,
+   P and matched encounter context. Conservative B02/B03/
+   B32/B33 body-part/title screening only flags
+   **REVIEW-ONLY candidate neurovascular imaging source rows**.
+4. Preservation of candidate exact codes and CMS descriptions
+   in a new **LOCAL ONLY** private JSON for subsequent
+   official/clinical validation; printed output only
+   reports aggregate code-source row frequencies.
 
-Both age-eligibility cohorts overlap: always model/interpret
-them separately. The default 14 CPT neurovascular-imaging
-codes are an incomplete, **documented code-capture** proxy.
-The exact-year ICD-10-PCS/CMS codebook remains a separate
-unfinished measurement specification, not automatically
-inferred from Step69 three-character frequency prefixes.
+No new procedure source ZIP read and no additional TriNetX
+contact are required. **The ICD-10-PCS procedure code
+validity is officially discharge-date/version specific**.
+Step68's aggregated calendar-year profile cannot validate
+a particular patient's correct fiscal year, HCO or
+performed imaging status. B24 cardiac ultrasound,
+B31 fluoroscopy and generic B-prefixed rows do
+not count automatically as brain CT/MRI/CTA/MRA.
 
-**Next handoff: TERMINAL OUTPUT ONLY.** No ZIP, SQLite,
-private JSON, original data, or intermediate model file
-is requested. Do not initiate any additional full-source
-scan until a clinically defensible expanded codebook
-and analysis-specific reason exist.
+**Step74 tests and local execution are still PENDING.**
+The desired next handoff is **TERMINAL OUTPUT ONLY**;
+never upload private ZIPs/SQLite or
+`step74_cms_pcs_crosswalk_LOCAL_ONLY.json` without
+the applicable institutional disclosure approval.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
