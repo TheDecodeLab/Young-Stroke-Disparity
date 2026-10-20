@@ -1,32 +1,34 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Next bundled investigator run: Step68 imaging-code capture mechanisms
+## Current next validation: Step69 same-day encounter attachment (no source scan)
 
-The investigator requested fewer, more comprehensive local execution
-rounds, and explicitly approved empirical tests of the unusual
-I63 P-labelled same-IMP CPT14 difference using ED encounters and
-alternative timing windows. The new
-[Step68 single-pass procedure test](STEP68_JOINT_IMAGING_TIMING_ANALYSIS.md)
-bundles: (a) actual CPT14 on frozen reciprocal-unique preceding ED
-encounters, including critical ED/IP date provenance `F` sensitivity;
-(b) patient-level outside-index IMP windows on days -2, -1, 0,
-+1, +2 and a 7-day pre-index sensitivity, with explicit non-index
-encounter checks and non-additive unions; (c) modality x P and
-year x P analyses; (d) exact-code source-frequency discovery in
-CPT/ICD-10-PCS/HCPCS/SNOMED, by procedure year and P stratum,
-for a later source-aware literature codebook.
+The investigator completed Step68's **single full procedure-table scan**
+with synthetic and full repository test suites passing, source row-count
+reconciliation and frozen Step62 same-IMP CPT14 baseline reconciliation.
+No source-derived counts are included in GitHub source files.
 
-**Implementation/tests are synthetic-only and still need the user's
-workstation verification.** The full source procedure file has not
-been scanned for Step68. If local tests pass and existing data-use
-approvals cover the reconstruction, one **checkpointed** procedure-only
-scan replaces multiple costly follow-ups. Both frozen Step62/Step63
-databases must reconcile to the same-IMP CPT14 baseline. No
-non-CPT14 candidate code is yet an imaging outcome. The desired
-next handoff is **TERMINAL OUTPUT ONLY**; no private files or
-ZIP results are requested. Avoid prior assumptions that the
-P discrepancy is already explained by ED attachment.
+**Substantive qualitative result:** CPT14 codes recorded on the frozen
+*uniquely linked preceding ED encounter* recover only a small portion
+of otherwise inpatient-CPT14-negative cases, particularly in the
+unvalidated P=1 I63 group. In contrast, CPT14 on a **different
+encounter on the SAME admission calendar date** recovers many more
+otherwise negative cases, disproportionately among P=1. Thus the
+inpatient-only association is highly sensitive to encounter scope,
+and can change direction using the exploratory same-day other-encounter
+definition. This strongly motivates a measurement-attachment
+investigation, but **does not verify** other-encounter imaging was
+part of the same hospitalization, performed, or even from the same HCO.
+
+[Step69](STEP69_SAME_DAY_ATTACHMENT_QA.md) now bundles several
+**read-only** diagnostic checks: decomposition by frozen ED-link and
+patient-level encounter quarantine, source year, modality and P,
+overlapping temporal windows, direct reconciliation against Step68,
+and version-aware ICD-10-PCS B-prefixed source-row **discovery only**.
+Step69 synthetic tests and local execution are still pending;
+**NO additional procedure-table scans** are needed for Step69.
+The requested next handoff is **TERMINAL OUTPUT ONLY**. Do not upload
+the private Step62, Step63, or Step68 SQLite databases or source ZIP.
 
 ## Updated investigator decision: literature-first analysis (2026-10-20)
 
