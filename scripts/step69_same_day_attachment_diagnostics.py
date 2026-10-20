@@ -104,6 +104,10 @@ def aggregate(db):
                 "UNIQUE_ED" if linked else "NO_UNIQUE_ED")),
             ("QUARANTINE_P",cohort+"|P="+str(P)+"|"+(
                 "ANY_AMBIG" if held else "NONE")),
+            ("YEAR_QUARANTINE_P",cohort+"|"+year+"|P="+str(P)+"|"+(
+                "ANY_AMBIG" if held else "NONE")),
+            ("YEAR_EDLINK_P",cohort+"|"+year+"|P="+str(P)+"|"+(
+                "UNIQUE_ED" if linked else "NO_UNIQUE_ED")),
         )
         for group in categories:
             _add(counts,*group,bit,linked)
