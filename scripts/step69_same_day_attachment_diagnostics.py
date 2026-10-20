@@ -150,7 +150,10 @@ def verify_aggregate(db,counts,reference=None):
             if sum(x[measure] for x in p_groups)!=c[measure]:
                 raise AssertionError("Step69 P groups do not reconcile")
         if reference is not None:
-            row=reference["patient_cohort_aggregates"]["COHORT|"+cohort]
+            report_rows=reference.get("patient_cohort_aggregates",{})
+            if "COHORT|"+cohort not in report_rows:
+                raise ValueError("Step68 reference report missing cohort "+cohort)
+            row=report_rows["COHORT|"+cohort]
             comparisons={
                 "n":"n","imp":"inpatient",
                 "new_ed":"new_ed",
