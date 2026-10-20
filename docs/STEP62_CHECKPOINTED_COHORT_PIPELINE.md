@@ -1,8 +1,13 @@
 # Step 62: Checkpointed provisional young-stroke cohort (local only)
 
-**Status:** New, independently implemented Python 3.9 pipeline. It has not
-yet been run on real TriNetX data. It is distinct from the disabled old
-Step45. Run synthetic tests before any local clinical-data stage.
+**Status (2026-10-19):** Independently implemented Python 3.9
+pipeline completed all six local-only stages and synthetic validation
+on the authorized research workstation. This is a **provisional I63/IMP
+cohort** and recorded same-IMP CPT14 code capture, NOT a clinically
+validated stroke denominator or performed-imaging endpoint. Preserve
+the completed private SQLite database and do not rerun stages.
+It remains distinct from the disabled old Step45. See
+[active study plan](ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md).
 
 The source-wide Step59 `DATEFIX_V2` and reconciled Step60 aggregates have
 already been completed: encounter 557,665,953 rows, diagnosis 1,376,280,235
