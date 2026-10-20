@@ -476,7 +476,7 @@ def main():
             "not_patient_level_exports":True,
         }
         (stage/outputs[-1]).write_text(
-            json.dumps(receipt,indent=2,sort_keys=True)+"\\n",
+            json.dumps(receipt,indent=2,sort_keys=True)+"\n",
             encoding="utf-8")
         if set(p.name for p in stage.iterdir())!=set(outputs):
             raise ValueError("Step78 draft artifact inventory mismatch")
