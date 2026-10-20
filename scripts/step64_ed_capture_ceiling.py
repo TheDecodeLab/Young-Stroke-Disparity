@@ -9,8 +9,6 @@ disclosure review remain outside the script.
 """
 from __future__ import annotations
 
-from collections import defaultdict
-from pathlib import Path
 import sqlite3
 
 try:
@@ -194,8 +192,12 @@ def verify(db, step62_path, step63_path):
 
 
 def main():
-    step62 = (s62.PRIVATE / s62.DB.name).resolve()
-    step63 = (s63.PRIVATE / s63.DATABASE).resolve()
+    raw62 = s62.PRIVATE / s62.DB.name
+    raw63 = s63.PRIVATE / s63.DATABASE
+    # Do not follow a directly symlinked database before validating it.
+    if raw62.is_symlink() or raw63.is_symlink():
+        raise ValueError("Private SQLite paths cannot be symlinks")
+    step62, step63 = raw62.resolve(), raw63.resolve()
     if not step62.is_file() or not step63.is_file():
         raise FileNotFoundError("Both completed private SQLite databases are needed")
     with sqlite3.connect("file:" + str(step63) + "?mode=ro", uri=True) as db:
