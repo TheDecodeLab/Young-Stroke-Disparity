@@ -1,7 +1,22 @@
 # Step67: Imaging outcome and diagnosis measurement-validity gate
 
-**Research decision record, 2026-10-19. No real-data execution authorized
-by this document. No procedure source scan performed in Step67.**
+**Research decision record, 2026-10-19. Public external-evidence desk
+review completed; source-specific steward and clinical validation
+PENDING. No real-data execution authorized by this document. No
+procedure source scan performed in Step67.**
+
+Two concrete deliverables from the completed public review:
+- [External evidence and coding semantics](references/STEP67_EXTERNAL_EVIDENCE_REVIEW.md):
+  official Penn State descriptions of the EHR-derived Research Network,
+  HCO-anonymous download policy, CMS year-dependent ICD-10-PCS
+  definitions, and evidence/limitations separated explicitly.
+- [Ready-to-review CTSI/data-steward and clinical contact packet](STEP67_STEWARD_CONTACT_PACKET.md):
+  brief, source-specific technical questions and a completion worksheet.
+  **Draft only; no message has been sent.**
+
+The [header-only versioned codebook template](references/STEP67_VERSIONED_CODEBOOK_TEMPLATE.csv)
+contains no executable PCS/SNOMED mappings or source-derived codes.
+Do not mistake the template for approval of expanded imaging outcomes.
 
 ## Why this gate now
 
