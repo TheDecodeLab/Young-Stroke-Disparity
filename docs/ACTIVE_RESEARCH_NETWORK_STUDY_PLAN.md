@@ -1,76 +1,85 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Next investigator run: Step76 exact PCS anatomy and temporal code audit (no source scan)
+## Next investigator run: Step77 source-row ceiling and private clinical codebook worksheet
 
-Step75 **completed locally**, with seven dedicated fabricated
-tests and **715 total repository tests passing**. It fully
-reconciled Step68 source-profile rows to Step74's
-official public CMS code-title catalogs. The earlier
-apparent poor code match was solely a denominator
-error: 447,495 indexed-IMP source procedure
-row×cohort memberships had system ICD-10-PCS,
-but only 85,480 belonged to imaging section B.
-Of those, 85,445 / 85,480 (99.96%) were
-well-formed and matched the calendar-year-
-adjacent CMS catalogs, with 35 malformed
-imaging-section values. This is NOT evidence
-of exact discharge-date code validity,
-clinically performed scans, or completed
-patient-level imaging.
+Step76 **completed locally** with six dedicated synthetic checks,
+**721 repository tests**, complete Step74 candidate-source
+reconciliation and a private restricted queue. It found
+40 distinct review-only exact ICD-10-PCS codes accounting
+for 5,670 source procedure row×cohort memberships:
+5,575 on the frozen index IMP, 77 on another
+encounter on admission day, and 18 on uniquely
+linked ED. The two age cohorts overlap.
+CNS CT=728, CNS MR=1,253, upper-arterial CT=3,133,
+upper-arterial MR=556, across all contexts.
+These are neither distinct patients nor
+independently clinically validated images.
+The 40/40 positive keyword-anatomy screens
+are **partly circular**, because Step74 had
+already preselected matching anatomy titles.
+The 2016–18 versus later change in
+candidate-row/section-B source-row
+fractions (11.02% vs 4.04% and 4.46%)
+is a source coding mix feature,
+NOT a decline in clinical imaging care.
 
-The earlier Step74 review-only inpatient code rows
-totaled 5,575 (B02 CNS CT=718, B03 CNS MR=1,236,
-B32 upper-arterial CT=3,069 and B33 upper-arterial
-MR=552); another 77 review-only rows appeared
-on non-index encounters on the same admission
-date and 18 on uniquely linked ED encounters.
-These values are **source rows with overlapping
-cohort memberships and possible repeated codes**,
-not distinct patients or gain beyond CPT14.
+**New high-value mathematical result:** For the uniform
+age 18–50 primary cohort, frozen CPT14 index-IMP
+capture is `P=0: 18,031/43,727 =41.24%`
+and `P=1: 4,172/20,994=19.87%`.
+Step74 recorded **at most 1,456 P=1
+candidate index-IMP PCS source rows
+across BOTH overlapping cohorts**.
+Even if ALL of these correspond to
+distinct, originally CPT14-negative
+patients in the primary cohort,
+`P=1` capture could rise only to
+`(4,172+1,456)/20,994 =26.81%`,
+still below the `P=0` original
+41.24%. Actual gain would be
+lower because of overlaps, duplicates,
+code misclassification and cohort
+membership. This ceiling concerns
+ONLY the 40 candidate PCS codes,
+not other coding systems or
+changes in encounter attribution.
 
-The [Step76 exact PCS anatomy review](
-STEP76_EXACT_PCS_ANATOMY_REVIEW.md) is a
-single further **read-only** bundled run.
-It validates official CMS FY2016–FY2025
-cached titles and the full exact-code
-Step74 local review queue, audits
-body-part descriptors for brain,
-carotid, vertebral and intracranial
-territories, and flags unresolved
-anatomy or changing official titles.
-It independently computes correct
-B-section denominators from the
-existing Step68 code-profile SQLite,
-including 2016–2018, 2019–2021
-and 2022–2024 candidate code-
-representation trends. It writes
-an immutable **LOCAL ONLY**
-per-code clinical review queue,
-not an approved imaging endpoint.
+The [Step77 PCS patient-gain ceiling and review
+worksheet](STEP77_PCS_CAPTURE_CEILING_AND_REVIEW.md)
+uses **only completed Step68, Step74,
+and Step76 private JSON reports**,
+independently verifies the P-specific
+upper-bound arithmetic, and creates
+a new LOCAL ONLY 40-code clinician
+review CSV with exact CMS title variants,
+pending anatomy/method/contrast and
+effective-date approval. It is not
+a finished codebook or a patient-level
+imaging endpoint.
 
-**No full source rescan, patient-level
-imaging reclassification or new
-demographic GLM is authorized by
-these discovery results.** If
-a future clinician-reviewed
-year-valid codebook establishes
-a meaningful improvement in
-source capture, one checkpointed,
-purpose-built patient-level pass
-can be justified separately.
+**Decision:** Do NOT repeat the full
+993-million-row procedure scan based
+solely on these PCS candidates. Freeze
+codebook rationale and seek clinical
+code adjudication before considering
+any new source extraction. The central
+P-label recording discrepancy remains
+unexplained by PCS candidates;
+HCO/episode data quality and clinical
+interpretation are unresolved.
 
-Step76 tests and investigator
-execution are PENDING. **Next
-handoff: TERMINAL OUTPUT ONLY**.
-Do not upload the clinical SQLite,
-Step74 private JSON, Step76
-private review queue, or public
-CMS ZIPs. Existing CPT14-only
-models remain exploratory associations
-in documented code capture, not
-proof of unequal care or site-
-adjusted radiology utilization.
+Step77 fabricated tests and local
+execution are **PENDING**. Next
+handoff: **TERMINAL OUTPUT ONLY**.
+Do NOT upload private JSON, source
+SQLite, or the source-derived
+observed-code review worksheet.
+Current CPT14-based disparity models
+remain exploratory documented-code
+associations without hospital/site
+adjustment, severity, or verified
+performed imaging.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
