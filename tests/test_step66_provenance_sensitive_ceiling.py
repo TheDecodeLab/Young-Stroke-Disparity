@@ -101,9 +101,11 @@ def test_year_and_P_labels_preserved(data):
 
 
 def test_invalid_ED_window_rejected(data):
-    data.execute("UPDATE evt SET end='2020-01-01' "
+    # Keep the ED interval internally valid while violating the frozen
+    # zero/one-day link window.
+    data.execute("UPDATE evt SET start='2020-01-01',end='2020-01-01' "
                  "WHERE patient='PATD' AND encounter='ED_PATD'")
-    data.execute("UPDATE linked SET ed_end='2020-01-01' "
+    data.execute("UPDATE linked SET ed_start='2020-01-01',ed_end='2020-01-01' "
                  "WHERE patient='PATD' AND ed='ED_PATD'")
     with pytest.raises(ValueError,match="outside frozen"):
         s.analyze(data)
