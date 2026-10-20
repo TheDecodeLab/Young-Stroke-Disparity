@@ -23,9 +23,10 @@ def data():
         "2018|1|INDEX_IMP":{
             "source_rows":16,
             "REVIEW_ONLY_potential_neuroimaging_source_rows":3},
+        # Step74 serializes dict(Counter): an exact zero candidate
+        # count has no key in the REAL locally frozen JSON.
         "2018|0|NONIMP_DAY0":{
-            "source_rows":30,
-            "REVIEW_ONLY_potential_neuroimaging_source_rows":0},
+            "source_rows":30},
         "2018|1|UNIQUE_ED":{
             "source_rows":12,
             "REVIEW_ONLY_potential_neuroimaging_source_rows":2},
@@ -67,6 +68,22 @@ def test_upper_bound_is_not_actual_imaging_gain(data):
     assert by_scope["INDEX_IMP"]==9
     assert by_scope["UNIQUE_ED"]==2
     assert by_scope["NONIMP_DAY0"]==0
+
+
+def test_explicit_and_implicit_zero_are_equivalent(data):
+    b,p,q=data
+    absent=s77.analysis(b,p,q,s62.COHORTS[0])
+    explicit=deepcopy(p)
+    explicit["source_row_aggregates_LOCAL_ONLY"]["2018|0|NONIMP_DAY0"][
+        "REVIEW_ONLY_potential_neuroimaging_source_rows"]=0
+    present=s77.analysis(b,explicit,q,s62.COHORTS[0])
+    assert absent==present
+    # Missing mandatory denominator still fails closed.
+    invalid=deepcopy(p)
+    del invalid["source_row_aggregates_LOCAL_ONLY"][
+        "2018|0|NONIMP_DAY0"]["source_rows"]
+    with pytest.raises(KeyError,match="source_rows"):
+        s77.analysis(b,invalid,q,s62.COHORTS[0])
 
 
 def test_reject_modified_PCS_profile_and_unreviewed_facts(data):
