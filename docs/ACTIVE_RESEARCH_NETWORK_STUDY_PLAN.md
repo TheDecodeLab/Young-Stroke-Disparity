@@ -16,10 +16,17 @@ were examined in Steps 63-66. No source-derived numerical results are
 included in the GitHub history by this update.
 
 The [Step67 measurement-validity gate](STEP67_MEASUREMENT_VALIDITY_GATE.md)
-is now active: resolve code-system/source coverage and whether a
-procedure row denotes performance, freeze independently verified
-year-specific ICD-10-PCS section B and other approved modality mappings,
-and seek an authorized HCO/coding completeness assessment.
+is now active. Its **external public-evidence review is completed**:
+[Penn State/official CMS evidence notes](references/STEP67_EXTERNAL_EVIDENCE_REVIEW.md),
+[a ready-to-review CTSI/data-steward contact packet](STEP67_STEWARD_CONTACT_PACKET.md),
+and [an empty versioned codebook schema](references/STEP67_VERSIONED_CODEBOOK_TEMPLATE.csv)
+have been added. No clinical source data or source-derived aggregate
+values were uploaded or scanned in Step67, and **no email has been sent**.
+
+Outstanding high-impact requirements: steward documentation of the
+meaning and completeness of `procedure.csv`; authoritative,
+year-specific exact-code ICD-10-PCS/SNOMED mappings approved by clinical
+coding experts; and an authorized HCO/coding completeness assessment.
 Only after scientific review should we consider another ~993-million-row
 procedure scan or sex/race/ethnicity disparity regression. Continue
 preserving completed Step62 and Step63 databases. Do **not** interpret
