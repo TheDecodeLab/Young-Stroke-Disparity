@@ -147,6 +147,12 @@ def safe(n):
 
 
 def show(counts,reasons,catalog):
+    # The real Step74 cache is a complete FY2016-2025 catalog. Detect
+    # incomplete fixtures or metadata before printing a partial report.
+    missing=sorted(set(s74.FY)-set(catalog))
+    if missing:
+        raise ValueError("Step75 CMS FY catalog incomplete: "+
+                         ",".join(str(y) for y in missing))
     totals=defaultdict(Counter)
     for (year,P,scope),c in counts.items():
         totals[("ALL",scope)].update(c)
