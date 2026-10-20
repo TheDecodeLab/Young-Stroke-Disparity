@@ -257,9 +257,11 @@ def _analyze(db,source):
         raise ValueError("Scan not yet complete; cannot summarize")
     # Patient-cohort grain. Six imaging modalities ORed into one indicator.
     patientflags=defaultdict(int)
-    for cohort,p,mask in db.execute(
-            "SELECT cohort,patient,mask FROM flags"):
+    modalityflags=defaultdict(dict)
+    for cohort,p,modality,mask in db.execute(
+            "SELECT cohort,patient,modality,mask FROM flags"):
         patientflags[(cohort,p)] |= mask
+        modalityflags[(cohort,p)][modality]=mask
     rows=defaultdict(Counter)
     for cohort,p,start,principal in source.execute(
             "SELECT cohort,patient,start,principal FROM idx"):
@@ -281,6 +283,24 @@ def _analyze(db,source):
                         c["new_"+name]+=1
             if checks["imp"] and checks["ed"]:
                 c["imp_and_ed"]+=1
+            if not checks["imp"]:
+                c["new_ed_or_pre2_day0"] += int(
+                    checks["ed"] or checks["pre2"] or checks["day0_other"])
+                c["new_ed_or_pre7_day0"] += int(
+                    checks["ed"] or checks["pre7"] or checks["day0_other"])
+        # Preserve modality-specific ED-recovery tests without another scan.
+        for modality in sorted(set(s62.CPT.values())):
+            m_mask=modalityflags.get((cohort,p),{}).get(modality,0)
+            m_checks=_presence(m_mask)
+            for mkey in (("MODALITY_P",cohort+"|P="+str(principal)+"|"+modality),
+                         ("MODALITY_YEAR",cohort+"|"+start[:4]+"|"+modality)):
+                mc=rows[mkey]
+                mc["n"]+=1
+                for name,yes in m_checks.items():
+                    mc[name]+=int(yes)
+                if not m_checks["imp"]:
+                    mc["new_ed"]+=int(m_checks["ed"])
+                    mc["new_ed_f"]+=int(m_checks["ed_f"])
     # Cross-check original same-IMP CPT14 baseline against Step62.
     for cohort in s62.COHORTS:
         baseline=source.execute("""SELECT COUNT(*) FROM idx i
@@ -290,6 +310,13 @@ def _analyze(db,source):
              (cohort,)).fetchone()[0]
         if rows[("COHORT",cohort)]["imp"]!=baseline:
             raise ValueError("Recomputed baseline CPT14 differs from frozen Step62")
+        for modality,n in source.execute("""SELECT category,COUNT(*)
+             FROM image WHERE cohort=? GROUP BY category""",(cohort,)):
+            observed=sum(rows[("MODALITY_P",
+                        cohort+"|P="+str(p)+"|"+modality)]["imp"]
+                         for p in (0,1))
+            if n!=observed:
+                raise ValueError("Modality-specific baseline differs from frozen Step62")
     # Linked ED code events must be a subset of the patient day windows,
     # but patient-relative windows are NOT a proven connected care episode.
     for k,v in rows.items():
@@ -297,6 +324,10 @@ def _analyze(db,source):
             raise AssertionError("Date-quality nesting invalid")
         if v["imp"]+v["new_ed"]>v["n"]:
             raise AssertionError("Patient-level capture exceeds denominator")
+        if v["new_ed_or_pre2_day0"]>v["n"]-v["imp"]:
+            raise AssertionError("Broader window union exceeds baseline negatives")
+        if v["new_ed_or_pre7_day0"] < v["new_ed_or_pre2_day0"]:
+            raise AssertionError("Broader pre7 window must include pre2 union")
     return rows
 
 def _output(db,source,folder):
@@ -339,7 +370,7 @@ def _print(counts):
     print("STEP68 SOURCE PROCEDURE CPT14; PATIENT/COHORT GRAIN; LOCAL ONLY")
     print("Counts do not represent confirmed imaging or same-hospital ED care.")
     print("P=0 includes missing/blank/secondary I63 indicators.")
-    for kind in ("COHORT","P","YEAR","YEAR_P"):
+    for kind in ("COHORT","P","YEAR","YEAR_P","MODALITY_P"):
         print("\nBY",kind)
         for (group,name),c in sorted(counts.items()):
             if group!=kind:
@@ -352,6 +383,8 @@ def _print(counts):
                   "nonIMP_pre2_new",c["new_pre2"],
                   "nonIMP_day0_new",c["new_day0_other"],
                   "nonIMP_pre7_new",c["new_pre7"],
+                  "ED_or_pre2_day0_new",c["new_ed_or_pre2_day0"],
+                  "ED_or_pre7_day0_new",c["new_ed_or_pre7_day0"],
                   "ANY_pre2_new",c["new_any_pre2"],
                   "ANY_day0_new",c["new_any_day0"])
     print("\nNot for public release without disclosure review.")
@@ -410,6 +443,8 @@ def run(zip_path,stage="all",folder=PRIVATE,chunk=20000,stop_after=None,
                                _subjects(main),chunk,stop_after)
                     print("Step68 procedure checkpoint rows:",seen,
                           "complete:",bool(_progress(db)[1]),flush=True)
+                if stage=="report" and not _progress(db)[1]:
+                    raise ValueError("Procedure scan not yet complete")
                 if stage in ("report","all") and _progress(db)[1]:
                     report=folder/REPORT
                     with closing(sqlite3.connect(
@@ -421,6 +456,13 @@ def run(zip_path,stage="all",folder=PRIVATE,chunk=20000,stop_after=None,
                         else:
                             counts=_analyze(db,original)
                     _print(counts)
+                    print("\\nPRIVATE CODE-SYSTEM DISCOVERY COVERAGE (source rows, not scans)")
+                    for system,scope,distinct_codes,n in db.execute(
+                            """SELECT system,scope,COUNT(*),SUM(n)
+                            FROM code_profile GROUP BY system,scope
+                            ORDER BY system,scope"""):
+                        print(system,scope,"distinct exact codes",distinct_codes,
+                              "matched procedure cohort-rows",n)
                     print("PRIVATE aggregate report:",report)
                     print("PRIVATE discovery code frequencies:",folder/DB)
                 return _progress(db)
