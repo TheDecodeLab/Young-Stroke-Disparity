@@ -2,6 +2,7 @@
 import sqlite3
 import pytest
 from scripts import step66_provenance_sensitive_ceiling as s
+from scripts import step64_ed_capture_ceiling as s64
 
 
 @pytest.fixture
@@ -146,3 +147,17 @@ def test_rejects_ED_event_dates_modified_after_frozen_link(data):
                  "WHERE patient='PATD' AND encounter='ED_PATD'")
     with pytest.raises(ValueError,match="Frozen Step63"):
         s.analyze(data)
+
+
+def test_unrestricted_ceiling_reconciles_with_independent_step64(data):
+    """Two separate aggregation implementations must agree on the
+    original Step62 denominator, baseline, and unrestricted ED bound."""
+    step64 = dict(s64.summarize(s64.analyze(data), "cohort"))
+    step66 = dict(s.grouped(s.analyze(data), "cohort"))
+    assert step64.keys() == step66.keys()
+    for key in step64:
+        a, b = step64[key], step66[key]
+        assert b["indexed"] == a["n"]
+        assert b["inpatient_any"] == a["baseline_any14"]
+        assert b["links_all"] == a["linked"]
+        assert b["new_all"] == a["max_new_any14"]
