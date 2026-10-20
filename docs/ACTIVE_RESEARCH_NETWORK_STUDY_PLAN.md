@@ -1,60 +1,76 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Current decision after completed Step77: freeze source scans; review codebook independently
+## Current action: Step78 paper-results exhibit package (no source scan)
 
-**Step77 completed (2026-10-20)** on the investigator workstation
-with eight dedicated synthetic checks, 729 full repository
-tests passing, a successfully reconciled P-specific
-PCS candidate upper-bound analysis, and a newly created
-restricted 40-code clinician-review worksheet.
-No clinical source table scan, patient reclassification,
-new disparity model or public export occurred.
+**Investigator direction (2026-10-20):** Prepare the manuscript as
+an *EHR recording/encounter-ascertainment study* of documented
+neuroimaging codes, rather than a clinical/racial imaging-care
+disparity claim. Earlier Step62–77 reconstruction,
+CPT14 measurement QA, exploratory models, and the
+PCS-only source-row gain ceiling have been completed
+locally. The PCS review list remains clinician-PENDING
+and is **not included** in patient CPT14 outcomes.
 
-**Decision supported by the frozen private evidence:**
-even if every P=1 candidate index-IMP PCS source row across
-the two overlapping age cohorts corresponded to a different
-previously CPT14-negative member of the primary 18–50
-cohort (an unrealistically generous assumption), those
-PCS codes alone could NOT erase the original
-P0-versus-P1 index-inpatient recorded CPT14 difference.
-This is only an upper bound on a specific PCS code set,
-not actual extra patients imaged, a causal explanation,
-or evidence of absence of other code/encounter problems.
-The exact source-derived counts and candidate code
-list remain in the restricted local outputs.
+Working primary cohort: frozen uniform definitely-eligible
+age 18–50 candidate I63 on index inpatient IMP.
+Working primary measurement: an exact CPT14 imaging
+code for the same patient/IMP within index
+start/end. Historic sex-specific-age cohort is
+an overlapping sensitivity only. Report P=0
+as secondary/blank/unmarked diagnosis indicator
+mix, NOT independently confirmed secondary stroke.
 
-**Next scientific action is not another compute gate.**
-Use the [post-Step77 outcome decision and independent
-clinical code-review protocol](
-STEP77_POSTRUN_MEASUREMENT_DECISION.md)
-to adjudicate anatomy, method/contrast and year-effective
-definitions for the 40 exact PCS candidates on the
-approved workstation, or develop an independent
-public-CMS-only clinical mapping. Until this review is
-complete, the working primary endpoint is **documented
-index-IMP CPT14 code capture** in the uniform 18–50
-cohort, with exploratory same-day other-encounter
-capture and preceding ED linkage reported separately
-as sensitivity definitions. These are NOT necessarily
-clinical images performed in the same HCO/stroke episode.
+Analytic paper priority: report original recorded
+index inpatient capture, then separately show
+sensitivity to another encounter on admission
+calendar day, a unique prior ED link, a broader
+near-day window, and descriptive common year ×
+encounter-key-quarantine standardization. Large
+unadjusted P contrasts and sign changes with
+expanded encounter linkage are measurement
+phenomena; they cannot be attributed to actual
+scan receipt, same-hospital episode, imaging
+appropriateness, severity or HCO coding mechanisms.
 
-No new full source procedure scans, automatic
-PCS-inclusive patient flags, or further increasingly
-similar demographic models should proceed merely
-because CMS code titles match. Before claiming
-clinical imaging disparities, resolve missing/
-unmapped demographics, P coding validity,
-hospital capture/episode attribution, severity,
-and clinical completion evidence. The historical
-sex-dependent cohort remains overlapping
-sensitivity material.
+The new [Step78 private manuscript exhibit
+bundle](STEP78_PAPER_RESULTS_PACKAGE.md)
+uses **only frozen read-only Step62/63/68
+SQLite checkpoints**, reuses previously
+validated Step69/70 and Step72/73 estimands,
+reconciles source signatures, and generates
+five internal CSV evidence tables,
+two PNG draft figures, local-only Results
+prose, and a private manifest. Outputs are
+atomic, immutable draft_v1 under the
+gitignored private results directory.
+No original ~993-million-row procedure
+source scan or new clinical data export.
 
-**Status:** No local terminal command required
-for this stage. The restricted clinician-review
-CSV is already generated; it must not be uploaded,
-committed, or distributed externally without
-the applicable institutional disclosure authorization.
+The public-only [working manuscript scaffold](
+MANUSCRIPT_ASCERTAINMENT_WORKING_DRAFT.md)
+documents actual cohort eligibility,
+imaging-code and index-attribution rules
+and scientific caveats without numerical
+source-derived results. Independent clinical
+PCS coding review can proceed as a
+separate enhancement; it is **not a blocker**
+for a CPT14-only measurement-methods paper
+that explicitly excludes PCS from its
+patient-level imaging outcome.
+
+**Next investigator run is Step78.**
+New fabricated-only tests are committed but
+workstation verification is pending. The
+requested handoff is **TERMINAL OUTPUT ONLY**
+and a local user review of the
+private exhibits. Source-derived numeric
+tables, figures and narrative remain
+LOCAL ONLY until cross-table disclosure,
+statistical and clinical review.
+Exploratory demographic contrasts are
+supplemental/optional and should not be
+labeled inequitable actual imaging care.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
