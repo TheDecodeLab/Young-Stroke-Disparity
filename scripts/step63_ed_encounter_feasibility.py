@@ -332,6 +332,18 @@ def run(archive_path, stage, preflight=s62.PREFLIGHT,
                 _bootstrap(db, source_path, frozen_step62)
                 _assert_zip(db, frozen_zip)
                 if _progress(db, stage)[1]:
+                    # Linkage rows may have committed just before a crash in
+                    # report creation. Recover only that missing LOCAL ONLY
+                    # aggregate without touching the finished link table.
+                    if stage == "link" and not (folder / REPORT).exists():
+                        _report(db, folder)
+                        return {"stage": stage, "complete": True,
+                                "processed_rows": _progress(db, stage)[0],
+                                "quarantined_keys_LOCAL_ONLY": db.execute(
+                                    "SELECT COUNT(*) FROM ambiguous").fetchone()[0],
+                                "linked_patient_cohort_rows_LOCAL_ONLY": db.execute(
+                                    "SELECT COUNT(*) FROM linked").fetchone()[0],
+                                "private_directory": str(folder)}
                     raise ValueError("Stage already completed; no rerun")
                 if stage == "encounter":
                     complete = _scan(db, archive, members["encounter.csv"],
