@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter, defaultdict
+from contextlib import closing
 from datetime import date, timedelta
 import csv
 import io
@@ -411,10 +412,14 @@ def run(zip_path,stage="all",folder=PRIVATE,chunk=20000,stop_after=None,
                           "complete:",bool(_progress(db)[1]),flush=True)
                 if stage in ("report","all") and _progress(db)[1]:
                     report=folder/REPORT
-                    if not report.exists():
-                        counts=_output(db,main,folder)
-                    else:
-                        counts=_analyze(db,main)
+                    with closing(sqlite3.connect(
+                            "file:"+str(p62.resolve())+"?mode=ro",
+                            uri=True)) as original:
+                        original.execute("PRAGMA query_only=ON")
+                        if not report.exists():
+                            counts=_output(db,original,folder)
+                        else:
+                            counts=_analyze(db,original)
                     _print(counts)
                     print("PRIVATE aggregate report:",report)
                     print("PRIVATE discovery code frequencies:",folder/DB)
