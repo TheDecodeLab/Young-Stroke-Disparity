@@ -70,7 +70,10 @@ def test_year_groups_and_cohort_membership(synthetic):
     assert len(rows)==7
     older = [r for r in rows if r["cohort"]=="historical_sex_specific_18_52_54"]
     assert all(r["year"]=="2020" for r in older)
-    assert select(rows,"INDEX_IMP","uniform_18_50",0)["year"]=="2020" or True
+    assert sum(1 for r in rows
+               if r["role"]=="INDEX_IMP"
+               and r["cohort"]=="uniform_18_50"
+               and r["P"]==0) == 2
     assert any(r["role"]=="INDEX_IMP" and r["year"]=="2021"
                and r["missing"]==1 for r in rows)
 
