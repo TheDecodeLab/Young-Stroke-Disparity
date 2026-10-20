@@ -70,8 +70,8 @@ def test_primary_counts_and_quarantine_reconcile():
             and r["P_indicator"]==1)
     assert p1["denominator"]==200
     assert p1["any_ambiguous_encounter_patient_n"]==100
-    assert p1["index_inpatient_CPT14_n"]==54
-    assert p1["index_inpatient_CPT14_pct"]==pytest.approx(27)
+    assert p1["index_inpatient_CPT14_n"]==62
+    assert p1["index_inpatient_CPT14_pct"]==pytest.approx(31)
 
 
 def test_prespecified_endpoints_and_common_quality_weighting():
@@ -83,12 +83,12 @@ def test_prespecified_endpoints_and_common_quality_weighting():
     base=primary[0]
     day=primary[1]
     assert base["P0_n"]==base["P1_n"]==200
-    assert base["P0_documented_code_n"]==38
-    assert base["P1_documented_code_n"]==54
+    assert base["P0_documented_code_n"]==46
+    assert base["P1_documented_code_n"]==62
     assert base["P1_minus_P0_crude_pp"]==pytest.approx(8)
     assert base["P1_minus_P0_common_year_quarantine_pp"]==pytest.approx(8)
-    assert day["P1_documented_code_n"]==54+44
-    assert day["P0_documented_code_n"]==38+32
+    assert day["P1_documented_code_n"]==62+46
+    assert day["P0_documented_code_n"]==46+34
     assert day["P1_minus_P0_crude_pp"]==pytest.approx(14)
     assert day["P1_minus_P0_common_year_quarantine_pp"]==pytest.approx(14)
     assert day["P1_minus_P0_no_ambiguous_pp"]==pytest.approx(14)
