@@ -225,10 +225,15 @@ def print_audit(evidence,queue,source,b_section):
                     safe_count(c["ANATOMY_UNRESOLVED_rows"]))
     print("\nSOURCE-YEAR BLOCK TRENDS within indexed inpatient section-B rows")
     for label,years in GROUPS.items():
-        denominator=sum(b_section[(str(yy),str(p),"INDEX_IMP")]
+        # Source profiles legitimately omit a year/P/encounter combination
+        # when it has no rows. Never treat an absent group as a crash or
+        # as a positive denominator for a nonzero review-only numerator.
+        denominator=sum(b_section.get((str(yy),str(p),"INDEX_IMP"),0)
                         for yy in years for p in (0,1))
         candidate=sum(evidence[("STRATUM",str(yy),str(p),"INDEX_IMP")]
                         ["candidate_rows"] for yy in years for p in (0,1))
+        if denominator<0 or candidate>denominator:
+            raise ValueError("Step76 review-only rows exceed B-section source rows")
         print(label,"review_only_candidates",safe_count(candidate),
               "all_B_section_source_rows",denominator,
               "candidate_per_B_source_row_pct",
