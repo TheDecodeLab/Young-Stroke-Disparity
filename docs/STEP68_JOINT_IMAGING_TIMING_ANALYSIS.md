@@ -29,10 +29,13 @@ part of an inpatient episode simply because the date is close.
 **H3: Coding-system representation explains missing CPT14 capture.**
 Within index IMP and uniquely linked ED stays, Step68 captures
 source frequency counts for EXACT CPT/ICD-10-PCS/HCPCS/SNOMED strings
-in a **private-only** SQL `code_profile` table, with context. This
-makes a later public-codebook/availability review possible without a
-second blind full procedure scan. Non-CPT14 codes are never
-automatically classified as brain/vascular imaging.
+in a **private-only** SQL `code_profile` table, with context,
+**actual procedure service year**, and unvalidated `P` stratum.
+This makes a later version-aware public-codebook and observed source
+availability review possible without a second blind full procedure
+scan. Non-CPT14 codes are never automatically classified as
+brain/vascular imaging. Both age-cohort memberships can contribute
+to these exploratory source-row counts and are not independent.
 
 ## What the single procedure pass does
 
@@ -51,7 +54,8 @@ Script: `scripts/step68_joint_imaging_window_scan.py`
   masks. One source row can set multiple masks and belong to both
   overlapping cohorts, but cannot inflate patient counts.
 - Computes patient-cohort aggregate records by cohort, P, year,
-  and year x P, preserving original Step62 denominators. A
+  and year x P, plus imaging modality x P and
+  modality x year, preserving original Step62 denominators. A
   `new_ED` patient has a CPT14 on the unique ED encounter but
   NO CPT14 on the indexed IMP. Similarly `new_nonIMP_pre2`
   has a CPT14 on another encounter in the preceding 2 days but
