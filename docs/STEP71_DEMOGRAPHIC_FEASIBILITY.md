@@ -50,7 +50,8 @@ For **both overlapping cohort definitions**, the script calculates:
 - Modality-specific inpatient code counts, available internally
   for reconciliation, not printed as unreviewed care disparities.
 - Primary cohort exploratory rates by demographic category
-  separately for no-ambiguous and any-ambiguous patient groups.
+  separately for `P=0` / `P=1` and for no-ambiguous
+  / any-ambiguous patient groups.
 
 The **sex/race/ethnicity labels are conservatively harmonized**:
 only exact known source-text variants map to broad standardized
