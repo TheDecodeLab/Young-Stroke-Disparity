@@ -96,8 +96,18 @@ def assess(step74,official):
             raise ValueError("Step74 candidate absent from CMS neighbor years")
         if sorted(official_titles)!=sorted(rec["FY_titles"]):
             raise ValueError("Cached official CMS title changed since Step74")
-        status=judgment(code,official_titles)
+        # Step74 is a review-only exact-code discovery list, not the
+        # full PCS catalog. Verify its original modality tag too.
         mode=MODALITY[code[:3]]
+        expected_tag={
+            "B02":"REVIEW_CNS_CT",
+            "B03":"REVIEW_CNS_MR",
+            "B32":"REVIEW_UPPER_ARTERIAL_CT",
+            "B33":"REVIEW_UPPER_ARTERIAL_MR",
+        }[code[:3]]
+        if rec.get("review_tags")!=[expected_tag]:
+            raise ValueError("Step74 clinical review tag does not match PCS family")
+        status=judgment(code,official_titles)
         signature=(str(year),str(P),scope)
         evidence[("STRATUM",)+signature]["candidate_rows"]+=count
         evidence[("STRATUM",)+signature][status+"_rows"]+=count
@@ -145,6 +155,7 @@ def assess(step74,official):
             "anatomy_review_status":statuses[0] if len(statuses)==1
                                       else "INCONSISTENT_FY_ANATOMY_REVIEW",
             "FY_titles_for_review":sorted(item["FY_titles"]),
+            "CMS_title_variation_across_versions":len(item["FY_titles"])>1,
             "observed_source_service_years":sorted(item["years"]),
             "observed_scopes":sorted(item["scopes"]),
             "observed_P_categories":sorted(item["P"]),
