@@ -1,8 +1,16 @@
 # Step70: Standardize the P-label imaging-code contrast by year and encounter ambiguity
 
-**Status:** Read-only implementation and fabricated tests committed.
-Pending investigator workstation test and real-data execution.
-**No new TriNetX source scan is performed by Step70.**
+**Status (2026-10-20):** Completed successfully on the
+authorized workstation: the Step69/70 synthetic checks and full
+repository test suite passed, and the local-only Step70 descriptive
+standardization report completed without errors. **No new TriNetX
+source scan was performed.** Crude P-group reversal under same-day
+cross-encounter CPT14 was NOT robust to common year and patient-level
+encounter-quarantine weighting, while common year weighting alone
+preserved its direction. These are measurement-QA findings, not
+causal estimates or clinical imaging completion. Next gate:
+[Step71 demographic feasibility](STEP71_DEMOGRAPHIC_FEASIBILITY.md).
+No source-derived numerical counts are reproduced in GitHub.
 
 ## What Step69 established
 
