@@ -11,18 +11,15 @@ from scripts import step75_pcs_section_denominator_audit as s75
 
 @pytest.fixture
 def cms():
-    return {
-       2019:{
-          "B020ZZZ":"Computerized Tomography of Brain",
-          "B030ZZZ":"Magnetic Resonance Imaging of Brain",
-          "B240ZZZ":"Ultrasonography of Heart",
-       },
-       2020:{
-          "B020ZZZ":"Computerized Tomography of Brain",
-          "B030ZZZ":"Magnetic Resonance Imaging of Brain",
-          "B240ZZZ":"Ultrasonography of Heart",
-       },
+    # Match the Step74 production contract: all FY2016-2025 catalogs
+    # are available, even when synthetic source rows use only 2019.
+    # This is a fully fabricated source, not a copy of any CMS file.
+    fake_titles={
+        "B020ZZZ":"Computerized Tomography of Brain",
+        "B030ZZZ":"Magnetic Resonance Imaging of Brain",
+        "B240ZZZ":"Ultrasonography of Heart",
     }
+    return {year:dict(fake_titles) for year in s75.s74.FY}
 
 
 @pytest.fixture
@@ -108,6 +105,8 @@ def test_no_source_strings_in_printed_report(source,cms,capsys):
     assert "B020ZZZ" not in out
     assert "0JH60BZ" not in out
     assert "source procedure rows" in out
+    assert "FY 2016 B_section_code_titles 3" in out
+    assert "FY 2025 B_section_code_titles 3" in out
     assert s75.safe(0)=="0"
     assert s75.safe(1)=="<11"
 
