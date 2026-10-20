@@ -22,6 +22,8 @@ events on a frozen linked ED encounter.
 a unique ED link.** Same-patient CPT14 code events in the -2 to -1
 calendar days before admission, admission day (another encounter),
 and -7 to -1 days (another encounter) are examined independently.
+Separate +1 to +2-day post-admission codes on non-index encounters
+are another exploratory sensitivity, not part of the same-IMP primary outcome.
 These are deliberate **sensitivity screens**, not verified care
 transitions. We never call a procedure on a different encounter
 part of an inpatient episode simply because the date is close.
