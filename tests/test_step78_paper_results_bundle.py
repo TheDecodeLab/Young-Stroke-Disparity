@@ -123,7 +123,14 @@ def test_demo_missingness_and_point_estimates_are_separate():
     assert race["UNKNOWN_MISSING"]["missing_or_unmapped"] is True
     assert race["WHITE"]["missing_or_unmapped"] is False
     assert race["WHITE"]["n"]>11
-    assert len(rows)>10
+    # The fabricated fixture has exactly 2 sex, 6 race and
+    # 2 ethnicity categories. These counts are controlled by
+    # the fixture, not a clinical completeness threshold.
+    expected={"sex":2,"race":6,"ethnicity":2}
+    assert {kind:sum(row["dimension"]==kind for row in rows)
+            for kind in expected}==expected
+    assert sum(row["n"] for row in rows if row["dimension"]=="race") == (
+        tab.loc[tab.cohort==s78.PRIMARY,"n"].sum())
 
 
 def test_model_outputs_explicitly_nonclinical_and_nonclustered():
@@ -146,7 +153,8 @@ def test_results_narrative_and_private_csv(tmp_path):
     demos=s78.demographic_rows(tab)
     text=s78.narrative(c,d,demos,[])
     assert "NOT publication- or external-disclosure-ready" in text
-    assert "documented" in text
+    # Meaning matters; the prose starts the sentence with "Documented".
+    assert "documented 14-code CPT neuroimaging" in text.lower()
     assert "same HCO" in text
     assert "scan completion" in text
     assert "confirmed" not in text.lower().replace(
