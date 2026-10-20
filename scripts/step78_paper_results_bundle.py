@@ -19,6 +19,7 @@ import json
 import os
 import sqlite3
 import tempfile
+import shutil
 
 try:
     from scripts import step62_checkpointed_cohort as s62
@@ -398,6 +399,9 @@ def main():
         raise ValueError("Unexpected Step68 frozen policy")
 
     folder=s62._private_dir(DEST)
+    final=folder/"draft_v1"
+    if final.exists() or final.is_symlink():
+        raise FileExistsError("Step78 draft_v1 already exists; refuse overwrite")
     outputs=(
         "table1_P_and_recording_quality.csv",
         "table2_P_endpoint_sensitivity.csv",
@@ -408,9 +412,6 @@ def main():
         "figure2_source_quality_standardization.png",
         "RESULTS_DRAFT_LOCAL_ONLY.md",
         "manifest_LOCAL_ONLY.json")
-    if any((folder/name).exists() or (folder/name).is_symlink()
-           for name in outputs):
-        raise FileExistsError("Step78 output already exists; refuse overwrite")
     with closing(sqlite3.connect(
             "file:"+str(paths[1])+"?mode=ro",uri=True)) as db:
         db.execute("ATTACH DATABASE ? AS baseline",
@@ -447,31 +448,50 @@ def main():
             and len(t2)==len(s62.COHORTS)*len(ENDPOINTS)
             and len(t5)==2*len(s73.TARGETS)):
         raise ValueError("Unexpected Step78 exhibit dimensions")
-    tables=(t1,t2,t3,t4,t5)
-    for filename,rows in zip(outputs[:5],tables):
-        write_csv(folder/filename,rows)
-    plots(t2,folder)
-    (folder/outputs[7]).write_text(
-        narrative(source,t2,t4,t5),encoding="utf-8")
-    receipt={
-        "policy":POLICY,
-        "source_policy":s68.POLICY,
-        "primary_cohort":PRIMARY,
-        "historical_cohort_overlaps_primary":True,
-        "frozen_sources":{
-            "step62":meta["s62"],"step63":meta["s63"],
-        },
-        "exhibits":list(outputs[:-1]),
-        "disclosure_review_required":True,
-        "manuscript_ready_for_public_release":False,
-        "performed_imaging_verified":False,
-        "hospital_cluster_inference_available":False,
-        "reported_p_is_unvalidated_principal_I63_flag":True,
-        "not_patient_level_exports":True,
-    }
-    (folder/outputs[-1]).write_text(
-        json.dumps(receipt,indent=2,sort_keys=True)+"\n",
-        encoding="utf-8")
+    # Generate all files in a mode-0700 staging directory and publish
+    # the completed internal bundle atomically as one immutable local
+    # directory. Errors leave no half-written results that block reruns.
+    stage=Path(tempfile.mkdtemp(prefix=".step78_staging_",dir=str(folder)))
+    try:
+        tables=(t1,t2,t3,t4,t5)
+        for filename,rows in zip(outputs[:5],tables):
+            write_csv(stage/filename,rows)
+        plots(t2,stage)
+        (stage/outputs[7]).write_text(
+            narrative(source,t2,t4,t5),encoding="utf-8")
+        receipt={
+            "policy":POLICY,
+            "source_policy":s68.POLICY,
+            "primary_cohort":PRIMARY,
+            "historical_cohort_overlaps_primary":True,
+            "frozen_sources":{
+                "step62":meta["s62"],"step63":meta["s63"],
+            },
+            "exhibits":list(outputs[:-1]),
+            "disclosure_review_required":True,
+            "manuscript_ready_for_public_release":False,
+            "performed_imaging_verified":False,
+            "hospital_cluster_inference_available":False,
+            "reported_p_is_unvalidated_principal_I63_flag":True,
+            "not_patient_level_exports":True,
+        }
+        (stage/outputs[-1]).write_text(
+            json.dumps(receipt,indent=2,sort_keys=True)+"\\n",
+            encoding="utf-8")
+        if set(p.name for p in stage.iterdir())!=set(outputs):
+            raise ValueError("Step78 draft artifact inventory mismatch")
+        for path in stage.iterdir():
+            if not path.is_file() or path.stat().st_size==0:
+                raise ValueError("Empty or nonfile Step78 manuscript artifact")
+            os.chmod(path,0o600)
+        os.chmod(stage,0o700)
+        if final.exists() or final.is_symlink():
+            raise FileExistsError("Step78 completed output appeared concurrently")
+        stage.rename(final)
+    except Exception:
+        if stage.exists():
+            shutil.rmtree(stage)
+        raise
     print("STEP78 LOCAL ONLY: DRAFT MANUSCRIPT RESULTS EXHIBITS CREATED")
     print("Primary cohort",PRIMARY,
           "P groups",len([r for r in t1 if r["cohort"]==PRIMARY]))
@@ -482,7 +502,7 @@ def main():
     print("Frozen Step68 reference and source signatures: RECONCILED")
     print("Clinically verified scan completion / HCO clustering: NOT AVAILABLE")
     print("Status: INTERNAL RESULTS DRAFT; DISCLOSURE REVIEW REQUIRED")
-    print("Private output directory",folder)
+    print("Private output directory",final)
     print("HANDOFF: TERMINAL OUTPUT ONLY. Do not upload these results.")
 
 
