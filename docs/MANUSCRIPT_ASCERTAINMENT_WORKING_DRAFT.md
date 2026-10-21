@@ -244,8 +244,15 @@ year × ambiguity standardized difference.
 calendar year and patient-level ambiguity
 (with small-cell suppression and cross-table review).
 
-**Table 4:** Race/ethnicity/sex recorded-category completeness
-and primary coded-capture descriptive measures.
+**Table 4 (INTERNAL-ONLY pending institutional review):**
+Demographic completeness and descriptive recorded-code capture.
+The completed Step79 audit found a disclosure risk in one or
+more subgroup event or complementary-event counts derivable
+from published denominators and category percentages.
+Do NOT include P-group or imaging-capture rates by
+demographic category in any proposed shareable version.
+A category-completeness-only replacement remains subject
+to independent complementary and cross-table suppression review.
 
 **Table 5 (supplement only):** Exploratory grouped models
 of code capture, marked as not cluster-robust and
@@ -257,6 +264,12 @@ and encounter definition.
 **Figure 2:** Crude versus common-mix P differences,
 highlighting the sensitivity of an apparent
 same-day contrast to source-quality adjustment.
+The current draft joins values across nominal
+encounter-definition categories with a line;
+a final figure should prefer separate points
+without lines implying a continuous scale
+or chronology. Both figures require private
+workstation visual review, beyond PNG-file checks.
 
 ## Discussion: planned argument, no new claims yet
 
@@ -297,13 +310,19 @@ analysis becomes possible.
 
 ## Before submission
 
-First review the **private** Step78 tables/figures
-and exact analytic definitions. Then freeze
-the final primary and secondary estimands,
-evaluate disclosure and multiple small-cell
-reconstruction across exhibits, verify all
-public clinical-code references and obtain
-statistical/clinical reviewer approval.
+Step78 generated the **private** tables and figures,
+and Step79's 745-test local run verified arithmetic,
+nested outcomes and provenance, with one Table4
+small-event/complement disclosure-risk category.
+Review both graphics visually on the workstation,
+withhold Table4 demographic code-capture/P percentages
+from shareable drafts, and seek formal primary/
+secondary and cross-table disclosure clearance.
+Then freeze final main and sensitivity estimands,
+verify clinical-code and methodological references,
+and obtain statistical/clinical coauthor approval.
+The internal Step78 results are not publicly
+disclosure-approved by passing Step79.
 Only after those gates replace the restricted
 Results placeholders with approved aggregate
 material in a shareable manuscript.
