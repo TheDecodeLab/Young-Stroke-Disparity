@@ -1,6 +1,25 @@
 # Step82: Paired demographic sensitivity to imaging-code encounter attribution
 
-**Status:** implementation committed; investigator workstation tests and results PENDING.
+**Status (2026-10-21):** investigator Step82 run COMPLETED: eight
+synthetic tests and the full **765-test** suite passed with three
+previously observed warnings; the restricted no-rescan local analysis
+finished successfully. Recorded-code demographic contrasts vary
+substantially with encounter attribution. Detailed local outputs are
+investigator-held only; no demographic estimates or counts are committed.
+
+**Quality issue discovered after first run:** the P1-only model's
+overlap diagnostic was inherited from Step73 and required records
+at P=0, although P=0 is structurally excluded in that subset.
+This forced every P1 adjusted estimate to be incorrectly marked
+WITHHELD. Step82 now uses explicit scope-specific P and ambiguity
+strata: quality=(P0,P1)x(held0,held1);
+P1=P1x(held0,held1); clean=(P0,P1)xheld0.
+The test suite now includes fabricated regression cases for
+structural absence versus truly sparse intersections.
+**Corrected P1 results are NOT yet verified on the workstation.**
+Run Step82 again before using P1 results or finalizing a
+demographic-scientific positioning decision. Normal disclosure
+and no-HCO limitations remain unchanged.
 
 ## Scientific question and design
 
