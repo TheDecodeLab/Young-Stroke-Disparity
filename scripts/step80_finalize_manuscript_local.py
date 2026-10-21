@@ -274,8 +274,6 @@ def figures(rows,folder):
     ax.set_xlim(0,100)
     ax.set_yticks(y,labels)
     ax.set_xlabel("Indexed patients with a documented CPT14 code (%)")
-    ax.set_title("Recorded code capture depends on encounter definition",
-                 fontsize=13,loc="left")
     ax.grid(axis="x",alpha=.19)
     ax.set_axisbelow(True)
     for sp in ("top","right","left"):
@@ -299,8 +297,6 @@ def figures(rows,folder):
     ax.axvline(0,color="#666666",lw=1)
     ax.set_yticks(y,labels)
     ax.set_xlabel("P=1 minus P=0 recorded-code capture (percentage points)")
-    ax.set_title("Categorical encounter rules: crude and standardized differences",
-                 fontsize=13,loc="left")
     ax.grid(axis="x",alpha=.19)
     ax.set_axisbelow(True)
     extent=max(abs(v) for v in crude+adjusted)+3
