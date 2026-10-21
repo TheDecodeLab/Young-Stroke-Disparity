@@ -1,83 +1,70 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Current scientific stage: Step79 passed arithmetic, Table4 disclosure revision pending
+## Current scientific stage: full internal manuscript package (Step80), pending local run
 
-**October 20, 2026:** The investigator completed the read-only
-Step79 check on the immutable Step78 `draft_v1` results package.
-Nine dedicated and **745 full-repository synthetic tests passed**.
-Manifest and preliminary figure-file integrity, original
-CPT14 cohort/P denominators, four encounter-sensitivity
-definitions and their nesting, year/recording-quality
-subgroup arithmetic, and model-interpretation caveats
-passed automatic consistency checks. Step78's five
-CSV tables, two PNGs and local-only Results draft
-remain **unchanged**. No source ZIP, frozen SQLite
-scan, or patient-level outcome rebuild occurred.
+**Investigator direction (2026-10-20):** Proceed to a complete
+manuscript using the validated frozen imaging-code ascertainment
+analysis, and defer all institutional CTSI/data-steward outreach.
+The investigator will review scientific and clinical claims when
+the manuscript is complete. The investigator may optionally
+supply an earlier manuscript for reconciliation of background,
+specific aims, authorship and prior citations, but this does
+not block the current draft.
 
-**Material residual issue:** One *category of risk*
-(`Table4_derived_small_event_or_complement`)
-was detected. It indicates one or more demographic
-cells where a reported subgroup denominator and
-P-label or imaging-code-capture percentage could
-reveal a count or complementary count smaller
-than 11. It is **not** evidence of erroneous
-demographic estimates and is **not** confirmation
-that other tables are safe to publish.
-Do not externally share Table4 in its current form,
-even though its arithmetic reconciles.
-The specific counts and categories remain local-only.
+**Computational evidence status:** Step78 completed a five-table,
+two-figure, private-only results bundle with 736 tests passed.
+Step79 completed the independent arithmetic/metadata
+preflight with 745 repository tests passed. One
+disclosure-risk *type* remains in original Table4: a published
+demographic denominator and rate can reveal a count
+or complementary count under 11. No source scan or
+new patient classification is needed.
 
-**Proposed revision to public-facing manuscript
-organization:** Table1 presents the frozen
-index-IMP cohort and P data; Table2 is the
-central comparison of four strictly defined
-CPT14 code-recording outcomes. Treat Table3
-calendar-year × encounter ambiguity as
-supplementary source QA and Table5 demographic
-GLMs as exploratory only, both subject to
-release and statistical review. Table4 should
-initially describe demographic data completeness
-without category-specific P or imaging-capture
-percentages. Any category counts and shares
-still need independent primary and complementary
-small-cell review across Table1–Table3 before
-release. Omitting rates alone does NOT
-satisfy institutional disclosure approval.
+**Step80 implementation committed, but not yet executed
+on the investigator's authorized workstation:**
 
-The manuscript's legitimate focus is the
-ascertainment of **documented** 14-code CPT
-neuroimaging on an index IMP encounter in
-the definite 18–50 I63-coded primary cohort,
-with separate alternative temporal/encounter
-attribution screens. P is an unvalidated I63
-primary-diagnosis recording indicator, not
-stroke severity. The overlapping sex-specific
-historical cohort is sensitivity only; neither
-performs true imaging validation or HCO-level
-cluster adjustment. PCS review-only code rows
-were never added to indexed patient outcomes.
+- The [complete public-data-only manuscript template](
+MANUSCRIPT_ASCERTAINMENT_FULL_TEMPLATE.md) contains a structured
+abstract, introduction, frozen cohort/endpoint Methods,
+Results insertion slots, full Discussion, Conclusion,
+figure legends and seven source-verified references.
+- The [private completion script](
+../scripts/step80_finalize_manuscript_local.py)
+loads the existing Step78 `draft_v1`, runs Step79
+arithmetic/disclosure checks, inserts validated aggregate
+cohort and encounter-definition numbers into Abstract/Results,
+generates two replacement categorical-point figures,
+and creates a local, counts-free disclosure-review
+request for *future* use only.
+- The code preserves private Step78 original results and
+generates a new immutable local-only `review_v1`
+manuscript bundle; clinical-review and visual-review
+permissions are **not** inferred from successful tests.
+- Original Table4's demographic P and coded-capture rates
+are **not transferred** into the candidate manuscript.
+Table3 and Table5 remain supplementary/internal
+until disclosure and scientific review.
 
-**Next scientific work:** independent manual
-review of Figures 1–2 for accuracy, readability
-and inappropriate connecting lines between
-nominal encounter definitions; clinical and
-statistical coauthor review; institutional
-cross-table disclosure authorization; then
-finalization of approved manuscript Results,
-Discussion and abstract from the already
-generated local-only evidence. **No further
-full source scans or routine computation
-are warranted.** See [Step79 completion and
-disclosure disposition](
-STEP79_EXHIBIT_INTEGRITY_GATE.md).
+**Core manuscript question:** How ascertainment of
+recorded CPT14 neuroimaging among adults definitely
+aged 18–50 with candidate I63-coded index IMP changes
+with different encounter-attachment rules and measured
+source-quality strata. P is an *unvalidated* I63
+principal-recording indicator; P=0 includes blank
+and other nonprincipal markers. The historical age cohort
+overlaps. Recorded CPT14 codes do not confirm
+performed imaging, same HCO/stroke episode or
+inequality in appropriate clinical care. No hospital
+clustering or adequate case-mix adjustment available.
 
-**Public-release status: BLOCKED.** Keep
-the Step78 `draft_v1` results, figures
-and Results draft on the authorized local
-workstation pending formal release review.
-No private files or source-derived counts
-have been committed to GitHub.
+**Next handoff:** One fail-fast local Step80 execution
+with targeted tests then the full repository tests,
+followed by the local manuscript builder. Return
+TERMINAL OUTPUT ONLY, not the local counts,
+manuscript or figures. The earlier manuscript, if supplied,
+will be integrated after this first complete version.
+**No institutional emails will be sent.**
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
