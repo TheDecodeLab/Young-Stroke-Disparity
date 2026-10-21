@@ -20,25 +20,49 @@ def _crosswalk():
         return list(csv.DictReader(f))
 
 
-def test_reference_exports_have_same_nine_stable_ids():
+def test_reference_exports_have_consistent_unique_stable_ids():
+    raw=json.loads((REF/"imaging_references.csl.json").read_text("utf-8"))
+    ids=[x["id"] for x in raw]
+    assert len(ids)==len(set(ids)), "Duplicate CSL reference IDs"
     items=_items()
-    assert len(items)==9
+    # Original coding/stroke citations are preserved while three
+    # PubMed-verified EHR data-quality reviews were added for Step80.
+    required={
+        "CMS2010_MPPR","CMS2015_ICD10","CMS2025_MRgFUS",
+        "CMS2026_MRIanalysis","CMS2026_CTP","HHS2025_OPPS2026",
+        "AMA2026_CPTbasics","Vagal2017_AJNR","Wang2024_JACR",
+        "Lewis2023_JAMIA","Syed2023_JMIR","An2025_JMIR",
+    }
+    assert required <= set(items)
     ris=(REF/"imaging_references.ris").read_text("utf-8")
     bib=(REF/"imaging_references.bib").read_text("utf-8")
-    ris_ids=set(re.findall(r"^ID  - (\S+)$",ris,re.M))
-    bib_ids=set(re.findall(r"^@\w+\{([^,]+),",bib,re.M))
-    assert ris_ids==bib_ids==set(items)
+    ris_ids=re.findall(r"^ID  - (\S+)$",ris,re.M)
+    bib_ids=re.findall(r"^@\w+\{([^,]+),",bib,re.M)
+    assert len(ris_ids)==len(set(ris_ids))
+    assert len(bib_ids)==len(set(bib_ids))
+    assert set(ris_ids)==set(bib_ids)==set(items)
     assert len(re.findall(r"^ER  - ",ris,re.M))==len(items)
 
 
-def test_two_pubmed_articles_are_uniquely_identified_and_title_verified():
+def test_five_pubmed_articles_have_unique_verified_identifiers():
     items=_items()
-    assert items["Vagal2017_AJNR"]["DOI"]=="10.3174/ajnr.A5340"
-    assert items["Vagal2017_AJNR"]["PMID"]=="28838913"
-    assert items["Wang2024_JACR"]["DOI"]=="10.1016/j.jacr.2023.07.015"
-    assert items["Wang2024_JACR"]["PMID"]=="37586470"
+    verified={
+        "Vagal2017_AJNR":("10.3174/ajnr.A5340","28838913"),
+        "Wang2024_JACR":("10.1016/j.jacr.2023.07.015","37586470"),
+        "Lewis2023_JAMIA":("10.1093/jamia/ocad120","37390812"),
+        "Syed2023_JMIR":("10.2196/42615","37000497"),
+        "An2025_JMIR":("10.2196/60709","40266662"),
+    }
+    for key,(doi,pmid) in verified.items():
+        assert items[key]["DOI"]==doi
+        assert items[key]["PMID"]==pmid
+        assert items[key]["title"]
     assert items["Wang2024_JACR"]["title"].startswith("Gender-Based Disparity")
-    assert len({x.get("DOI") for x in items.values() if x.get("DOI")})==2
+    dois=[x["DOI"] for x in items.values() if x.get("DOI")]
+    pmids=[x["PMID"] for x in items.values() if x.get("PMID")]
+    assert len(dois)==len(set(dois))
+    assert len(pmids)==len(set(pmids))
+    assert {items[key]["DOI"] for key in verified} <= set(dois)
 
 
 def test_all_fourteen_core_imaging_codes_have_CMS2010_source():
