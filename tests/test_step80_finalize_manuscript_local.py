@@ -78,8 +78,8 @@ def test_draft_complete_and_matches_verifiable_portable_citations():
     # The earlier Diamond/NIS study was a different source, cohort and
     # ascertainment definition. Its historical clinical results must
     # never be blended into the new Research Network manuscript.
-    assert not re.search(r"\\bNIS\\b",text)
-    assert not re.search(r"\\bDiamond\\b",text,re.I)
+    assert not re.search(r"\bNIS\b",text)
+    assert not re.search(r"\bDiamond\b",text,re.I)
     assert "CHA₂DS₂-VASc" not in text
 
 
