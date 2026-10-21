@@ -58,6 +58,19 @@ def real(s):
     return x
 
 
+def strict_bool(value, name):
+    """Accept CSV DictReader strings AND fabricated in-memory booleans.
+
+    Reject arbitrary truthy/falsy values so unknown or missing
+    provenance flags cannot be interpreted as clinical validation.
+    """
+    if type(value) is bool:
+        return value
+    if type(value) is str and value in ("True", "False"):
+        return value=="True"
+    raise ValueError("Step79 integrity failure: invalid boolean "+name)
+
+
 def near(a,b,name,tol=1e-7):
     check(abs(real(a)-real(b))<=tol,
           "inconsistent "+name)
@@ -160,8 +173,10 @@ def audit(tables):
             check(m0==integral(ref[(cohort,0)]["index_inpatient_CPT14_n"])
                   and m1==integral(ref[(cohort,1)]["index_inpatient_CPT14_n"]),
                   "frozen inpatient CPT14 baseline disagrees")
-        check(row["actual_imaging_performed_verified"]=="False" and
-              row["HCO_episode_verified"]=="False",
+        check(not strict_bool(row["actual_imaging_performed_verified"],
+                              "performed imaging")
+              and not strict_bool(row["HCO_episode_verified"],
+                                  "HCO episode"),
               "Table2 improperly asserts performed/same-HCO imaging")
     check(seen2==expected,"Table2 outcomes incomplete")
     by={(r["cohort"],r["endpoint_key"]):r for r in t2}
@@ -199,7 +214,7 @@ def audit(tables):
         key=(yr,p,q)
         check(key not in seen3,"duplicate Table3 stratum")
         seen3.add(key)
-        hidden=row["cell_suppressed"]=="True"
+        hidden=strict_bool(row["cell_suppressed"],"Table3 suppression")
         if hidden:
             has_hidden=True
             check(row["denominator"] in ("",None) and
@@ -240,7 +255,7 @@ def audit(tables):
             cat=(dim,row["category"])
             check(cat not in seen4,"duplicate demographic category")
             seen4.add(cat)
-            hidden=row["suppressed"]=="True"
+            hidden=strict_bool(row["suppressed"],"Table4 suppression")
             if hidden:
                 withheld+=1
                 check(row["n"] in ("",None),"Table4 small category count visible")
@@ -280,9 +295,12 @@ def audit(tables):
         lo=real(row["extra_binomial_sensitivity_low_pp"])
         hi=real(row["extra_binomial_sensitivity_high_pp"])
         check(lo<=d<=hi,"Table5 invalid sensitivity bounds")
-        check(row["HCO_cluster_corrected"]=="False" and
-              row["case_mix_severity_corrected"]=="False" and
-              row["not_confirmed_care_disparity"]=="True",
+        check(not strict_bool(row["HCO_cluster_corrected"],
+                              "HCO cluster adjustment")
+              and not strict_bool(row["case_mix_severity_corrected"],
+                                  "case-mix severity adjustment")
+              and strict_bool(row["not_confirmed_care_disparity"],
+                              "care-disparity caveat"),
               "Table5 overstates model validity")
         if integral(row["comparison_n"])<MIN_CELL or integral(
                 row["reference_n"])<MIN_CELL:
