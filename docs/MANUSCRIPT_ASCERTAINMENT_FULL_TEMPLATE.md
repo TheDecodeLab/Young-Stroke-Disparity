@@ -16,7 +16,7 @@
 
 ## Introduction
 
-Neuroimaging is central to assessing patients with suspected acute stroke, and observational studies often use procedure records to describe imaging patterns. Population-based and hospital-level studies have described variation in stroke neuroimaging across demographic characteristics and clinical settings [@Vagal2017_AJNR; @Wang2024_JACR]. An important methodological distinction is that a coded record represents an observation in a data system; it is not necessarily confirmation that an examination was completed, and the absence of a code does not independently establish that no examination occurred.
+Head CT, brain MRI, CT angiography, and MR angiography serve different diagnostic purposes during stroke evaluation [@Kakkar2021_StrokeImaging]. Observational studies have described differences in neuroimaging use across demographic groups and clinical settings [@Vagal2017_AJNR; @Wang2024_JACR]. An important methodological distinction is that a coded record represents an observation in a data system; it is not necessarily confirmation that an examination was completed, and the absence of a code does not independently establish that no examination occurred.
 
 EHR research networks integrate data generated for heterogeneous clinical and operational purposes. Data-quality reviews have emphasized that completeness, conformance, plausibility, and relationships between recorded elements must be evaluated in relation to the intended research question [@Lewis2023_JAMIA; @Syed2023_JMIR; @An2025_JMIR]. For procedure-based outcomes, the meaning of an observed code is inseparable from the encounter identifier, event date, available coding system, and degree of institutional data coverage. A patient may have emergency evaluation and hospitalization represented by different encounter records; without a trusted encounter-to-hospital linkage, joining them by date alone cannot establish that they reflect one episode of care.
 
@@ -34,7 +34,7 @@ We conducted a retrospective, observational ascertainment analysis of an investi
 
 We identified encounters recorded as inpatient (source type `IMP`) with a strict ICD-10-CM I63 or dotted I63.* diagnosis belonging to the same patient and encounter and dated within the recorded encounter interval. Such records represent **candidate** ischemic stroke, not clinically adjudicated acute cerebral infarction. Missing or reversed encounter intervals were not treated as evidence of absent imaging. Ambiguous competing earliest same-day candidate inpatient encounters were held rather than selected arbitrarily.
 
-The primary cohort comprised adults **definitely aged 18–50 years** at index given the available birth year and encounter year. Where only birth year was known, definite inclusion required that the possible age range lie entirely within the specified limits; patients whose eligibility depended on an unobserved birthday were not assigned a fabricated exact age. Each eligible patient contributed one frozen earliest qualifying inpatient index within that cohort. The historical age definition (men 18–52 years and women 18–54 years) was analyzed separately as a sensitivity cohort. These definitions overlap and do not represent independent populations.
+The primary cohort comprised adults **definitely aged 18–50 years** at index given the available birth year and encounter year. Where only birth year was known, definite inclusion required that the possible age range lie entirely within the specified limits; patients whose eligibility depended on an unobserved birthday were not assigned a fabricated exact age. Each eligible patient contributed one frozen earliest qualifying inpatient index within that cohort. A historical sensitivity cohort used 18–52 years for men and 18–54 years for women, reflecting a previous data-driven approach to defining young ischemic stroke [@Abedi2023_YoungStrokeAge]. We did not use those age limits for the primary endpoint. The historical and uniform cohorts overlap and must not be combined as independent samples.
 
 ### Documented CPT neuroimaging ascertainment
 
@@ -95,6 +95,8 @@ Documented neuroimaging-code capture in young adults with candidate ischemic-str
 5. Lewis AE, Weiskopf N, Abrams ZB, et al. Electronic health record data quality assessment and tools: a systematic review. *J Am Med Inform Assoc*. 2023;30(10):1730–1740. doi:10.1093/jamia/ocad120. [@Lewis2023_JAMIA]
 6. Syed R, Eden R, Makasi T, et al. Digital Health Data Quality Issues: Systematic Review. *J Med Internet Res*. 2023;25:e42615. doi:10.2196/42615. [@Syed2023_JMIR]
 7. An D, Lim M, Lee S. Challenges for Data Quality in the Clinical Data Life Cycle: Systematic Review. *J Med Internet Res*. 2025;27:e60709. doi:10.2196/60709. [@An2025_JMIR]
+8. Abedi V, Lambert C, Chaudhary D, et al. Defining the Age of Young Ischemic Stroke Using Data-Driven Approaches. *J Clin Med*. 2023;12(7):2600. doi:10.3390/jcm12072600. [@Abedi2023_YoungStrokeAge]
+9. Kakkar P, Kakkar T, Patankar T, Saha S. Current approaches and advances in the imaging of stroke. *Dis Model Mech*. 2021;14(12):dmm048785. doi:10.1242/dmm.048785. [@Kakkar2021_StrokeImaging]
 
 ## Figure legends (internal manuscript draft)
 
