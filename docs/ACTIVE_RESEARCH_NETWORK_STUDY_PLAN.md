@@ -1,76 +1,69 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Current action: Step78 paper-results exhibit package (no source scan)
+## Current action: Step79 consistency and disclosure triage of the completed paper exhibits
 
-**Investigator direction (2026-10-20):** Prepare the manuscript as
-an *EHR recording/encounter-ascertainment study* of documented
-neuroimaging codes, rather than a clinical/racial imaging-care
-disparity claim. Earlier Step62–77 reconstruction,
-CPT14 measurement QA, exploratory models, and the
-PCS-only source-row gain ceiling have been completed
-locally. The PCS review list remains clinician-PENDING
-and is **not included** in patient CPT14 outcomes.
+**Step78 completed successfully (2026-10-20)** on the investigator's
+approved workstation: 7 synthetic-specific tests, **736 repository
+tests**, frozen Step68 source and aggregate reconciliation,
+and a PRIVATE `draft_v1` package of 5 CSV tables, 2 PNG
+draft figures, one Results narrative and a policy manifest.
+Step78 did not reopen original raw clinical procedure ZIPs;
+all manuscript numbers and images remain LOCAL ONLY.
 
-Working primary cohort: frozen uniform definitely-eligible
-age 18–50 candidate I63 on index inpatient IMP.
-Working primary measurement: an exact CPT14 imaging
-code for the same patient/IMP within index
-start/end. Historic sex-specific-age cohort is
-an overlapping sensitivity only. Report P=0
-as secondary/blank/unmarked diagnosis indicator
-mix, NOT independently confirmed secondary stroke.
+The [Step78 reproducible package specification](
+STEP78_PAPER_RESULTS_PACKAGE.md) documents the generation
+method. The tracked [working manuscript scaffold](
+MANUSCRIPT_ASCERTAINMENT_WORKING_DRAFT.md) includes Methods,
+Introduction, Results organization and limitations without
+private numeric outputs.
 
-Analytic paper priority: report original recorded
-index inpatient capture, then separately show
-sensitivity to another encounter on admission
-calendar day, a unique prior ED link, a broader
-near-day window, and descriptive common year ×
-encounter-key-quarantine standardization. Large
-unadjusted P contrasts and sign changes with
-expanded encounter linkage are measurement
-phenomena; they cannot be attributed to actual
-scan receipt, same-hospital episode, imaging
-appropriateness, severity or HCO coding mechanisms.
+**Working scientific focus:** measurement/encounter
+ascertainment of documented CPT14 neuroimaging
+code capture in candidate-I63 index IMP among
+definitely eligible ages 18–50. Coarse calendar-year
+and patient-level any-key quarantine mixing,
+ED attachment, and codes on any other same-day
+encounter are separate, noncausal sensitivity
+definitions. A different same-day encounter
+is not verified same hospital or stroke episode.
+Historical sex-dependent ages overlap and
+are sensitivity material. P is an unvalidated
+I63 principal recording indicator, not
+clinical stroke severity or a valid
+principal-versus-secondary diagnosis adjudication.
 
-The new [Step78 private manuscript exhibit
-bundle](STEP78_PAPER_RESULTS_PACKAGE.md)
-uses **only frozen read-only Step62/63/68
-SQLite checkpoints**, reuses previously
-validated Step69/70 and Step72/73 estimands,
-reconciles source signatures, and generates
-five internal CSV evidence tables,
-two PNG draft figures, local-only Results
-prose, and a private manifest. Outputs are
-atomic, immutable draft_v1 under the
-gitignored private results directory.
-No original ~993-million-row procedure
-source scan or new clinical data export.
+**NEXT:** [Step79 immutable private paper-exhibit integrity and
+disclosure-risk gate](STEP79_EXHIBIT_INTEGRITY_GATE.md).
+Its read-only checker validates independent
+Table1/Table2 numerator/denominator arithmetic,
+nested CPT14 capture outcomes, year/source
+quality and demographic partitions,
+model-precision caveats, report policy,
+PNG identity and preliminary complementary
+suppression/differencing risks. The checker
+does NOT open frozen clinical SQLite or
+rescan any source ZIP; it does NOT publish
+or mutate Step78. The fabricated-only
+tests and local execution are **PENDING**.
 
-The public-only [working manuscript scaffold](
-MANUSCRIPT_ASCERTAINMENT_WORKING_DRAFT.md)
-documents actual cohort eligibility,
-imaging-code and index-attribution rules
-and scientific caveats without numerical
-source-derived results. Independent clinical
-PCS coding review can proceed as a
-separate enhancement; it is **not a blocker**
-for a CPT14-only measurement-methods paper
-that explicitly excludes PCS from its
-patient-level imaging outcome.
+**Disclosure and clinical readiness:** NOT achieved.
+Even a clean automated Step79 gate is NOT
+a formal provider/institutional cross-table
+release approval; manuscript figures still
+need manual rendered review, and Table5's
+exploratory nominal/quasi intervals are NOT
+HCO-cluster robust or adjusted for severity.
+No claims of confirmed imaging performance
+or racial inequalities in clinical care.
+PCS's 40 exact review-candidate codes
+remain separate and unapproved, outside
+the CPT14 patient-level outcome.
 
-**Next investigator run is Step78.**
-New fabricated-only tests are committed but
-workstation verification is pending. The
-requested handoff is **TERMINAL OUTPUT ONLY**
-and a local user review of the
-private exhibits. Source-derived numeric
-tables, figures and narrative remain
-LOCAL ONLY until cross-table disclosure,
-statistical and clinical review.
-Exploratory demographic contrasts are
-supplemental/optional and should not be
-labeled inequitable actual imaging care.
+**Next handoff:** TERMINAL OUTPUT ONLY.
+Do not upload or commit private Step78
+tables, plots, notes or local Step77
+observed-code review worksheet.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
