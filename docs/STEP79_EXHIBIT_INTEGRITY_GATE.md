@@ -1,8 +1,40 @@
 # Step79: Audit completed private paper exhibits before manuscript use
 
-**Status (2026-10-20):** Step78 completed locally with 736 tests
-passing; Step79 code and fabricated-only tests are committed,
-but the **local Step79 check is pending**.
+**Status (2026-10-20): COMPLETED locally.** Nine dedicated
+fabricated-only tests and **745 total repository tests passed**.
+The immutable Step78 private nine-file package passed manifest,
+PNG signature/dimension, Table1–Table2, endpoint-nesting,
+and provisional model-flag integrity checks.
+
+**One disclosure risk *type* was detected:**
+`Table4_derived_small_event_or_complement`.
+The single tag does **not** mean just one affected subgroup or
+cell. For one or more demographic rows, a released subgroup
+denominator and a rate (P1, inpatient CPT14 capture, or
+same-day CPT14 capture) can mathematically disclose a
+small event or complementary non-event count below 11.
+The exact affected row(s) remain private; Step79
+deliberately did not print them.
+
+**Disposition: NEEDS DISCLOSURE REVISION before external sharing.**
+No clinical/source-data rerun is needed. Preserve
+Step78 `draft_v1` unchanged. Table4 remains
+**internal-only in its present form**. An initial
+manuscript candidate should OMIT category-specific
+P1 and imaging-capture percentages from Table4;
+retain a descriptive demographic completeness
+summary only *subject to independent small-cell,
+complementary suppression and cross-table review*.
+Do not equate dropping flagged percentages with
+formal institutional approval. The completed
+Step79 check is an automated preflight, NOT a
+certification that Table1–Table3, Table5, the
+two figures or the paper are safe for release.
+
+**Next work:** institutional output-disclosure
+review, manual inspection of both rendered
+figures, and scientific finalization of the
+measurement-ascertainment manuscript.
 
 ## Why
 
