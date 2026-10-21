@@ -1,7 +1,45 @@
-## Step82 completed: demographic results support measurement-sensitivity question; P1 rerun pending
+## Step83 implemented: adjusted added-same-day-code gate, local run pending
+
+**2026-10-21:** The corrected Step82 run passed **12 targeted**
+and **769 full-suite** tests; its P=1-only adjusted contrasts
+are now available. This resolved the false withholding bug.
+The restricted P=1 patterns differ substantially from
+pooled-cohort and ambiguity-free patterns. Consequently
+the study should be **measurement-led**, with demographic
+code-capture sensitivity secondary and explicitly
+exploratory. P is an unvalidated source principal-recording
+flag, not a clinical subtype; no hospital identifiers are
+available to resolve selection or source-site heterogeneity.
+
+The [Step83 paired gain protocol](
+STEP83_ADJUSTED_PAIRED_GAIN_GATE.md) and synthetic-only
+script/tests are now committed, with local clinical-result
+execution **NOT YET VERIFIED**. Step83 uses the frozen
+indexed-patient CPT modality mask and models each patient's
+**newly added same-day imaging code** directly, across any,
+advanced, CT head, brain MRI and CTA head. It calculates
+conditional adjusted demographic contrasts with nominal
+95% intervals for the *additional code capture* event,
+in full-cohort, P0-only, P1-only and non-ambiguous subsets.
+The same-patient nested binary gain provides a direct
+measurement-effect estimand, without subtracting two
+separately fitted logistic models. No HCO clustering,
+clinical imaging validation or cross-table public clearance
+is available.
+
+**Next:** investigator runs one fail-fast local Step83
+command (targeted tests, full test suite, read-only script),
+then shares **TERMINAL OUTPUT ONLY**. Do not rescan the
+993,025,015-row raw procedure file, upload private patient
+data, commit private output, send an institutional email
+or circulate the manuscript. Step80 artifacts remain
+internal until scientific interpretation, bibliography/
+Zotero and disclosure issues are resolved.
+
+## Step82 completed: P1 QA corrected and verified; measurement interpretation strengthened
 
 **2026-10-21:** Investigator ran Step82 successfully:
-8 fabricated tests and the full **765-test repository suite**
+12 fabricated tests and the full **769-test repository suite**
 passed (three familiar warnings). The private local analysis
 reported both paired crude and model-adjusted sex/race/ethnicity
 recorded-code contrasts for index IMP versus broader same-day
@@ -20,9 +58,14 @@ Fixed within Step82 by enforcing only relevant source
 recording/ambiguity strata, retaining all >=11 cell,
 event/complement, and genuine overlap safeguards.
 New fabricated tests specifically check this error.
-**Corrected P1 results require one more workstation
-run** before concluding whether the combined
-measurement/demographic paper is sufficiently supported.
+**Corrected P1 results were confirmed** in the final
+Step82 terminal output. The P1-only adjusted results
+show considerably stronger or differently directed
+associations than pooled and ambiguity-free models.
+This means the source P flag is substantial effect
+heterogeneity and should not be the clinical main
+comparison. New Step83 added-code models are the
+next logical check before a final manuscript rewrite.
 
 **Step82 endpoints:** recorded any-CPT14, head CT, brain MRI
 and head CTA, separately for index inpatient versus index +
@@ -49,9 +92,8 @@ with the available frozen flags. No thrombolysis or
 thrombectomy patient flags exist. Do not invent
 an encounter-type breakdown or treatment benchmark.
 
-**Next:** run Step82 locally and return terminal text only.
-Then decide if demographic measurement sensitivity
-is adequately supported to retain in the eventual paper.
+**Next:** perform Step83 as described above; the
+Step82 local run is already complete.
 The Step80 Word drafts remain internal review artifacts;
 scientific alignment and provenance need correction before
 coauthor or journal circulation. No institution
