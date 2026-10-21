@@ -5,37 +5,45 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## CURRENT WORK: Step78 manuscript results for CPT14 encounter ascertainment
+## CURRENT WORK: Step79 internal exhibit integrity gate after completed Step78
 
-**Status 2026-10-20:** The investigator completed the read-only
-Step62–77 reconstruction and validation sequence on their
-authorized workstation. The current manuscript direction is
-**recorded neuroimaging code ascertainment and encounter
-attribution** in a provisional ages 18–50 inpatient I63-coded
-cohort, not verified performed imaging or care disparities.
+**2026-10-20:** The full Step62–78 pipeline and manuscript
+draft assembly completed on the authorized research workstation.
+The Step78 run passed **736 repository tests**, verified
+frozen Step68 source signatures, and generated an immutable
+LOCAL ONLY 5-table/2-figure/Results-draft manuscript
+package. There is **no need to rerun** the original
+~993-million-row procedure scan or the Step78 creator.
 
-**Current script:** [Step78 private paper exhibit package](
-docs/STEP78_PAPER_RESULTS_PACKAGE.md),
-[script](scripts/step78_paper_results_bundle.py),
-[synthetic tests](tests/test_step78_paper_results_bundle.py),
-[manuscript scaffold](docs/MANUSCRIPT_ASCERTAINMENT_WORKING_DRAFT.md),
-and [active decision register](
-docs/ACTIVE_RESEARCH_NETWORK_STUDY_PLAN.md).
-Synthetic tests and local execution of Step78 are PENDING.
-All earlier heavy source scans are frozen and must not
-be repeated as a default next step.
+**Next:** [Step79 private manuscript-exhibit and
+disclosure triage](docs/STEP79_EXHIBIT_INTEGRITY_GATE.md)
+([script](scripts/step79_manuscript_exhibit_integrity.py),
+[synthetic tests](tests/test_step79_manuscript_exhibit_integrity.py)).
+It checks previously generated tables, nested outcome
+definitions, arithmetic, figure file format, source
+recording and exploratory model caveats, and potential
+small-cell inference across exhibits. It does not
+read clinical source tables or alter the finished
+Step78 package. Step79 is committed but
+**not yet run on the investigator workstation**.
 
-The script reuses frozen Step62/63/68 private SQLite databases and
-the existing tested Step69–73 summaries/model estimands.
-It outputs an **internal-only** five-table, two-figure
-draft-Results package inside gitignored private results.
-Do not commit the private source-derived outputs.
-The 14 CPT code definitions describe **documented
-procedure-code capture**, not proven imaging completion;
-P=0 includes nonprincipal/blank/unmarked I63 records.
-The historical age cohort overlaps and is sensitivity only.
-PCS candidates are not included without independent
-clinical code adjudication.
+The paper is [drafted as a CPT14 EHR ascertainment
+and encounter-attribution study](
+docs/MANUSCRIPT_ASCERTAINMENT_WORKING_DRAFT.md),
+not verified receipt of radiology or claims about
+unequal clinical care. The primary cohort is the
+uniform age 18–50 index-I63/IMP subset;
+historical sex-specific age eligibility overlaps
+and is sensitivity only. P is an unvalidated
+I63 diagnosis-recording flag.
+Additional PCS candidate codes are **not**
+included in the primary patient outcome.
+
+All source-derived numerical exhibits and
+the restricted observed-code review list stay
+in gitignored private results, and **are not
+approved for public distribution** without
+institutional cross-table disclosure review.
 
 ## HISTORICAL CHECKPOINT: DATEFIX_V2 for YYYYMMDD calendar dates
 
