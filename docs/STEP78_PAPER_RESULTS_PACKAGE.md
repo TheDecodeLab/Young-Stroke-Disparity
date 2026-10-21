@@ -1,7 +1,19 @@
 # Step78: Internal paper-results exhibit bundle and manuscript draft
 
-**Status:** Code and fabricated-only regression tests committed.
-The investigator's local Step78 data/exhibit run is PENDING.
+**Status (2026-10-20): COMPLETED on the investigator workstation.**
+All 7 dedicated fabricated-only tests and **736 repository tests passed**;
+the frozen Step68 reference and source signatures reconciled, and
+the private `draft_v1` manuscript-results package was created successfully
+with five CSV tables, two PNG figures, a Results draft and a manifest.
+The 12 demographic contrasts are exploratory model diagnostics,
+not verified clinical-care disparities. No raw source tables
+were rescanned, and no private results were exported to GitHub.
+
+**NEXT GATE:** [Step79 private exhibit integrity and disclosure
+triage](STEP79_EXHIBIT_INTEGRITY_GATE.md), to check the existing
+immutable `draft_v1` package without changing its calculations.
+The package is NOT publication/disclosure-ready merely because
+Step78 tests and source signatures passed.
 
 ## Scope decision
 
