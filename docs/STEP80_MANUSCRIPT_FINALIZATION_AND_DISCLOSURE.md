@@ -25,7 +25,7 @@ still require actions outside the program.
    complete substantive manuscript, with title, structured
    abstract, introduction, exact cohort/index/coding
    methods, Results text slots, discussion, conclusions,
-   figure legends, release restrictions, and seven
+   figure legends, release restrictions, and nine
    verified references. Only **two dynamic
    slots** remain for filling the verified private
    aggregate numbers on the authorized workstation.
@@ -116,6 +116,28 @@ The command is fail-fast, generates a new immutable
 **Return TERMINAL OUTPUT ONLY**, not manuscripts,
 tables, figure images, clinical code review sheets,
 source databases, or raw ZIPs.
+
+## Earlier V7 manuscript and original supplement reviewed
+
+The investigator supplied the earlier *Variation in Brain MRI
+and Vascular Imaging Among Adults With Early-Onset Ischemic
+Stroke* V7 Word manuscript and supplementary tables.
+That study analyzed a Diamond extract and an NIS comparison,
+used historical sex-dependent age limits, a diagnosis-centered
+7-day before/after procedure window, a smaller modality code
+scope and mean-count/regression outcomes. Its population
+and interpretation must **not** be combined with the new
+frozen Research Network 18–50 indexed CPT14 patient-level
+recording analysis. See the detailed [prior V7 scientific
+reconciliation](STEP80_PRIOR_V7_MANUSCRIPT_RECONCILIATION.md).
+
+The earlier Word document contains actual Zotero citation
+and bibliography fields; it should not be flattened or
+overwritten. The nine-reference Step80 Markdown draft
+uses portable matching RIS, CSL-JSON and BibTeX.
+A Zotero-linked Word deliverable must be separately built
+and inspected when the investigator approves this
+new research question and scientific content.
 
 ## Institutional clearance and final review
 
