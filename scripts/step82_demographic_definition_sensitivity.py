@@ -39,7 +39,7 @@ except ModuleNotFoundError:
 PRIMARY=s62.COHORTS[0]
 COVS=("sex","race","ethnicity","year","age_band","P","held")
 MODALITIES=("CT_HEAD","MRI_BRAIN","CTA_HEAD")
-OUTCOMES=("any","CT_HEAD","MRI_BRAIN","CTA_HEAD")
+OUTCOMES=("any","advanced","CT_HEAD","MRI_BRAIN","CTA_HEAD")
 DEFS=("imp","day0")
 CONTRASTS=(
     ("sex","FEMALE","MALE"),
