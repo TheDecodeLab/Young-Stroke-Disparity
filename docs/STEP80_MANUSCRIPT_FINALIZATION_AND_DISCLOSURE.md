@@ -1,7 +1,31 @@
 # Step80: Complete local-only manuscript, corrected figures, and disclosure request
 
-**Status:** Public-source template, code, Zotero library, and
-synthetic tests committed; **local Step80 execution not yet verified**.
+**Status (2026-10-20): COMPLETED on the investigator's authorized workstation.**
+The targeted tests passed **19/19**, and the entire repository test
+suite passed **751/751** (three previously observed warnings).
+Step80 then generated the new restricted `review_v1` package:
+a fully populated internal manuscript and structured abstract
+from the reconciled Step78 aggregate results, two revised
+unconnected-point figures, the matched nine-cited-source
+reference list and portable Zotero library, and an unsent
+disclosure-request draft. Original Step78 outputs were
+preserved unchanged.
+
+The prior Step79 `Table4_derived_small_event_or_complement`
+flag was recognized and the original subgroup P/capture
+percentages were **withheld**, not cleared. No institutional
+email or disclosure submission was sent.
+
+**Scientific review gate now OPEN:** the investigator can
+read the internal manuscript at
+`results/phase1/full_reconstruction_private/step80_manuscript_private/review_v1/MANUSCRIPT_INTERNAL_REVIEW.md`
+and both revised PNG figures in that same private directory.
+The manuscript is **not** approved for public release or
+journal submission: reviewer confirmation of claims and
+figure appearance, reference-field workflow for a final
+Word file, and applicable institutional cross-table
+disclosure review remain outstanding. No new source
+scan or Step80 rerun is warranted.
 
 ## Investigator direction
 
