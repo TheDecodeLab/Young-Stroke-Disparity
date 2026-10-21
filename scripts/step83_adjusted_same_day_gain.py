@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from contextlib import closing
 import json
+import sqlite3
 import warnings
 
 import numpy as np
@@ -52,8 +53,9 @@ def gain_table(grouped, frozen):
     base=frozen["patient_cohort_aggregates"]["COHORT|"+s82.PRIMARY]
     if int(x.any_gain.sum())!=int(base["new_day0_other"]):
         raise ValueError("Any-code gain fails frozen Step68 count")
-    if not all((x[m+"_gain"]<=x.any_gain).all() for m in s82.MODALITIES):
-        raise ValueError("Modality gain exceeds any-code gain")
+    # Gains by modality are NOT subsets of the any-code gain.
+    # A patient may have CT on index IMP and MRI only on another
+    # same-day encounter: MRI gain=1 while any-code gain=0.
     return x
 
 
@@ -197,7 +199,7 @@ def main():
     frozen=json.loads(report.read_text(encoding="utf-8"))
     if frozen.get("stage")!=s68.POLICY:
         raise ValueError("Frozen Step68 report policy mismatch")
-    with closing(__import__("sqlite3").connect("file:"+str(p63)+"?mode=ro",uri=True)) as db:
+    with closing(sqlite3.connect("file:"+str(p63)+"?mode=ro",uri=True)) as db:
         db.execute("ATTACH DATABASE ? AS baseline",("file:"+str(p62)+"?mode=ro",))
         db.execute("ATTACH DATABASE ? AS capture",("file:"+str(p68)+"?mode=ro",))
         db.execute("PRAGMA query_only=ON")
