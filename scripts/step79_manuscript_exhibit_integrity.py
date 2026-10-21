@@ -104,7 +104,7 @@ def read_private_bundle(folder=IN_DIR):
         with (folder/name).open("rb") as fh:
             header=fh.read(24)
         check(len(header)==24 and
-              header[:8]==b"\\x89PNG\\r\\n\\x1a\\n" and
+              header[:8]==b"\x89PNG\r\n\x1a\n" and
               header[12:16]==b"IHDR",
               "invalid PNG signature/IHDR")
         width,height=struct.unpack(">II",header[16:24])
