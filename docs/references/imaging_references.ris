@@ -99,4 +99,65 @@ DO  - 10.1016/j.jacr.2023.07.015
 AN  - PMID:37586470
 UR  - https://pubmed.ncbi.nlm.nih.gov/37586470/
 ID  - Wang2024_JACR
+ER  -
+
+TY  - JOUR
+AU  - Lewis, Abigail E
+AU  - Weiskopf, Nicole
+AU  - Abrams, Zachary B
+AU  - Foraker, Randi
+AU  - Lai, Albert M
+AU  - Payne, Philip R O
+AU  - Gupta, Aditi
+TI  - Electronic health record data quality assessment and tools: a systematic review
+JO  - Journal of the American Medical Informatics Association
+PY  - 2023
+VL  - 30
+IS  - 10
+SP  - 1730-1740
+DO  - 10.1093/jamia/ocad120
+AN  - PMID:37390812
+UR  - https://pubmed.ncbi.nlm.nih.gov/37390812/
+ID  - Lewis2023_JAMIA
+ER  - 
+
+TY  - JOUR
+AU  - Syed, Rehan
+AU  - Eden, Rebekah
+AU  - Makasi, Tendai
+AU  - Chukwudi, Ignatius
+AU  - Mamudu, Azumah
+AU  - Kamalpour, Mostafa
+AU  - Geeganage, Dakshi Kapugama
+AU  - Sadeghianasl, Sareh
+AU  - Leemans, Sander J J
+AU  - Goel, Kanika
+AU  - Andrews, Robert
+AU  - Wynn, Moe Thandar
+AU  - Hofstede, Arthur Ter
+AU  - Myers, Trina
+TI  - Digital Health Data Quality Issues: Systematic Review
+JO  - Journal of Medical Internet Research
+PY  - 2023
+VL  - 25
+SP  - e42615
+DO  - 10.2196/42615
+AN  - PMID:37000497
+UR  - https://pubmed.ncbi.nlm.nih.gov/37000497/
+ID  - Syed2023_JMIR
+ER  - 
+
+TY  - JOUR
+AU  - An, Doyeon
+AU  - Lim, Minsik
+AU  - Lee, Suehyun
+TI  - Challenges for Data Quality in the Clinical Data Life Cycle: Systematic Review
+JO  - Journal of Medical Internet Research
+PY  - 2025
+VL  - 27
+SP  - e60709
+DO  - 10.2196/60709
+AN  - PMID:40266662
+UR  - https://pubmed.ncbi.nlm.nih.gov/40266662/
+ID  - An2025_JMIR
 ER  - 
