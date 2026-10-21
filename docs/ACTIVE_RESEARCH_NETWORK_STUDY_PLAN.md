@@ -28,7 +28,7 @@ on the investigator's authorized workstation:**
 MANUSCRIPT_ASCERTAINMENT_FULL_TEMPLATE.md) contains a structured
 abstract, introduction, frozen cohort/endpoint Methods,
 Results insertion slots, full Discussion, Conclusion,
-figure legends and seven source-verified references.
+figure legends and nine source-verified references.
 - The [private completion script](
 ../scripts/step80_finalize_manuscript_local.py)
 loads the existing Step78 `draft_v1`, runs Step79
@@ -57,6 +57,31 @@ overlaps. Recorded CPT14 codes do not confirm
 performed imaging, same HCO/stroke episode or
 inequality in appropriate clinical care. No hospital
 clustering or adequate case-mix adjustment available.
+
+**Prior manuscript integrated cautiously:** The supplied V7
+Diamond/NIS manuscript and supplementary materials were reviewed.
+The original author's clinical-imaging background and age-definition
+rationale were carried over with PubMed-verified citations
+[@Abedi2023_YoungStrokeAge] and
+[@Kakkar2021_StrokeImaging], while its separate
+cohorts, CT-selected index, 7-day exposure window,
+NIS comparison, imaging count models and conclusions
+were **not** merged into the new Research Network Results.
+See [V7-to-Step80 reconciliation](
+STEP80_PRIOR_V7_MANUSCRIPT_RECONCILIATION.md).
+The original DOCX preserves 20 Zotero citation fields
+and one Zotero bibliography field; do not flatten it.
+
+**Reference-library tests:** Two legacy regression
+tests assumed exactly nine bibliography entries
+and two publication DOIs. They were updated
+to require the stable verified source IDs,
+unique DOI/PMID pairs and matching CSL/RIS/BibTeX;
+the library now contains 14 sources, of which
+nine are cited in the full manuscript.
+Step80 synthetic tests were updated for the
+nine cited entries. Full suite rerun is
+pending local investigator verification.
 
 **Next handoff:** One fail-fast local Step80 execution
 with targeted tests then the full repository tests,
