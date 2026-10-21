@@ -48,10 +48,10 @@ def test_reference_exports_have_consistent_unique_stable_ids():
     records=[x for x in re.split(r"(?=^TY  - )",ris,flags=re.M) if x.strip()]
     assert len(records)==len(items)
     for record in records:
-        assert len(re.findall(r"^TY  - \\S+",record,re.M))==1
-        assert len(re.findall(r"^ID  - \\S+",record,re.M))==1
-        assert len(re.findall(r"^ER  -[ \\t]*$",record,re.M))==1
-        assert re.search(r"^ER  -[ \\t]*\\s*\\Z",record,re.M)
+        assert len(re.findall(r"^TY  - \S+",record,re.M))==1
+        assert len(re.findall(r"^ID  - \S+",record,re.M))==1
+        assert len(re.findall(r"^ER  -[ \t]*$",record,re.M))==1
+        assert re.search(r"^ER  -[ \t]*\s*\Z",record,re.M)
 
 
 
