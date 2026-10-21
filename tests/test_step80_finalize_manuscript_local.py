@@ -71,8 +71,10 @@ def test_draft_complete_and_matches_verifiable_portable_citations():
         assert section in text
     assert "NOT CLEARED FOR EXTERNAL DISCLOSURE" in text
     assert "Table 4 (WITHHELD)" in text
-    assert len(re.findall(r"^\d+\. ",text,flags=re.M))==7
+    assert len(re.findall(r"^\d+\. ",text,flags=re.M))==9
     assert "10.1093/jamia/ocad120" in text
+    assert "10.3390/jcm12072600" in text
+    assert "10.1242/dmm.048785" in text
 
 
 def test_missing_manuscript_citation_fails_closed():
