@@ -1,40 +1,49 @@
-## Step83 implemented: adjusted added-same-day-code gate, local run pending
+## Step83 complete: measurement-led manuscript decision
 
-**2026-10-21:** The corrected Step82 run passed **12 targeted**
-and **769 full-suite** tests; its P=1-only adjusted contrasts
-are now available. This resolved the false withholding bug.
-The restricted P=1 patterns differ substantially from
-pooled-cohort and ambiguity-free patterns. Consequently
-the study should be **measurement-led**, with demographic
-code-capture sensitivity secondary and explicitly
-exploratory. P is an unvalidated source principal-recording
-flag, not a clinical subtype; no hospital identifiers are
-available to resolve selection or source-site heterogeneity.
+**2026-10-21 local verification:** Step83 completed successfully after
+**7 targeted tests** and **776 full-suite tests** (three familiar
+warnings); **zero numerical model failures**. The script read only
+the verified frozen Step62/63/68 checkpoints and did not open or
+rescan the raw procedure archive. The user's full terminal aggregate
+output is held privately and must not be committed to tracked GitHub.
 
-The [Step83 paired gain protocol](
-STEP83_ADJUSTED_PAIRED_GAIN_GATE.md) and synthetic-only
-script/tests are now committed, with local clinical-result
-execution **NOT YET VERIFIED**. Step83 uses the frozen
-indexed-patient CPT modality mask and models each patient's
-**newly added same-day imaging code** directly, across any,
-advanced, CT head, brain MRI and CTA head. It calculates
-conditional adjusted demographic contrasts with nominal
-95% intervals for the *additional code capture* event,
-in full-cohort, P0-only, P1-only and non-ambiguous subsets.
-The same-patient nested binary gain provides a direct
-measurement-effect estimand, without subtracting two
-separately fitted logistic models. No HCO clustering,
-clinical imaging validation or cross-table public clearance
-is available.
+**Scientific decision:** proceed with a **measurement-led manuscript**:
+1. Main outcome: documented neuroimaging CPT code presence on the
+   index IMP encounter, then other same-day encounters, and alternative
+   linkage definitions, in the fixed candidate I63-coded cohort.
+2. Main support: modality-specific CT head, MRI brain and CTA/MRA
+   ascertainment differences under alternative encounter rules.
+3. Secondary outcome: how the recorded sex/race/ethnicity contrasts
+   and the adjusted probability of **additional same-day code capture**
+   vary by encounter definition and P/record-quality strata.
+4. Keep P as an unvalidated principal-I63 *recording* indicator, not
+   a clinical principal/secondary stroke phenotype and not a measured
+   hospital identifier. Source P and mapped demographic completeness
+   differ, supporting source-mix/ascertainment concerns, but no
+   data distinguish facility-level mechanisms.
+5. Keep all nominal binomial/delta-method intervals explicitly
+   conditional on independent-patient assumptions. There is no
+   hospital/site-cluster-robust inference, chart validation,
+   medication/acute-treatment positive-control or proven
+   same-hospital non-index encounter linkage. Treat subgroup
+   inference as exploratory and do not claim care disparities.
+6. The observed change in race/ethnicity code-capture differences
+   depends on P and modality; do **not** select a positive/signed
+   contrast to headline as if it were patient care inequity.
+7. Rebuild the manuscript and supplement with plain clinical
+   language, selected explanatory rather than exhaustive
+   demographic tables, no internal pipeline status/scaffolding,
+   literature checks, Zotero field linkage and author declaration
+   review. Keep internal disclosure approval gate before
+   external release. Do not contact an institutional office
+   without explicit user authorization.
 
-**Next:** investigator runs one fail-fast local Step83
-command (targeted tests, full test suite, read-only script),
-then shares **TERMINAL OUTPUT ONLY**. Do not rescan the
-993,025,015-row raw procedure file, upload private patient
-data, commit private output, send an institutional email
-or circulate the manuscript. Step80 artifacts remain
-internal until scientific interpretation, bibliography/
-Zotero and disclosure issues are resolved.
+**No additional raw procedure scan or routine model expansion is
+justified at this point.** The next stage is manuscript writing,
+scientific adjudication and artifact QA against the existing
+Step78/80 numerical exhibit set plus 81-83 terminal summaries.
+Any unverified inpatient "stroke diagnosis" should continue
+to be called candidate I63-coded inpatient.
 
 ## Step82 completed: P1 QA corrected and verified; measurement interpretation strengthened
 
