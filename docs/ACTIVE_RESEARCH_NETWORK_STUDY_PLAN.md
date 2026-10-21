@@ -1,41 +1,55 @@
-## Next scientific decision: Step81 zero-rescan race completeness and modality capture
+## Step81 completed: next decision is demographic association stability
 
-**Reviewer clarification (2026-10-20):** Reconsider the original
-sex/race questions as sensitivity to *measured* imaging-code
-ascertainment, with a methods-only manuscript as the fallback.
-Before that decision, inspect Step71 mapped race/ethnicity
-completeness and Step69 modality-specific capture across the
-four encounter definitions using read-only frozen checkpoints.
-Wilson intervals may describe raw modality-specific capture
-proportions but are NOT hospital-cluster robust. We should
-not claim completion of imaging, validated acute stroke
-admissions, or differences in appropriate care.
+**2026-10-20 workstation result:** Step81 passed all six synthetic
+tests and the complete 757-test repository suite, with only the
+three previously observed warnings. The read-only no-rescan
+demographic coverage and six-modality encounter analysis completed
+without errors. Numeric aggregate output is investigator-provided,
+private, and is **not stored in this tracked repository**.
 
-**Treatment-positive control feasibility:** The frozen
-Step62/63/68 schemas contain NO patient-level
-thrombolysis or thrombectomy marker and NO source
-medication member. Step68 captured patient-level
-flags ONLY for the 14 imaging CPT codes and
-retained coarse non-imaging exact-code **source-row
-frequencies without patient links**. Thus the
-proposed thrombolysis/thrombectomy imaging-capture
-benchmark cannot be computed from existing patient
-flags alone. We will not rescan 993 million procedure
-rows unless independent codebook review,
-observed treatment-code feasibility, timing
-eligibility and added scientific value justify
-a narrowly targeted checkpointed read.
-See [Step81 feasibility decision gate](
-STEP81_FROZEN_MANUSCRIPT_FEASIBILITY_GATE.md).
+**Decision:** Demographic coding completeness is materially better
+than in historical V7, but missing/unmapped labels and site/
+encounter uncertainty still require sensitivity assessment.
+The current evidence permits investigating sex/race/ethnicity
+recorded-code associations; it does NOT permit a clinical
+disparities headline or establish that all subgroups have
+adequate event support. The head-CT and head-CTA recording
+contrasts change direction between index inpatient and
+same-day other-encounter attribution. Brain-MRI differences
+shrink substantially. Consequently, modality-specific
+ascertainment should lead the manuscript, with demographic
+association stability a prespecified secondary question.
 
-**Current next investigator action:** run the
-committed read-only Step81 feasibility script
-after its fabricated-only and full repository
-test suites. Send only TERMINAL OUTPUT.
-This does not alter the Step80 manuscript,
-tables/figures or any frozen patient records.
-No CTSI or other institutional email has
-been sent or is authorized by this step.
+**Next bounded research step:** Reuse Step71/72/73 frozen
+patient-level modality flags and grouped demographic models,
+without revisiting the raw procedure source:
+(1) audit source-category denominators and small
+event/complement cells for mapped race/ethnicity/sex;
+(2) compare recorded-code associations within the same
+population for index IMP versus index + same-day,
+using separate modality outcomes and recorded any/advanced
+outcomes, with year/P/encounter-key-quality sensitivity;
+(3) assess inferential uncertainty while stating that
+HCO/site clustered inference is unavailable;
+(4) independently check which existing Step63/68
+encounter-type metadata can support mechanism claims;
+(5) only then decide whether to pursue a treatment-based
+positive-control cohort. This would require verified
+clinical code definitions and additional patient-level
+source processing, since treatment flags are absent
+from the frozen patient checkpoint.
+
+**Scientific positioning:** measurement and encounter
+attribution primary; demographic measurement sensitivity
+secondary; methods-only fallback if subgroup support,
+coding validity, or source-quality adjustment fails.
+CT is an internal plausibility signal, not a verified
+patient-level imaging reference standard. Wilson CIs
+reflect naive binomial sampling, not HCO-clustered
+uncertainty or paired between-definition differences.
+No manuscript is approved for external sharing.
+Do not contact CTSI or release private numerical
+cross-tables without explicit investigator request.
 
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
