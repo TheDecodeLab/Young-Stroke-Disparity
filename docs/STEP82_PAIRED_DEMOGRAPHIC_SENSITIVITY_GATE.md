@@ -29,12 +29,13 @@ unvalidated *recording flag*, not an adjudicated acute stroke subtype.
 
 ## Endpoints and contrasts
 
-Four outcomes, each under two *nested* definitions:
+Five outcomes, each under two *nested* definitions:
 
 1. Any among the 14 recorded imaging CPT codes.
 2. Head CT CPT codes.
 3. Brain MRI CPT codes.
 4. Head CTA CPT code.
+5. Advanced imaging, any brain MRI or head/neck CTA/MRA CPT code.
 
 Definitions: indexed IMP encounter during indexed stay, and indexed
 IMP or another encounter on the index date. Each person contributes
