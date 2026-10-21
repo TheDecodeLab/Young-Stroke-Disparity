@@ -1,0 +1,30 @@
+name: Step64 synthetic ED capture ceiling
+
+on:
+  push:
+    branches:
+      - analysis-rebuild-phase1-audit
+    paths:
+      - "scripts/step64_ed_capture_ceiling.py"
+      - "tests/test_step64_ed_capture_ceiling.py"
+      - ".github/workflows/step64_synthetic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install synthetic test runner
+        run: python -m pip install pytest
+      - name: Compile source
+        run: python -m py_compile scripts/step64_ed_capture_ceiling.py
+      - name: Run fabricated tests only
+        run: python -m pytest -q tests/test_step64_ed_capture_ceiling.py

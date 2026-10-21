@@ -1,0 +1,30 @@
+name: Step79 synthetic manuscript-integrity and disclosure-risk checks
+
+on:
+  push:
+    branches:
+      - analysis-rebuild-phase1-audit
+    paths:
+      - "scripts/step79_manuscript_exhibit_integrity.py"
+      - "tests/test_step79_manuscript_exhibit_integrity.py"
+      - ".github/workflows/step79_synthetic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install synthetic test dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Check syntax
+        run: python -m py_compile scripts/step79_manuscript_exhibit_integrity.py
+      - name: Fabricated-only exhibit/disclosure regression tests
+        run: python -m pytest -q tests/test_step79_manuscript_exhibit_integrity.py

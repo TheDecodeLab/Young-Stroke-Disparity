@@ -1,0 +1,30 @@
+name: Step72 fabricated-only demographic coding GLM
+
+on:
+  push:
+    branches:
+      - analysis-rebuild-phase1-audit
+    paths:
+      - "scripts/step72_exploratory_demographic_models.py"
+      - "tests/test_step72_exploratory_demographic_models.py"
+      - ".github/workflows/step72_synthetic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fabricated-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install scientific and test requirements
+        run: python -m pip install -r requirements.txt
+      - name: Syntax checks
+        run: python -m py_compile scripts/step72_exploratory_demographic_models.py
+      - name: Synthetic tests
+        run: python -m pytest -q tests/test_step72_exploratory_demographic_models.py

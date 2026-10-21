@@ -1,0 +1,30 @@
+name: Step77 synthetic ceiling and private review worksheet checks
+
+on:
+  push:
+    branches:
+      - analysis-rebuild-phase1-audit
+    paths:
+      - "scripts/step77_pcs_gain_ceiling_and_clinical_review.py"
+      - "tests/test_step77_pcs_gain_ceiling_and_clinical_review.py"
+      - ".github/workflows/step77_synthetic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fabricated-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install test deps
+        run: python -m pip install -r requirements.txt
+      - name: Syntax
+        run: python -m py_compile scripts/step77_pcs_gain_ceiling_and_clinical_review.py
+      - name: Run fabricated-only ceiling / review-sheet tests
+        run: python -m pytest -q tests/test_step77_pcs_gain_ceiling_and_clinical_review.py

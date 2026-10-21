@@ -1,0 +1,30 @@
+name: Step78 synthetic-only manuscript exhibit tests
+
+on:
+  push:
+    branches:
+      - analysis-rebuild-phase1-audit
+    paths:
+      - "scripts/step78_paper_results_bundle.py"
+      - "tests/test_step78_paper_results_bundle.py"
+      - ".github/workflows/step78_synthetic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install scientific/test dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile Step78
+        run: python -m py_compile scripts/step78_paper_results_bundle.py
+      - name: Run fabricated-only Step78 exhibits and plot tests
+        run: python -m pytest -q tests/test_step78_paper_results_bundle.py

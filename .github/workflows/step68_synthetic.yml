@@ -1,0 +1,30 @@
+name: Step68 synthetic multi-window procedure analysis
+
+on:
+  push:
+    branches:
+      - analysis-rebuild-phase1-audit
+    paths:
+      - "scripts/step68_joint_imaging_window_scan.py"
+      - "tests/test_step68_joint_imaging_window_scan.py"
+      - ".github/workflows/step68_synthetic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fabricated-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install pytest
+        run: python -m pip install pytest
+      - name: Syntax check
+        run: python -m py_compile scripts/step68_joint_imaging_window_scan.py
+      - name: Run synthetic tests only
+        run: python -m pytest -q tests/test_step68_joint_imaging_window_scan.py
