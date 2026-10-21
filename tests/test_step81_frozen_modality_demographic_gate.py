@@ -65,9 +65,13 @@ def test_empty_or_small_cells_withheld_and_wilson_correct():
     assert s81.visible(0,100) is False
     assert s81.visible(99,100) is False
     assert s81.visible(50,100) is True
+    # Verified against the 95% Wilson score interval:
+    # p=50/100, z=1.95996398454 -> [40.5608972, 59.4391028]%.
+    # The old 40.38/59.62 values are NOT Wilson endpoints.
     lo,hi=s81.wilson(50,100)
-    assert lo==pytest.approx(40.38,abs=.02)
-    assert hi==pytest.approx(59.62,abs=.02)
+    assert lo==pytest.approx(40.56089722398,abs=1e-8)
+    assert hi==pytest.approx(59.43910277602,abs=1e-8)
+    assert lo+hi==pytest.approx(100.,abs=1e-8)
     assert s81.percentage(20,50)==pytest.approx(40.)
     with pytest.raises(ValueError,match="Non-binomial"):
         s81.percentage(51,50)
