@@ -115,3 +115,47 @@ def test_unsupported_outcome_and_no_pseudoprocedure_validation():
         s82.fitted(table,"Thrombectomy_flag","quality")
     with pytest.raises(ValueError,match="Invalid model scope"):
         s82.fitted(table,"CT_HEAD_imp","clinical_care")
+
+
+def test_p1_scope_support_skips_structurally_absent_p0():
+    # The restricted P1 analysis must not demand P=0 records.
+    rows=[]
+    for sex in ("MALE","FEMALE"):
+        for held in (0,1):
+            rows.extend(patient(sex,"WHITE","HISPANIC",1,held,1,1)
+                        for _ in range(15))
+    table=s82.group_rows(rows)
+    assert set(table.P)=={1}
+    assert s82.scope_support(table,"sex","FEMALE","MALE","P1")
+    assert not s82.scope_support(table,"sex","FEMALE","MALE","quality")
+
+
+def test_p1_scope_still_withholds_a_sparse_held_group():
+    rows=[]
+    for sex in ("MALE","FEMALE"):
+        for held in (0,1):
+            n=10 if sex=="MALE" and held==1 else 20
+            rows.extend(patient(sex,"WHITE","HISPANIC",1,held,1,1)
+                        for _ in range(n))
+    table=s82.group_rows(rows)
+    assert not s82.scope_support(table,"sex","FEMALE","MALE","P1")
+
+
+def test_clean_scope_skips_structurally_absent_held_one():
+    rows=[]
+    for sex in ("MALE","FEMALE"):
+        for p in (0,1):
+            rows.extend(patient(sex,"WHITE","HISPANIC",p,0,1,1)
+                        for _ in range(15))
+    table=s82.group_rows(rows)
+    assert set(table.held)=={0}
+    assert s82.scope_support(table,"sex","FEMALE","MALE","clean")
+    assert not s82.scope_support(table,"sex","FEMALE","MALE","quality")
+
+
+def test_scope_support_fails_for_invalid_scope_or_extra_strata():
+    table=s82.group_rows([patient("MALE","WHITE","HISPANIC",0,0,1,1)])
+    with pytest.raises(ValueError,match="Unsupported scope"):
+        s82.scope_support(table,"sex","FEMALE","MALE","not-a-scope")
+    with pytest.raises(ValueError,match="disallowed"):
+        s82.scope_support(table,"sex","FEMALE","MALE","P1")
