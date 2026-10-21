@@ -273,5 +273,162 @@
     "DOI": "10.1016/j.jacr.2023.07.015",
     "PMID": "37586470",
     "URL": "https://pubmed.ncbi.nlm.nih.gov/37586470/"
+  },
+  {
+    "id": "Lewis2023_JAMIA",
+    "type": "article-journal",
+    "title": "Electronic health record data quality assessment and tools: a systematic review",
+    "author": [
+      {
+        "family": "Lewis",
+        "given": "Abigail E"
+      },
+      {
+        "family": "Weiskopf",
+        "given": "Nicole"
+      },
+      {
+        "family": "Abrams",
+        "given": "Zachary B"
+      },
+      {
+        "family": "Foraker",
+        "given": "Randi"
+      },
+      {
+        "family": "Lai",
+        "given": "Albert M"
+      },
+      {
+        "family": "Payne",
+        "given": "Philip R O"
+      },
+      {
+        "family": "Gupta",
+        "given": "Aditi"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Journal of the American Medical Informatics Association",
+    "volume": "30",
+    "issue": "10",
+    "page": "1730-1740",
+    "DOI": "10.1093/jamia/ocad120",
+    "PMID": "37390812",
+    "URL": "https://pubmed.ncbi.nlm.nih.gov/37390812/"
+  },
+  {
+    "id": "Syed2023_JMIR",
+    "type": "article-journal",
+    "title": "Digital Health Data Quality Issues: Systematic Review",
+    "author": [
+      {
+        "family": "Syed",
+        "given": "Rehan"
+      },
+      {
+        "family": "Eden",
+        "given": "Rebekah"
+      },
+      {
+        "family": "Makasi",
+        "given": "Tendai"
+      },
+      {
+        "family": "Chukwudi",
+        "given": "Ignatius"
+      },
+      {
+        "family": "Mamudu",
+        "given": "Azumah"
+      },
+      {
+        "family": "Kamalpour",
+        "given": "Mostafa"
+      },
+      {
+        "family": "Geeganage",
+        "given": "Dakshi Kapugama"
+      },
+      {
+        "family": "Sadeghianasl",
+        "given": "Sareh"
+      },
+      {
+        "family": "Leemans",
+        "given": "Sander J J"
+      },
+      {
+        "family": "Goel",
+        "given": "Kanika"
+      },
+      {
+        "family": "Andrews",
+        "given": "Robert"
+      },
+      {
+        "family": "Wynn",
+        "given": "Moe Thandar"
+      },
+      {
+        "family": "Hofstede",
+        "given": "Arthur Ter"
+      },
+      {
+        "family": "Myers",
+        "given": "Trina"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Journal of Medical Internet Research",
+    "volume": "25",
+    "page": "e42615",
+    "DOI": "10.2196/42615",
+    "PMID": "37000497",
+    "URL": "https://pubmed.ncbi.nlm.nih.gov/37000497/"
+  },
+  {
+    "id": "An2025_JMIR",
+    "type": "article-journal",
+    "title": "Challenges for Data Quality in the Clinical Data Life Cycle: Systematic Review",
+    "author": [
+      {
+        "family": "An",
+        "given": "Doyeon"
+      },
+      {
+        "family": "Lim",
+        "given": "Minsik"
+      },
+      {
+        "family": "Lee",
+        "given": "Suehyun"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "container-title": "Journal of Medical Internet Research",
+    "volume": "27",
+    "page": "e60709",
+    "DOI": "10.2196/60709",
+    "PMID": "40266662",
+    "URL": "https://pubmed.ncbi.nlm.nih.gov/40266662/"
   }
 ]
