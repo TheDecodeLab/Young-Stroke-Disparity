@@ -10,9 +10,9 @@ import csv
 import json
 import math
 import os
+import struct
 from collections import defaultdict
 from pathlib import Path
-from PIL import Image
 
 try:
     from scripts import step62_checkpointed_cohort as s62
@@ -99,11 +99,16 @@ def read_private_bundle(folder=IN_DIR):
     check(set(manifest.get("exhibits",[]))==BUNDLE-{"manifest_LOCAL_ONLY.json"},
           "manifest inventory does not match files")
     for name in FIGURES:
-        with Image.open(folder/name) as im:
-            im.verify()
-        with Image.open(folder/name) as im:
-            check(im.format=="PNG" and im.width>=800 and im.height>=500,
-                  "invalid plot or insufficient draft resolution")
+        # Stdlib PNG signature / IHDR guard; no extra Pillow dependency.
+        # This verifies basic image identity and dimensions, not layout.
+        with (folder/name).open("rb") as fh:
+            header=fh.read(24)
+        check(len(header)==24 and
+              header[:8]==b"\\x89PNG\\r\\n\\x1a\\n" and
+              header[12:16]==b"IHDR",
+              "invalid PNG signature/IHDR")
+        width,height=struct.unpack(">II",header[16:24])
+        check(width>=800 and height>=500,"plot below draft resolution")
     return tables,manifest,draft
 
 
