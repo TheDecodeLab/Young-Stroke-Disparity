@@ -214,6 +214,38 @@ def adequate_quality(table,field,reference,target):
     return True
 
 
+def scope_support(table,field,reference,target,scope):
+    """Require adequate P x ambiguity support *within the requested scope*.
+
+    P=0 is structurally absent in a P1-only model; held=1 is absent
+    in a clean-only model. Neither should count as a sparse cell.
+    Conversely, both groups must have >=11 members in each applicable
+    P/ambiguity stratum. Does not verify HCO overlap.
+    """
+    if field not in ("sex","race","ethnicity") or (
+            reference in MISSING or target in MISSING or reference==target):
+        return False
+    allowed={
+        "quality":((0,1),(0,1)),
+        "P1":((1,),(0,1)),
+        "clean":((0,1),(0,))
+    }
+    if scope not in allowed:
+        raise ValueError("Unsupported scope for overlap checks")
+    ps,hs=allowed[scope]
+    if not set(table.P.unique()).issubset(ps) or not (
+            set(table.held.unique()).issubset(hs)):
+        raise ValueError("Scope contains disallowed P/ambiguity strata")
+    for p in ps:
+        for h in hs:
+            for label in (reference,target):
+                n=int(table.loc[(table.P==p)&(table.held==h)&
+                                (table[field]==label),"n"].sum())
+                if n<MIN:
+                    return False
+    return True
+
+
 def fitted(table,outcome,scope):
     if outcome not in [x+"_"+d for x in OUTCOMES for d in DEFS]:
         raise ValueError("Unexpected analysis outcome")
@@ -280,11 +312,9 @@ def run_summary(table):
                     continue
                 for field,ref,alt in CONTRASTS:
                     label=end+" "+field+" "+alt+"_vs_"+ref
-                    if not adequate_quality(x,field,ref,alt) and scope=="quality":
-                        print("CONTRAST",label,"WITHHELD: sparse P x ambiguity support")
+                    if not scope_support(x,field,ref,alt,scope):
+                        print("CONTRAST",label,"WITHHELD: sparse applicable P x ambiguity support")
                         continue
-                    # For P1/clean subsets support requires only observed P x
-                    # ambiguity cells, never extrapolates missing strata.
                     a=totals(x,field,ref,outcome)
                     b=totals(x,field,alt,outcome)
                     if not (a[0] and b[0]):
@@ -301,10 +331,9 @@ def run_summary(table):
                     except (ValueError,RuntimeError,np.linalg.LinAlgError):
                         print("CONTRAST",label,"UNAVAILABLE: support/design matrix")
                         continue
-                    support=t["support"]
-                    if support["sparse"] or support["missing"]:
-                        print("CONTRAST",label,"WITHHELD: sparse P x ambiguity overlap")
-                        continue
+                    # Step73's legacy diagnostic hard-codes P=(0,1), which
+                    # incorrectly calls the P1-only source subset sparse.
+                    # scope_support above enforces the applicable strata.
                     print("CONTRAST",label,
                           "adjusted_RD_pp","%+.2f"%t["difference_pp"],
                           "nominal_95CI_pp","[%+.2f,%+.2f]"%
