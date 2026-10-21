@@ -5,51 +5,49 @@ imaging selection among adults hospitalized with early-onset ischemic stroke.
 The prior notebook `disparity_young-claen.ipynb` remains **unchanged as the
 legacy reference**. New work uses documented, tested Python scripts.
 
-## CURRENT WORK: manuscript review after Step79 completion
+## CURRENT WORK: Step80 internal complete manuscript assembly
 
-**October 20, 2026:** Step78 generated a private
-five-table/two-figure/Results draft without a new
-source scan. Step79 then passed **nine dedicated
-synthetic tests and 745 total repository tests**,
-verifying preliminary exhibit arithmetic, table
-nesting, research-network frozen provenance and
-required model caveats. No source data or private
-manuscript results were committed.
+**Status 2026-10-20:** Steps62–79 finished locally,
+including the Step78 immutable private five-table/two-figure
+results bundle and the Step79 745-test integrity preflight.
+The original Table4 demographic source-category
+percentages have one identified small-event/complement
+disclosure-risk type. No new source scan is warranted.
 
-**One disclosure risk category remains:**
-`Table4_derived_small_event_or_complement`.
-A demographic category denominator combined
-with a P or CPT14 capture rate can reveal a
-small event or complementary event count.
-Do not release the existing Table4. See the
-[Step79 final integrity/disclosure disposition](
-docs/STEP79_EXHIBIT_INTEGRITY_GATE.md).
+**Step80 is committed, local run pending.** The
+[complete manuscript template](
+docs/MANUSCRIPT_ASCERTAINMENT_FULL_TEMPLATE.md)
+includes a structured abstract, methods,
+discussion, reference list, and reproducible
+placeholders for private numeric Results.
+The [Step80 completion script](
+scripts/step80_finalize_manuscript_local.py)
+and [fabricated tests](
+tests/test_step80_finalize_manuscript_local.py)
+consume ONLY existing private Step78 tables, require
+Step79 integrity to pass, and generate a new local-only
+manuscript, 2 improved unconnected-category figures,
+a counts-free future disclosure request, and a
+matching RIS/BibTeX/CSL-JSON reference bundle.
+Original Step78 results are not changed.
 
-**Paper scope:** Documented neuroimaging code
-ascertainment and encounter attribution in
-a uniform ages 18–50 candidate-I63 index-IMP
-cohort. The historical age cohort overlaps,
-and the principal-diagnosis P flag is
-unvalidated. The work does **not** establish
-radiology examination completion, clinically
-appropriate imaging or demographic inequity.
+The approved working narrative is a *research-network
+encounter attribution and documented CPT14
+code ascertainment study*, **not** verified
+clinical neuroimaging receipt or a finding of
+unequal care. Main ages 18–50 candidate-I63
+IMP cohort. Source P indicator unvalidated.
+Historical age cohort overlaps.
 
-**Next actions:** manual visual and clinical
-review of both private Step78 figures,
-suppression/withholding of at-risk Table4
-rates, institutional cross-table disclosure
-review, and final drafting of the Results/
-Discussion/abstract after authorization.
-Table5's exploratory demographic uncertainty
-is not HCO-clustered. No further full
-993-million-row source scan is warranted.
-
-Tracked [manuscript scaffold](
-docs/MANUSCRIPT_ASCERTAINMENT_WORKING_DRAFT.md)
-contains methods and interpretation but
-does not release source-derived numbers.
-Local private Step78 outputs are immutable
-and should remain on the authorized workstation.
+**Institutional outreach and disclosure submission
+are deferred by investigator request.**
+No email is to be sent or institutional release
+assumed. Table4 demographic subgroup rates
+are omitted from manuscript compilation;
+all draft numbers and figures remain restricted
+to the authorized workstation. See the
+[Step80 handoff documentation](
+docs/STEP80_MANUSCRIPT_FINALIZATION_AND_DISCLOSURE.md).
 
 ## HISTORICAL CHECKPOINT: DATEFIX_V2 for YYYYMMDD calendar dates
 
