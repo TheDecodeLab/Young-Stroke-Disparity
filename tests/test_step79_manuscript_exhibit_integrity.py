@@ -16,8 +16,10 @@ def make_tables():
     counts=defaultdict(Counter)
     for cohort in s62.COHORTS:
         for year,p,held in product(("2020","2021"),(0,1),(0,1)):
+            # Keep synthetic Table3 numerators and complements >=11;
+            # separate tests deliberately insert small disclosure risks.
             patch=Counter(
-                n=50,inpatient=10+4*p+2*(year=="2021")+held,
+                n=50,inpatient=20+4*p+2*(year=="2021")+held,
                 new_other_day0=8+3*p+held,new_ed=3+p,
                 union_ed_or_pre2_day0=13+4*p+held)
             q="ANY_AMBIG" if held else "NONE"
