@@ -278,10 +278,11 @@ def figures(rows,folder):
                  fontsize=13,loc="left")
     ax.grid(axis="x",alpha=.19)
     ax.set_axisbelow(True)
-    ax.legend(loc="lower right",frameon=False,fontsize=9)
     for sp in ("top","right","left"):
         ax.spines[sp].set_visible(False)
-    f.subplots_adjust(left=.36,right=.96,top=.88,bottom=.18)
+    f.subplots_adjust(left=.36,right=.96,top=.89,bottom=.30)
+    f.legend(loc="center",bbox_to_anchor=(.68,.135),
+             ncol=2,frameon=False,fontsize=9)
     f.text(.36,.05,"Codes are not verified scans; other encounters may differ in site or episode.",
            fontsize=8.6,color="#525252")
     f.savefig(folder/"figure1_code_capture_review_v1.png",dpi=240)
@@ -302,12 +303,13 @@ def figures(rows,folder):
                  fontsize=13,loc="left")
     ax.grid(axis="x",alpha=.19)
     ax.set_axisbelow(True)
-    ax.legend(loc="lower right",frameon=False,fontsize=9)
     extent=max(abs(v) for v in crude+adjusted)+3
     ax.set_xlim(-extent,extent)
     for sp in ("top","right","left"):
         ax.spines[sp].set_visible(False)
-    f.subplots_adjust(left=.36,right=.96,top=.88,bottom=.18)
+    f.subplots_adjust(left=.36,right=.96,top=.89,bottom=.30)
+    f.legend(loc="center",bbox_to_anchor=(.68,.135),
+             ncol=2,frameon=False,fontsize=9)
     f.text(.36,.05,"Source-composition standardization is descriptive, not causal.",
            fontsize=8.6,color="#525252")
     f.savefig(folder/"figure2_unconnected_contrasts_review_v1.png",dpi=240)
