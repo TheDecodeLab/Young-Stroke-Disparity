@@ -41,7 +41,18 @@ def test_reference_exports_have_consistent_unique_stable_ids():
     assert len(ris_ids)==len(set(ris_ids))
     assert len(bib_ids)==len(set(bib_ids))
     assert set(ris_ids)==set(bib_ids)==set(items)
-    assert len(re.findall(r"^ER  - ",ris,re.M))==len(items)
+    # RIS terminators may have zero or more trailing spaces;
+    # trimming a trailing blank does not remove the ER record tag.
+    # Verify a one-to-one complete TY/ID/ER record structure,
+    # not an incidental trailing whitespace convention.
+    records=[x for x in re.split(r"(?=^TY  - )",ris,flags=re.M) if x.strip()]
+    assert len(records)==len(items)
+    for record in records:
+        assert len(re.findall(r"^TY  - \\S+",record,re.M))==1
+        assert len(re.findall(r"^ID  - \\S+",record,re.M))==1
+        assert len(re.findall(r"^ER  -[ \\t]*$",record,re.M))==1
+        assert re.search(r"^ER  -[ \\t]*\\s*\\Z",record,re.M)
+
 
 
 def test_five_pubmed_articles_have_unique_verified_identifiers():
