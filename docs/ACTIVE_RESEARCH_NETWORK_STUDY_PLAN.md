@@ -1,12 +1,28 @@
-## Step82 implemented: matched demographic comparison, frozen local run pending
+## Step82 completed: demographic results support measurement-sensitivity question; P1 rerun pending
 
-**2026-10-21:** Added [Step82 specification](
-STEP82_PAIRED_DEMOGRAPHIC_SENSITIVITY_GATE.md), local-only
-script `scripts/step82_demographic_definition_sensitivity.py`,
-fabricated-only regression tests, and a synthetic CI workflow.
-Before source-backed scientific inference, the investigator must
-run the targeted tests, full suite and read-only Step82 script
-against the verified frozen Step62/63/68 checkpoint set.
+**2026-10-21:** Investigator ran Step82 successfully:
+8 fabricated tests and the full **765-test repository suite**
+passed (three familiar warnings). The private local analysis
+reported both paired crude and model-adjusted sex/race/ethnicity
+recorded-code contrasts for index IMP versus broader same-day
+encounter assignment. Several comparisons changed markedly
+or reversed in direction, including the head CTA
+Black-versus-White contrast and Hispanic-versus-
+non-Hispanic advanced-code contrast. These are
+**measurement-dependent associations**, not demonstrated
+differences in appropriate care. No private numerical output
+was committed or exported.
+
+**P1 sensitivity QA:** All P1 restricted contrasts were
+incorrectly labelled sparse due to the inherited Step73
+overlap diagnostic requiring nonexistent P0 records.
+Fixed within Step82 by enforcing only relevant source
+recording/ambiguity strata, retaining all >=11 cell,
+event/complement, and genuine overlap safeguards.
+New fabricated tests specifically check this error.
+**Corrected P1 results require one more workstation
+run** before concluding whether the combined
+measurement/demographic paper is sufficiently supported.
 
 **Step82 endpoints:** recorded any-CPT14, head CT, brain MRI
 and head CTA, separately for index inpatient versus index +
