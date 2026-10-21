@@ -1,7 +1,46 @@
+## Next scientific decision: Step81 zero-rescan race completeness and modality capture
+
+**Reviewer clarification (2026-10-20):** Reconsider the original
+sex/race questions as sensitivity to *measured* imaging-code
+ascertainment, with a methods-only manuscript as the fallback.
+Before that decision, inspect Step71 mapped race/ethnicity
+completeness and Step69 modality-specific capture across the
+four encounter definitions using read-only frozen checkpoints.
+Wilson intervals may describe raw modality-specific capture
+proportions but are NOT hospital-cluster robust. We should
+not claim completion of imaging, validated acute stroke
+admissions, or differences in appropriate care.
+
+**Treatment-positive control feasibility:** The frozen
+Step62/63/68 schemas contain NO patient-level
+thrombolysis or thrombectomy marker and NO source
+medication member. Step68 captured patient-level
+flags ONLY for the 14 imaging CPT codes and
+retained coarse non-imaging exact-code **source-row
+frequencies without patient links**. Thus the
+proposed thrombolysis/thrombectomy imaging-capture
+benchmark cannot be computed from existing patient
+flags alone. We will not rescan 993 million procedure
+rows unless independent codebook review,
+observed treatment-code feasibility, timing
+eligibility and added scientific value justify
+a narrowly targeted checkpointed read.
+See [Step81 feasibility decision gate](
+STEP81_FROZEN_MANUSCRIPT_FEASIBILITY_GATE.md).
+
+**Current next investigator action:** run the
+committed read-only Step81 feasibility script
+after its fabricated-only and full repository
+test suites. Send only TERMINAL OUTPUT.
+This does not alter the Step80 manuscript,
+tables/figures or any frozen patient records.
+No CTSI or other institutional email has
+been sent or is authorized by this step.
+
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Current scientific stage: Step80 manuscript ready for investigator review
+## Prior completed stage: Step80 manuscript ready for investigator review
 
 **Status (2026-10-20): Step80 COMPLETE on the authorized workstation.**
 The targeted test suite passed 19 tests and the full repository
