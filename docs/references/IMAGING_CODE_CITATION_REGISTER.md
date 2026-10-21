@@ -48,6 +48,29 @@ The AAPC entries are intentionally **supplemental web references**, not bibliogr
 
 **[Wang2024_JACR]** Wang JJ, Katz JM, Sanmartin M, Naidich JJ, Rula E, Sanelli PC. *Gender-Based Disparity in Acute Stroke Imaging Utilization and the Impact on Treatment and Outcomes: 2012 to 2021.* J Am Coll Radiol. 2024;21(1):128–140. **DOI** 10.1016/j.jacr.2023.07.015; **PMID** 37586470. [PubMed](https://pubmed.ncbi.nlm.nih.gov/37586470/). Note: a full-text repository has previously displayed an alternate “Sex-based” title. **The manuscript bibliography should use PubMed's “Gender-Based...” title**, not silently mix both.
 
+**[Lewis2023_JAMIA]** Lewis AE, Weiskopf N, Abrams ZB, et al.
+*Electronic health record data quality assessment and tools: a systematic review.*
+J Am Med Inform Assoc. 2023;30(10):1730–1740.
+DOI 10.1093/jamia/ocad120; PMID 37390812.
+[PubMed](https://pubmed.ncbi.nlm.nih.gov/37390812/).
+Supports background that EHR data completeness and quality require explicit
+assessment; does not validate this research-network dataset.
+
+**[Syed2023_JMIR]** Syed R, Eden R, Makasi T, et al.
+*Digital Health Data Quality Issues: Systematic Review.*
+J Med Internet Res. 2023;25:e42615.
+DOI 10.2196/42615; PMID 37000497.
+[PubMed](https://pubmed.ncbi.nlm.nih.gov/37000497/).
+Supports general data-quality taxonomy and secondary-use caveats,
+not a claim about clinical imaging access in this cohort.
+
+**[An2025_JMIR]** An D, Lim M, Lee S.
+*Challenges for Data Quality in the Clinical Data Life Cycle: Systematic Review.*
+J Med Internet Res. 2025;27:e60709.
+DOI 10.2196/60709; PMID 40266662.
+[PubMed](https://pubmed.ncbi.nlm.nih.gov/40266662/).
+Further supports the need for source-lifecycle data-quality verification.
+
 ## E. How to use the portable Zotero-ready library
 
 `imaging_references.csl.json` is the canonical, internally keyed source metadata. `imaging_references.ris` can be imported into Zotero via File → Import; BibTeX is provided for reproducible citation managers/LaTeX. The stable keys (e.g., `CMS2010_MPPR`, `Vagal2017_AJNR`) are **project-local IDs**, not Zotero-generated item keys. Importing generates new Zotero item keys, and a future Word document requires Zotero Add/Edit Citation or valid linked Zotero fields; mere plaintext bracketed keys are **not functioning Zotero Word citations**.
