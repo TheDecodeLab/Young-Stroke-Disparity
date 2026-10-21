@@ -1,3 +1,47 @@
+## Step82 implemented: matched demographic comparison, frozen local run pending
+
+**2026-10-21:** Added [Step82 specification](
+STEP82_PAIRED_DEMOGRAPHIC_SENSITIVITY_GATE.md), local-only
+script `scripts/step82_demographic_definition_sensitivity.py`,
+fabricated-only regression tests, and a synthetic CI workflow.
+Before source-backed scientific inference, the investigator must
+run the targeted tests, full suite and read-only Step82 script
+against the verified frozen Step62/63/68 checkpoint set.
+
+**Step82 endpoints:** recorded any-CPT14, head CT, brain MRI
+and head CTA, separately for index inpatient versus index +
+other same-day encounter, calculated as paired indicators on
+the **same indexed person**. Sex, Black versus White and
+Hispanic versus non-Hispanic source-field associations are
+screened with year, age-band, P and ambiguity adjustment;
+P1-only and ambiguity-free sensitivities check source-
+recording heterogeneity. Crude within-person
+difference-in-gains has a nominal paired-aware interval;
+adjusted subgroup contrasts have conditional delta-method
+intervals, neither hospital-cluster robust. Unsupported
+category, event, complement or quality intersections
+are withheld; demographic rates/counts are not printed.
+These findings are internal-only and are **not clinical
+imaging receipt disparities**.
+
+**Mechanism limitation confirmed:** Step63 retains only
+EMER/IMP types, and Step68 image flags retain patient,
+modality and bitmask rather than the code-bearing
+encounter ID/type. The other same-day
+radiology/outpatient/ED provenance cannot be recovered
+with the available frozen flags. No thrombolysis or
+thrombectomy patient flags exist. Do not invent
+an encounter-type breakdown or treatment benchmark.
+
+**Next:** run Step82 locally and return terminal text only.
+Then decide if demographic measurement sensitivity
+is adequately supported to retain in the eventual paper.
+The Step80 Word drafts remain internal review artifacts;
+scientific alignment and provenance need correction before
+coauthor or journal circulation. No institution
+contact, medical source rescan, private-result Git commit,
+or manuscript submission authorized.
+
 ## Step81 completed: next decision is demographic association stability
 
 **2026-10-20 workstation result:** Step81 passed all six synthetic
