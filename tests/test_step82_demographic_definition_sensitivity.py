@@ -35,6 +35,8 @@ def test_patient_pair_masks_and_conservative_demography():
     assert b["MRI_BRAIN_imp"]==b["MRI_BRAIN_day0"]==1
     assert b["CT_HEAD_imp"]==1
     assert b["advanced_imp"]==1
+    assert b["advanced_day0"]==1
+    assert "advanced" in s82.OUTCOMES
     assert b["race"]=="BLACK_AFRICAN_AMERICAN"
 
 
