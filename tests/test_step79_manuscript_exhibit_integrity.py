@@ -118,6 +118,39 @@ def test_false_clinical_and_cluster_claims_do_not_pass():
         s79.audit(bad)
 
 
+def test_boolean_provenance_accepts_only_canonical_csv_and_bool():
+    assert s79.strict_bool(False,"synthetic") is False
+    assert s79.strict_bool(True,"synthetic") is True
+    assert s79.strict_bool("False","CSV") is False
+    assert s79.strict_bool("True","CSV") is True
+    for bad in ("FALSE","false","0","",None,0,1,"maybe"):
+        with pytest.raises(ValueError,match="invalid boolean"):
+            s79.strict_bool(bad,"unknown")
+
+
+def test_reject_false_ascertainment_assurance_in_memory():
+    tables,_=make_tables()
+    bad=deepcopy(tables)
+    bad["t2"][0]["actual_imaging_performed_verified"]=True
+    with pytest.raises(ValueError,match="performed/same-HCO"):
+        s79.audit(bad)
+    bad=deepcopy(tables)
+    bad["t2"][0]["HCO_episode_verified"]="True"
+    with pytest.raises(ValueError,match="performed/same-HCO"):
+        s79.audit(bad)
+
+
+def test_accepts_csv_round_trip_bool_fields(tmp_path):
+    tables,_=make_tables()
+    csv_tables={}
+    for key,rows in tables.items():
+        target=tmp_path/(key+".csv")
+        s78.write_csv(target,rows)
+        with target.open(newline="",encoding="utf8") as fh:
+            csv_tables[key]=list(csv.DictReader(fh))
+    assert s79.audit(csv_tables)==[]
+
+
 def test_draft_inventory_and_manifest_validation(tmp_path):
     tables,counts=make_tables()
     folder=tmp_path/"draft_v1"
