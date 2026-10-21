@@ -71,7 +71,7 @@ def test_draft_complete_and_matches_verifiable_portable_citations():
         assert section in text
     assert "NOT CLEARED FOR EXTERNAL DISCLOSURE" in text
     assert "Table 4 (WITHHELD)" in text
-    assert len(re.findall(r"^\\d+\\. ",text,flags=re.M))==7
+    assert len(re.findall(r"^\d+\. ",text,flags=re.M))==7
     assert "10.1093/jamia/ocad120" in text
 
 
@@ -91,7 +91,7 @@ def test_figure2_uses_unconnected_dots_and_outputs_are_local(tmp_path):
         p=tmp_path/name
         assert p.exists() and p.stat().st_size>1200
         with p.open("rb") as fh:
-            assert fh.read(8)==b"\\x89PNG\\r\\n\\x1a\\n"
+            assert fh.read(8)==b"\x89PNG\r\n\x1a\n"
     source=Path(s80.__file__).read_text(encoding="utf-8")
     plotting=source[source.index("def figures("):source.index("def disclosure_packet(")]
     assert "ax.plot(" not in plotting
