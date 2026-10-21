@@ -430,5 +430,95 @@
     "DOI": "10.2196/60709",
     "PMID": "40266662",
     "URL": "https://pubmed.ncbi.nlm.nih.gov/40266662/"
+  },
+  {
+    "id": "Abedi2023_YoungStrokeAge",
+    "type": "article-journal",
+    "title": "Defining the Age of Young Ischemic Stroke Using Data-Driven Approaches",
+    "author": [
+      {
+        "family": "Abedi",
+        "given": "Vida"
+      },
+      {
+        "family": "Lambert",
+        "given": "Clare"
+      },
+      {
+        "family": "Chaudhary",
+        "given": "Durgesh"
+      },
+      {
+        "family": "Rieder",
+        "given": "Emily"
+      },
+      {
+        "family": "Avula",
+        "given": "Venkatesh"
+      },
+      {
+        "family": "Hwang",
+        "given": "Wenke"
+      },
+      {
+        "family": "Li",
+        "given": "Jiang"
+      },
+      {
+        "family": "Zand",
+        "given": "Ramin"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Journal of Clinical Medicine",
+    "volume": "12",
+    "issue": "7",
+    "page": "2600",
+    "DOI": "10.3390/jcm12072600",
+    "PMID": "37048683",
+    "URL": "https://pubmed.ncbi.nlm.nih.gov/37048683/"
+  },
+  {
+    "id": "Kakkar2021_StrokeImaging",
+    "type": "article-journal",
+    "title": "Current approaches and advances in the imaging of stroke",
+    "author": [
+      {
+        "family": "Kakkar",
+        "given": "Pragati"
+      },
+      {
+        "family": "Kakkar",
+        "given": "Tarun"
+      },
+      {
+        "family": "Patankar",
+        "given": "Tufail"
+      },
+      {
+        "family": "Saha",
+        "given": "Sikha"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Disease Models & Mechanisms",
+    "volume": "14",
+    "issue": "12",
+    "page": "dmm048785",
+    "DOI": "10.1242/dmm.048785",
+    "PMID": "34874055",
+    "URL": "https://pubmed.ncbi.nlm.nih.gov/34874055/"
   }
 ]
