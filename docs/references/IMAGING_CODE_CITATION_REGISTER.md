@@ -71,6 +71,23 @@ DOI 10.2196/60709; PMID 40266662.
 [PubMed](https://pubmed.ncbi.nlm.nih.gov/40266662/).
 Further supports the need for source-lifecycle data-quality verification.
 
+**[Abedi2023_YoungStrokeAge]** Abedi V, Lambert C, Chaudhary D, et al.
+*Defining the Age of Young Ischemic Stroke Using Data-Driven Approaches.*
+J Clin Med. 2023;12(7):2600. DOI 10.3390/jcm12072600;
+PMID 37048683. [PubMed](https://pubmed.ncbi.nlm.nih.gov/37048683/).
+This article supports the ORIGINAL manuscript's motivation for
+sex-specific historical young-stroke age boundaries. It does NOT
+set the rebuilt study's uniform 18–50 eligibility or validate
+TriNetX imaging coding.
+
+**[Kakkar2021_StrokeImaging]** Kakkar P, Kakkar T, Patankar T, Saha S.
+*Current approaches and advances in the imaging of stroke.*
+Dis Model Mech. 2021;14(12):dmm048785.
+DOI 10.1242/dmm.048785; PMID 34874055.
+[PubMed](https://pubmed.ncbi.nlm.nih.gov/34874055/).
+Background on clinical stroke imaging modalities, not evidence
+that the research-network procedures were completed.
+
 ## E. How to use the portable Zotero-ready library
 
 `imaging_references.csl.json` is the canonical, internally keyed source metadata. `imaging_references.ris` can be imported into Zotero via File → Import; BibTeX is provided for reproducible citation managers/LaTeX. The stable keys (e.g., `CMS2010_MPPR`, `Vagal2017_AJNR`) are **project-local IDs**, not Zotero-generated item keys. Importing generates new Zotero item keys, and a future Word document requires Zotero Add/Edit Citation or valid linked Zotero fields; mere plaintext bracketed keys are **not functioning Zotero Word citations**.
