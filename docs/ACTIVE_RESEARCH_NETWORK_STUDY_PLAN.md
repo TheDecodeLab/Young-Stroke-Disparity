@@ -1,95 +1,62 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Current scientific stage: full internal manuscript package (Step80), pending local run
+## Current scientific stage: Step80 manuscript ready for investigator review
 
-**Investigator direction (2026-10-20):** Proceed to a complete
-manuscript using the validated frozen imaging-code ascertainment
-analysis, and defer all institutional CTSI/data-steward outreach.
-The investigator will review scientific and clinical claims when
-the manuscript is complete. The investigator may optionally
-supply an earlier manuscript for reconciliation of background,
-specific aims, authorship and prior citations, but this does
-not block the current draft.
+**Status (2026-10-20): Step80 COMPLETE on the authorized workstation.**
+The targeted test suite passed 19 tests and the full repository
+suite passed **751 tests** (three existing unrelated warnings).
+Step80 populated a complete *restricted internal* manuscript,
+including its abstract and Results, directly from the immutable
+Step78 tables. It created two replacement nominal-category
+figures and matching bibliography imports in:
+`results/phase1/full_reconstruction_private/step80_manuscript_private/review_v1/`.
+No source ZIP or frozen patient-level checkpoint was rescanned.
+The prior Step78 outputs were not altered.
 
-**Computational evidence status:** Step78 completed a five-table,
-two-figure, private-only results bundle with 736 tests passed.
-Step79 completed the independent arithmetic/metadata
-preflight with 745 repository tests passed. One
-disclosure-risk *type* remains in original Table4: a published
-demographic denominator and rate can reveal a count
-or complementary count under 11. No source scan or
-new patient classification is needed.
-
-**Step80 implementation committed, but not yet executed
-on the investigator's authorized workstation:**
-
-- The [complete public-data-only manuscript template](
-MANUSCRIPT_ASCERTAINMENT_FULL_TEMPLATE.md) contains a structured
-abstract, introduction, frozen cohort/endpoint Methods,
-Results insertion slots, full Discussion, Conclusion,
-figure legends and nine source-verified references.
-- The [private completion script](
-../scripts/step80_finalize_manuscript_local.py)
-loads the existing Step78 `draft_v1`, runs Step79
-arithmetic/disclosure checks, inserts validated aggregate
-cohort and encounter-definition numbers into Abstract/Results,
-generates two replacement categorical-point figures,
-and creates a local, counts-free disclosure-review
-request for *future* use only.
-- The code preserves private Step78 original results and
-generates a new immutable local-only `review_v1`
-manuscript bundle; clinical-review and visual-review
-permissions are **not** inferred from successful tests.
-- Original Table4's demographic P and coded-capture rates
-are **not transferred** into the candidate manuscript.
-Table3 and Table5 remain supplementary/internal
-until disclosure and scientific review.
-
-**Core manuscript question:** How ascertainment of
-recorded CPT14 neuroimaging among adults definitely
-aged 18–50 with candidate I63-coded index IMP changes
-with different encounter-attachment rules and measured
-source-quality strata. P is an *unvalidated* I63
-principal-recording indicator; P=0 includes blank
-and other nonprincipal markers. The historical age cohort
-overlaps. Recorded CPT14 codes do not confirm
-performed imaging, same HCO/stroke episode or
-inequality in appropriate clinical care. No hospital
-clustering or adequate case-mix adjustment available.
-
-**Prior manuscript integrated cautiously:** The supplied V7
-Diamond/NIS manuscript and supplementary materials were reviewed.
-The original author's clinical-imaging background and age-definition
-rationale were carried over with PubMed-verified citations
-[@Abedi2023_YoungStrokeAge] and
-[@Kakkar2021_StrokeImaging], while its separate
-cohorts, CT-selected index, 7-day exposure window,
-NIS comparison, imaging count models and conclusions
-were **not** merged into the new Research Network Results.
-See [V7-to-Step80 reconciliation](
+The manuscript's current title and question focus on
+**EHR recorded CPT14 neuroimaging ascertainment and
+encounter attribution**, rather than unverified clinical
+imaging receipt or an established clinical-care disparity.
+Its primary study cohort is definitely eligible
+ages 18–50 with candidate I63-coded index IMP;
+the overlapping sex-specific historical ages are
+sensitivity only. The source P indicator is not
+a validated clinical principal/secondary distinction.
+The original V7 Diamond/NIS manuscript and supplement
+were reviewed separately, and the new draft
+does not transplant the older sample or model results.
+See [V7 reconciliation](
 STEP80_PRIOR_V7_MANUSCRIPT_RECONCILIATION.md).
-The original DOCX preserves 20 Zotero citation fields
-and one Zotero bibliography field; do not flatten it.
 
-**Reference-library tests:** Two legacy regression
-tests assumed exactly nine bibliography entries
-and two publication DOIs. They were updated
-to require the stable verified source IDs,
-unique DOI/PMID pairs and matching CSL/RIS/BibTeX;
-the library now contains 14 sources, of which
-nine are cited in the full manuscript.
-Step80 synthetic tests were updated for the
-nine cited entries. Full suite rerun is
-pending local investigator verification.
+**Disclosure:** the Step79 flag for potentially
+inferable small event/complement counts from
+demographic Table4 remains unresolved. The manuscript
+builder intentionally withheld the risky Table4
+P and CPT14 capture percentages. This is an
+internal-review package only; passing numerical
+consistency checks does **not** authorize publication
+of Table1/Table2/Figures or anything else. The
+disclosure-request draft remains private and
+UNSENT. Per investigator instruction, do not
+contact CTSI, TriNetX or other institutional
+offices until explicitly requested.
 
-**Next handoff:** One fail-fast local Step80 execution
-with targeted tests then the full repository tests,
-followed by the local manuscript builder. Return
-TERMINAL OUTPUT ONLY, not the local counts,
-manuscript or figures. The earlier manuscript, if supplied,
-will be integrated after this first complete version.
-**No institutional emails will be sent.**
+**Next:** the investigator reviews
+`MANUSCRIPT_INTERNAL_REVIEW.md` and the two
+new PNGs in the local `review_v1` folder.
+After the author identifies factual, clinical,
+figure and interpretation issues, revise the
+manuscript and selectively regenerate corrected
+figures using a new versioned private package.
+When a Word manuscript is desired, preserve
+the source V7 Zotero Word fields and create a
+new document with verified Zotero citations;
+the Markdown reference keys by themselves
+are not live Zotero fields. Release and
+coauthor approval remain separate subsequent
+steps, with no need for another full clinical
+source scan.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
