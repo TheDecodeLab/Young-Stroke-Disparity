@@ -1,69 +1,83 @@
 # Active Research Network Study Plan and Decision Register
 **Plan of record:** 2026-10-18, after successful local Step57 execution. **This document supersedes conflicting provisional assumptions in earlier Steps 1–48; the earlier documents remain an audit trail, not active execution instructions.** Consult the [code evidence and manuscript-citation register](references/IMAGING_CODE_CITATION_REGISTER.md) and [citation files](references/imaging_references.csl.json).
 
-## Current action: Step79 consistency and disclosure triage of the completed paper exhibits
+## Current scientific stage: Step79 passed arithmetic, Table4 disclosure revision pending
 
-**Step78 completed successfully (2026-10-20)** on the investigator's
-approved workstation: 7 synthetic-specific tests, **736 repository
-tests**, frozen Step68 source and aggregate reconciliation,
-and a PRIVATE `draft_v1` package of 5 CSV tables, 2 PNG
-draft figures, one Results narrative and a policy manifest.
-Step78 did not reopen original raw clinical procedure ZIPs;
-all manuscript numbers and images remain LOCAL ONLY.
+**October 20, 2026:** The investigator completed the read-only
+Step79 check on the immutable Step78 `draft_v1` results package.
+Nine dedicated and **745 full-repository synthetic tests passed**.
+Manifest and preliminary figure-file integrity, original
+CPT14 cohort/P denominators, four encounter-sensitivity
+definitions and their nesting, year/recording-quality
+subgroup arithmetic, and model-interpretation caveats
+passed automatic consistency checks. Step78's five
+CSV tables, two PNGs and local-only Results draft
+remain **unchanged**. No source ZIP, frozen SQLite
+scan, or patient-level outcome rebuild occurred.
 
-The [Step78 reproducible package specification](
-STEP78_PAPER_RESULTS_PACKAGE.md) documents the generation
-method. The tracked [working manuscript scaffold](
-MANUSCRIPT_ASCERTAINMENT_WORKING_DRAFT.md) includes Methods,
-Introduction, Results organization and limitations without
-private numeric outputs.
+**Material residual issue:** One *category of risk*
+(`Table4_derived_small_event_or_complement`)
+was detected. It indicates one or more demographic
+cells where a reported subgroup denominator and
+P-label or imaging-code-capture percentage could
+reveal a count or complementary count smaller
+than 11. It is **not** evidence of erroneous
+demographic estimates and is **not** confirmation
+that other tables are safe to publish.
+Do not externally share Table4 in its current form,
+even though its arithmetic reconciles.
+The specific counts and categories remain local-only.
 
-**Working scientific focus:** measurement/encounter
-ascertainment of documented CPT14 neuroimaging
-code capture in candidate-I63 index IMP among
-definitely eligible ages 18–50. Coarse calendar-year
-and patient-level any-key quarantine mixing,
-ED attachment, and codes on any other same-day
-encounter are separate, noncausal sensitivity
-definitions. A different same-day encounter
-is not verified same hospital or stroke episode.
-Historical sex-dependent ages overlap and
-are sensitivity material. P is an unvalidated
-I63 principal recording indicator, not
-clinical stroke severity or a valid
-principal-versus-secondary diagnosis adjudication.
+**Proposed revision to public-facing manuscript
+organization:** Table1 presents the frozen
+index-IMP cohort and P data; Table2 is the
+central comparison of four strictly defined
+CPT14 code-recording outcomes. Treat Table3
+calendar-year × encounter ambiguity as
+supplementary source QA and Table5 demographic
+GLMs as exploratory only, both subject to
+release and statistical review. Table4 should
+initially describe demographic data completeness
+without category-specific P or imaging-capture
+percentages. Any category counts and shares
+still need independent primary and complementary
+small-cell review across Table1–Table3 before
+release. Omitting rates alone does NOT
+satisfy institutional disclosure approval.
 
-**NEXT:** [Step79 immutable private paper-exhibit integrity and
-disclosure-risk gate](STEP79_EXHIBIT_INTEGRITY_GATE.md).
-Its read-only checker validates independent
-Table1/Table2 numerator/denominator arithmetic,
-nested CPT14 capture outcomes, year/source
-quality and demographic partitions,
-model-precision caveats, report policy,
-PNG identity and preliminary complementary
-suppression/differencing risks. The checker
-does NOT open frozen clinical SQLite or
-rescan any source ZIP; it does NOT publish
-or mutate Step78. The fabricated-only
-tests and local execution are **PENDING**.
+The manuscript's legitimate focus is the
+ascertainment of **documented** 14-code CPT
+neuroimaging on an index IMP encounter in
+the definite 18–50 I63-coded primary cohort,
+with separate alternative temporal/encounter
+attribution screens. P is an unvalidated I63
+primary-diagnosis recording indicator, not
+stroke severity. The overlapping sex-specific
+historical cohort is sensitivity only; neither
+performs true imaging validation or HCO-level
+cluster adjustment. PCS review-only code rows
+were never added to indexed patient outcomes.
 
-**Disclosure and clinical readiness:** NOT achieved.
-Even a clean automated Step79 gate is NOT
-a formal provider/institutional cross-table
-release approval; manuscript figures still
-need manual rendered review, and Table5's
-exploratory nominal/quasi intervals are NOT
-HCO-cluster robust or adjusted for severity.
-No claims of confirmed imaging performance
-or racial inequalities in clinical care.
-PCS's 40 exact review-candidate codes
-remain separate and unapproved, outside
-the CPT14 patient-level outcome.
+**Next scientific work:** independent manual
+review of Figures 1–2 for accuracy, readability
+and inappropriate connecting lines between
+nominal encounter definitions; clinical and
+statistical coauthor review; institutional
+cross-table disclosure authorization; then
+finalization of approved manuscript Results,
+Discussion and abstract from the already
+generated local-only evidence. **No further
+full source scans or routine computation
+are warranted.** See [Step79 completion and
+disclosure disposition](
+STEP79_EXHIBIT_INTEGRITY_GATE.md).
 
-**Next handoff:** TERMINAL OUTPUT ONLY.
-Do not upload or commit private Step78
-tables, plots, notes or local Step77
-observed-code review worksheet.
+**Public-release status: BLOCKED.** Keep
+the Step78 `draft_v1` results, figures
+and Results draft on the authorized local
+workstation pending formal release review.
+No private files or source-derived counts
+have been committed to GitHub.
 
 ## Completed prior validation: Step69 same-day encounter attachment (no source scan)
 
