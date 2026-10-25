@@ -294,6 +294,25 @@ def write_private_report(report, out_folder):
     return dest
 
 
+
+def load_dependencies():
+    """Import shared pipeline modules from a package or direct script entry point.
+
+    The supported workstation command executes this file by path. In that case,
+    Python puts scripts/ rather than the repository root on sys.path. Do not
+    mask missing dependencies other than the top-level scripts package.
+    """
+    try:
+        from scripts import step62_checkpointed_cohort as s62
+        from scripts import step71_demographic_capture_feasibility as s71
+    except ModuleNotFoundError as exc:
+        if exc.name != "scripts":
+            raise
+        import step62_checkpointed_cohort as s62
+        import step71_demographic_capture_feasibility as s71
+    return s62, s71
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", type=Path, default=DB)
@@ -308,8 +327,7 @@ def main(argv=None):
     if prior_path.is_symlink() or not prior_path.is_file():
         raise FileNotFoundError("Step62 frozen aggregate report missing")
     prior=json.loads(prior_path.read_text(encoding="utf-8"))
-    from scripts import step62_checkpointed_cohort as s62
-    from scripts import step71_demographic_capture_feasibility as s71
+    s62, s71 = load_dependencies()
     if PRIMARY != s62.COHORTS[0]:
         raise ValueError("Primary cohort policy has changed")
     with sqlite3.connect("file:"+str(args.db.resolve())+"?mode=ro",uri=True) as db:
