@@ -1,6 +1,6 @@
 # Step82: Patient-level cohort flow and baseline reporting from frozen checkpoints
 
-**Status:** Prepared, nine fabricated-data tests passed in isolated local testing. Investigator workstation execution and full repository suite are **not yet verified**. No source-derived cohort-flow or baseline numbers have been released or inserted into the manuscript.
+**Status (2026-10-25):** The first investigator workstation run passed 9/9 Step82 tests and 785/785 repository tests, but the direct-file CLI initially stopped at `ModuleNotFoundError: No module named 'scripts'` before producing the new report. The Step82 import fallback has been corrected. A new end-to-end direct-file CLI regression test using only fabricated data passed locally (10/10 Step82 tests). A fresh workstation run of the revised code and the full suite remains **pending**. No source-derived cohort-flow or baseline numbers have been approved for publication or inserted into the manuscript.
 
 ## Purpose
 
@@ -48,6 +48,8 @@ From the repository root, after the new code is available on `analysis-rebuild-p
     --acknowledge I_CONFIRM_INTERNAL_REVIEW_ONLY
 )
 ```
+
+The revised script supports both `python scripts/step82_submission_reporting.py` and `python -m scripts.step82_submission_reporting` from the repository root. The earlier direct-file import error did not invalidate Step62 checkpoints and does not require re-scanning TriNetX. The regression test exercises an actual direct-file invocation against a completely synthetic frozen checkpoint.
 
 The default private output is:
 
