@@ -189,3 +189,83 @@ def test_verify_frozen_report_reconciles_and_detects_mismatch():
     prior["cohorts"][s82.PRIMARY]["by_start_year"]["2020"]["with_P_label"] = 2
     with pytest.raises(AssertionError, match="P flag count"):
         s82.verify_frozen_step62_report(report,prior)
+
+
+def test_direct_script_cli_from_repo_root_with_fabricated_checkpoint(tmp_path):
+    """Catch package-path errors hidden by importing Step82 under pytest."""
+    import shutil
+    import subprocess
+    import sys
+
+    root = tmp_path / "synthetic_repository"
+    script_dir = root / "scripts"
+    script_dir.mkdir(parents=True)
+    cli = script_dir / SCRIPT.name
+    shutil.copy2(SCRIPT, cli)
+
+    # Only the two imported interfaces are needed. Never load clinical files.
+    (script_dir / "step62_checkpointed_cohort.py").write_text('''
+COHORTS = ("uniform_18_50",)
+def age_class(day, yob, sex, cohort):
+    assert cohort == COHORTS[0]
+    if yob is None:
+        return "unknown_yob"
+    low, high = int(day[:4]) - yob - 1, int(day[:4]) - yob
+    if low >= 18 and high <= 50:
+        return "definite"
+    if high < 18 or low > 50:
+        return "excluded"
+    return "boundary_uncertain"
+''', encoding="utf-8")
+    (script_dir / "step71_demographic_capture_feasibility.py").write_text('''
+def category(kind, value):
+    mapping = {
+        "SEX": {"M": "MALE", "F": "FEMALE", "": "UNKNOWN_MISSING"},
+        "RACE": {"W": "WHITE", "B": "BLACK_AFRICAN_AMERICAN"},
+        "ETHNICITY": {"N": "NOT_HISPANIC_LATINO", "H": "HISPANIC_LATINO"},
+    }
+    return mapping[kind].get(value or "", "OTHER_OR_UNMAPPED")
+''', encoding="utf-8")
+
+    private = root / "results/phase1/full_reconstruction_private"
+    checkpoint_dir = private / "step62_cohort_private"
+    checkpoint_dir.mkdir(parents=True)
+    checkpoint = checkpoint_dir / "provisional_cohort_LOCAL_ONLY.sqlite"
+    source = fixture_db()
+    try:
+        source.commit()  # Finish fixture transaction before SQLite backup.
+        with sqlite3.connect(checkpoint) as dest:
+            source.backup(dest)
+        expected = s82.aggregate_report(source, mock_age_class, mock_category)
+    finally:
+        source.close()
+    prior = {
+        "stage": "STEP62_PROVISIONAL_PRIVATE_RECONSTRUCTION",
+        "cohorts": {s82.PRIMARY: {
+            "indexed_patients_not_validated": expected["baseline"]["n"],
+            "by_start_year": {"2020": {"index_cases": 2, "with_P_label": 1}},
+            "candidate_admission_age_QA_NOT_patient_denominators": {
+                **expected["patient_flow_not_full_export_flow"]["admission_age_audit_not_patient_exclusions"],
+                "patient_held_competing_same_day_index_encounters": 1,
+            },
+        }},
+        "encounter_key_integrity_LOCAL_ONLY": {
+            "quarantined_qualifying_IMP_keys_with_conflicting_dates": 1,
+            "remaining_matched_IMP_encounter_keys": 8,
+        },
+    }
+    (checkpoint_dir / "aggregate_review_LOCAL_ONLY.json").write_text(
+        json.dumps(prior), encoding="utf-8")
+    env = os.environ.copy()
+    env.pop("PYTHONPATH", None)
+    cmd = [sys.executable, str(cli), "--db", str(checkpoint),
+           "--acknowledge", "I_CONFIRM_INTERNAL_REVIEW_ONLY"]
+    proc = subprocess.run(cmd, cwd=root, env=env, text=True,
+                          capture_output=True, timeout=30, check=False)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert "Selection partition: PASS; demographic partitions: PASS" in proc.stdout
+    result_path = private / "step82_submission_reporting_private" / s82.OUTPUT
+    assert result_path.is_file()
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    assert result["baseline"]["n"] == 2
+    assert result["patient_flow_not_full_export_flow"]["candidate_unique_patients"] == 6
