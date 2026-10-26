@@ -1,6 +1,6 @@
 # Step83: Local-only disclosure-aware candidate tables
 
-**Status:** Nine tests pass with fabricated aggregate data, including execution of the CLI as a script. Investigator workstation validation and institutional output clearance remain pending. No TriNetX source records or source-derived table values are committed to GitHub.
+**Status (2026-10-25):** Verified on the investigator's authorized workstation. Nine targeted tests passed and the full suite passed **795 tests** with three previously observed warnings. The Step83 private candidate was generated successfully. It independently verified one frozen Step82 disclosure flag, applied **overall_only** sex display and **three_groups** patient-flow display, and reconciled every displayed category/denominator total. **This is numerical and preliminary disclosure screening, not institutional approval.** No source-derived table values or private files were committed to GitHub. See [Step84 publication release gate](STEP84_SUBMISSION_RELEASE_GATE.md).
 
 ## Motivation
 
