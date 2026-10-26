@@ -1,3 +1,7 @@
+## 2026-10-25 investigator clarification: existing access approval confirmed
+
+The investigator confirms that an application granting access to the TriNetX Research Network dataset for this study was **already approved**. This is consistent with the 2026-10-18 attestation recorded below. The investigator explicitly declines routine CTSI contact or a duplicate permission request. The [Step84 CTSI inquiry draft](STEP84_CTSI_PUBLICATION_CLEARANCE_INQUIRY.md) is superseded and **must not be sent**. Continue restricted internal manuscript/supplement preparation from the frozen Step82/83 results. Before any external dissemination, apply the actual terms of the existing approved access agreement, including disclosure review only where required. Do not infer publication permission conditions that have not been inspected. No new source scan is needed for this administrative clarification.
+
 ## Step83 complete: measurement-led manuscript decision
 
 **2026-10-21 local verification:** Step83 completed successfully after
