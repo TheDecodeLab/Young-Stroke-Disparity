@@ -1,6 +1,8 @@
-# Step 84: CTSI / TriNetX publication-clearance inquiry
+# Step 84: Superseded optional CTSI inquiry, NOT an active task
 
-**Prepared:** 2026-10-25. **Status: draft only, not sent.** Intended sender: investigator's Penn State institutional email, not a personal mailbox. This public document contains no private TriNetX aggregate cells, IDs, dates from the source clinical dataset, or restricted attachments.
+**Status update, 2026-10-25: SUPERSEDED. DO NOT SEND.** The investigator confirms that the application granting access to the TriNetX Research Network dataset for this study **was already approved**. An earlier version incorrectly treated a new CTSI application or inquiry as a required step. The investigator explicitly does not want an email sent. This older draft is retained only as an inactive reference in case a specific unresolved question later arises. It is not an instruction to contact anyone.
+
+The approved application's actual dissemination and output-review terms should guide publication preparation. We have not independently inspected the agreement, so do not assume that it requires another review, or that it waives every restriction. This document contains no private data.
 
 **To:** ctsi@psu.edu (Penn State CTSI general TriNetX assistance and routing contact)
 
@@ -38,4 +40,4 @@ Alireza
 - Do not infer the true dataset export date from 2016–2024 encounter dates, archive filenames, file modification times, or historical web pages about the network.
 - After CTSI identifies the responsible reviewer, freeze the candidate release package and seek approval of **all** proposed outputs together. Preserve a dated written decision in institutional private storage. Do not publish figures/tables until that decision is received.
 
-**Next project action:** After receiving routing and permission information, complete the private Step84 release ledger, then revise v1.5 DOCX manuscript and supplement with granular tracked changes and intact Zotero citation fields. The public GitHub repository must remain counts-free.
+**Current project action (superseding this inquiry):** Proceed with internal manuscript and supplement revision under the already approved access application. Inspect the existing approval's publication and aggregate-sharing terms before external release, and seek additional advice only if those terms actually call for it or material uncertainty remains. Retain granular DOCX tracked changes and intact Zotero fields. Do not send this email or publish restricted source data in GitHub.
