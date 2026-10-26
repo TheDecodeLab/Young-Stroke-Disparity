@@ -1,6 +1,6 @@
 # Step83: Local-only disclosure-aware candidate tables
 
-**Status (2026-10-25):** Verified on the investigator's authorized workstation. Nine targeted tests passed and the full suite passed **795 tests** with three previously observed warnings. The Step83 private candidate was generated successfully. It independently verified one frozen Step82 disclosure flag, applied **overall_only** sex display and **three_groups** patient-flow display, and reconciled every displayed category/denominator total. **This is numerical and preliminary disclosure screening, not institutional approval.** No source-derived table values or private files were committed to GitHub. See [Step84 publication release gate](STEP84_SUBMISSION_RELEASE_GATE.md).
+**Status (2026-10-25):** Verified on the investigator's authorized workstation. Nine targeted tests passed and the full suite passed **795 tests** with three previously observed warnings. The Step83 private candidate was generated successfully. It independently verified one frozen Step82 disclosure flag, applied **overall_only** sex display and **three_groups** patient-flow display, and reconciled every displayed category/denominator total. **This is numerical and preliminary disclosure screening, not a substitute for the approved application's dissemination conditions.** No source-derived table values or private files were committed to GitHub. See [Step84 publication release gate](STEP84_SUBMISSION_RELEASE_GATE.md).
 
 ## Motivation
 
@@ -39,4 +39,4 @@ The output directory is owner-only (0700), and the two files are owner-only (060
 
 ## Remaining journal submission tasks
 
-These candidate tables do not establish a complete source-to-cohort STROBE selection flow, an approved TriNetX extraction date, IRB status, participating-network release permissions, hospital-based imaging ascertainment, or population-level race/sex inequity. After approved aggregation, update the v1.5 manuscript and supplement through granular DOCX tracked changes while retaining Zotero fields. Independently approve the complete manuscript/figures/subgroup collection for cumulative disclosure.
+These candidate tables do not establish a complete source-to-cohort STROBE selection flow, a verified TriNetX extraction date, the full terms of the already approved access application, hospital-based imaging ascertainment, or population-level race/sex inequity. Proceed now with restricted internal v1.5 manuscript/supplement revisions using granular DOCX tracked changes and retaining Zotero fields. Before external release, follow the **existing approval's actual** output/dissemination terms and review the manuscript, figures and subgroup tables together for cumulative disclosure. Do not request duplicate general access approval.
