@@ -1,6 +1,6 @@
 # Step84: Submission disclosure and reporting gate (counts-free checklist)
 
-**Status (2026-10-25):** Prepared for investigator and institutional review. No release or publication authorization obtained. This document contains no TriNetX source-derived table cells.
+**Status (2026-10-25):** Investigator reconfirmed an **existing approved application for access to this Research Network dataset for this study**. Do not request duplicate access approval or send the superseded CTSI inquiry. The precise external-publication and aggregate-output conditions in that approved application have not been inspected here. This counts-free checklist is for internal manuscript preparation and compliance with the existing authorization, not an assertion that another institutional application is mandatory.
 
 ## Confirmed Step83 workstation result
 
@@ -17,7 +17,7 @@ These checks assess numerical consistency and one conservative suppression desig
 
 ## Release scope to review together
 
-The authorized data steward or disclosure reviewer should evaluate one frozen **complete candidate publication package** rather than isolated tables. Include, as applicable:
+When the already approved application's terms require aggregate disclosure review, submit one frozen **complete candidate publication package** through its specified process rather than submitting isolated tables. Even if no separate review is required, examine cumulative/complementary disclosure across the complete intended package. Include, as applicable:
 
 1. The current Young Stroke manuscript and supplement (working version v1.5), including every abstract number, Results sentence, table and footnote.
 2. Both main figures and their captions, and any figure panels or plotted point labels.
@@ -27,7 +27,7 @@ The authorized data steward or disclosure reviewer should evaluate one frozen **
 
 **Never assume** that a threshold of 11 guarantees release safety. Check both positive and complementary cells and whether suppressed counts can be derived from visible margins, percentages or adjacent figures. Any new publication-table revision requires a new cumulative check.
 
-Do not move Step83 tables, Step82 JSON, patient-level SQLite, or source ZIPs into this public repository, public files, or an external email. Use only the institutional approved private review channel for the candidate outputs.
+Do not move Step83 tables, Step82 JSON, patient-level SQLite, or source ZIPs into this public repository, public files, or an external email. Handle any restricted candidate outputs under the terms of the **existing approved application** and an authorized private channel if further review is required.
 
 ## Methodological reporting still required
 
@@ -41,13 +41,13 @@ Reporting guidelines: [STROBE](https://www.strobe-statement.org/) and [RECORD](h
 
 ## TriNetX and institutional conditions (not verified for this specific export)
 
-Current official [TriNetX publication guidance](https://trinetx.com/publication/trinetx-publication-guidelines/) requests the specific network name and data analysis/download date in Methods and recommends relevant source-size and HCO-count context when available. It cautions that HCO agreements may limit publication even when use for research is permitted. Publications generally must not display HCO-specific data or platform screenshots without applicable permissions. TriNetX also requires disclosure and an order form for third-party-funded uses under its published guidelines. **Confirm applicability through the authorized institutional/TriNetX representative before submission.**
+Current official [TriNetX publication guidance](https://trinetx.com/publication/trinetx-publication-guidelines/) requests the specific network name and data analysis/download date in Methods and recommends relevant source-size and HCO-count context when available. It cautions that HCO agreements may limit publication even when use for research is permitted. Publications generally must not display HCO-specific data or platform screenshots without applicable permissions. TriNetX also requires disclosure and an order form for third-party-funded uses under its published guidelines. **Check the existing approved application's publication and output conditions first.** Seek clarification from an authorized representative only if the agreement does not resolve a material question. Do not require another general access application.
 
-The investigator must confirm, not infer:
+Record what the existing approved application and export provenance actually establish, and do not infer:
 
 - The actual Research Network dataset extraction/download date from export or job records, distinct from the index-admission year range.
 - Any permissible network-size / HCO-count description applicable to that export, without naming HCOs or publishing site-specific results.
-- The relevant current protocol/IRB or institutional human-subjects determination, data-use and output-release permissions, and whether the work counts as third-party-funded TriNetX use.
+- The applicable terms of the **already approved access application**, any linked protocol/IRB or institutional determination, and whether it specifies restrictions on external aggregate publication or third-party-funded use. Do not characterize these as missing approvals without reviewing the existing records.
 - Privacy review of any previously identified source-derived files in the public GitHub history, independent of this Step83 table check.
 - The final journal and its manuscript, disclosure, reporting checklist, figure and data-availability requirements.
 
@@ -57,6 +57,6 @@ Do not copy generic TriNetX IRB exemption wording as an institutional approval s
 
 1. Preserve the original restricted Step82 and Step83 artifacts locally; **do not rerun them**.
 2. Assemble one immutable, locally stored candidate publication collection and its version manifest. Leave the full private tables under the already approved storage location.
-3. Seek institutional/TriNetX data-owner review of the **whole proposed release**, including cross-table derivability and publication permission. No office has been contacted and no request has been sent by this step.
-4. Once the required clearance is documented, incorporate approved tables and bounded cohort-flow language into the current DOCX manuscript/supplement with granular tracked changes and intact Zotero citation fields.
-5. Complete final STROBE/RECORD checklist and target-journal submission package. Do not label the article submission-ready until the data-owner and scientific review gates are closed.
+3. Check the existing approved agreement for dissemination terms and any required aggregate-output review. Assess cross-table derivability across the whole candidate publication. Initiate **only a review expressly required by the existing terms**, or a focused clarification for a genuine unresolved issue. No email has been sent.
+4. Proceed now with **restricted internal** DOCX manuscript/supplement revisions, using granular tracked changes and intact Zotero citation fields. Incorporate the local Step83 tables only into an appropriately restricted local working copy. Before external release, meet the existing agreement's actual dissemination and disclosure requirements.
+5. Complete the final STROBE/RECORD checklist and target-journal submission package. Submission readiness depends on scientific review and compliance with the **existing approved terms**, not an invented new application gate.
