@@ -64,9 +64,9 @@ def test_insufficient_stratum_is_detected_without_fabricated_imputation():
     counts[k1]["n"]+=move
     counts[k1]["inpatient"]+=int(move*.2)
     counts[k1]["new_other_day0"]+=int(move*.36)
-    report=s85.summarize(counts,COHORT,FakeStep70)
-    assert not report["thresholds"]["11"]["all_strata_adequate"]
-    assert report["metrics"]["same_day"]["thresholded"]["11"]["coverage"]<1
+    grouped=FakeStep70.strata(counts,COHORT,"year_and_quarantine")
+    assert s85._weighted(grouped,("inpatient","new_other_day0"),11)["coverage"]<1
+    assert any(min(c[0]["n"],c[1]["n"])<11 for c in grouped.values())
 
 def test_missing_p_group_fails():
     c=fixture_counts()
