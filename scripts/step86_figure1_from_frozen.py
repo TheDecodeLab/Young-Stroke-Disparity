@@ -85,13 +85,13 @@ def draw(data,output):
         ax.set_title("P=0: principal I63 not marked" if p==0 else
                      "P=1: principal I63 marked",fontsize=11,pad=8)
         ax.set_yticks(fig_y,labels=[name for _,name in MODALITIES])
-        ax.invert_yaxis()
         ax.grid(axis="x",alpha=0.16)
         ax.set_xlim(0,50)
         ax.set_xticks((0,10,20,30,40,50))
         ax.tick_params(axis="both",labelsize=9)
         for side in ("left","right","top"):
             ax.spines[side].set_visible(False)
+    axes[0].invert_yaxis()
     f.supxlabel("Patients with a recorded CPT code (%)",fontsize=10,y=0.12)
     keys=[Line2D([0],[0],marker="o",color="none",markerfacecolor="#293136",
                   markeredgecolor="#293136",markersize=7,label="Index inpatient"),
