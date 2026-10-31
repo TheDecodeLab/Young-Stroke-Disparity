@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Step85: independent local-only support diagnostics for the P-standardized contrast.
 
-Reuses frozen Step62/63/68 databases and Step69's 64k-patient aggregate.
+Reuses frozen Step62/63/68 databases and Step69's indexed-patient aggregate.
 Does not open the source ZIP or rescan source diagnosis/procedure tables.
 Private detailed output is not suitable for publication.
 """
