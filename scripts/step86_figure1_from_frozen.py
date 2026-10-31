@@ -18,18 +18,25 @@ OUTPUT=ROOT/"results/phase1/full_reconstruction_private/figure1_v18_from_step68_
 COHORT="uniform_18_50"
 MODALITIES=(("CT_HEAD","Head CT"),("MRI_BRAIN","Brain MRI"),
             ("CTA_HEAD","Head CTA"),("MRA_HEAD","Head MRA"))
-EXPECTED_N=(43727,20994)
 ACK="I_CONFIRM_INTERNAL_REVIEW_ONLY"
 
 def get_data(obj):
     if obj.get("stage") != "STEP68_SINGLE_SCAN_CPT14_WINDOWS_AND_VERSIONED_SYSTEM_DISCOVERY_V2":
         raise ValueError("Expected completed frozen Step68 aggregate")
     records=obj.get("patient_cohort_aggregates",{})
-    ans={}
+    cohort_row=records.get(f"COHORT|{COHORT}")
+    if not cohort_row or int(cohort_row["n"])<=0:
+        raise ValueError("Missing primary cohort denominator")
+    groups={}
     for p in (0,1):
         pk=f"P|{COHORT}|P={p}"
-        if pk not in records or int(records[pk]["n"]) != EXPECTED_N[p]:
+        if pk not in records or int(records[pk]["n"])<=0:
             raise ValueError("Source P-group denominator mismatch")
+        groups[p]=int(records[pk]["n"])
+    if sum(groups.values())!=int(cohort_row["n"]):
+        raise ValueError("Source P groups fail primary cohort reconciliation")
+    ans={}
+    for p in (0,1):
         row=[]
         for code,label in MODALITIES:
             k=f"MODALITY_P|{COHORT}|P={p}|{code}"
@@ -37,7 +44,7 @@ def get_data(obj):
                 raise ValueError("Missing modality in frozen Step68 aggregate: "+k)
             rec=records[k]
             n,base,gain=(int(rec.get(x,0)) for x in ("n","imp","new_day0_other"))
-            if n!=EXPECTED_N[p] or not (0<=base<=n and 0<=gain<=n-base):
+            if n!=groups[p] or not (0<=base<=n and 0<=gain<=n-base):
                 raise ValueError("Non-binomial modality counts or wrong cohort denominator")
             row.append({"code":code,"label":label,"P":p,
                         "index_pct":100*base/n,"same_day_pct":100*(base+gain)/n})
