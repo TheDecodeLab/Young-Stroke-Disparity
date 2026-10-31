@@ -1,0 +1,23 @@
+name: Step81 frozen-checkpoint feasibility synthetic tests
+on:
+  push:
+    branches: [analysis-rebuild-phase1-audit]
+    paths:
+      - scripts/step81_frozen_modality_demographic_gate.py
+      - tests/test_step81_frozen_modality_demographic_gate.py
+      - .github/workflows/step81_synthetic.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fabricated_only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - run: python -m pip install -r requirements.txt
+      - run: python -m py_compile scripts/step81_frozen_modality_demographic_gate.py
+      - run: python -m pytest -q tests/test_step81_frozen_modality_demographic_gate.py

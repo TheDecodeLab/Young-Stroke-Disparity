@@ -1,0 +1,23 @@
+name: Step83 paired gain synthetic regression tests
+on:
+  push:
+    branches: [analysis-rebuild-phase1-audit]
+    paths:
+      - scripts/step83_adjusted_same_day_gain.py
+      - tests/test_step83_adjusted_same_day_gain.py
+      - .github/workflows/step83_synthetic.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fabricated_only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - run: python -m pip install -r requirements.txt
+      - run: python -m py_compile scripts/step83_adjusted_same_day_gain.py
+      - run: python -m pytest -q tests/test_step83_adjusted_same_day_gain.py

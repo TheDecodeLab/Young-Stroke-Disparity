@@ -1,0 +1,31 @@
+name: Step80 synthetic local-only manuscript completion tests
+
+on:
+  push:
+    branches:
+      - analysis-rebuild-phase1-audit
+    paths:
+      - "scripts/step80_finalize_manuscript_local.py"
+      - "tests/test_step80_finalize_manuscript_local.py"
+      - "docs/MANUSCRIPT_ASCERTAINMENT_FULL_TEMPLATE.md"
+      - ".github/workflows/step80_synthetic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fabricated:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install scientific and testing dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile Step80
+        run: python -m py_compile scripts/step80_finalize_manuscript_local.py
+      - name: Run fabricated-only full manuscript/figure/reference tests
+        run: python -m pytest -q tests/test_step80_finalize_manuscript_local.py
