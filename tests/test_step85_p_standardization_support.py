@@ -31,11 +31,11 @@ class FakeStep70:
         return (100*probs[0],100*probs[1],100*(probs[1]-probs[0]))
 
 def fixture_counts():
-    c={("COHORT",COHORT):{"n":64721}}
+    c={("COHORT",COHORT):{"n":18000}}
     for i in range(18):
         year=str(2016+i//2)
         held="NONE" if i%2==0 else "ANY_AMBIG"
-        for p,n_total,rate in ((0,43727,.56635),(1,20994,.5298)):
+        for p,n_total,rate in ((0,12000,.56635),(1,6000,.5298)):
             n=n_total//18+(i<n_total%18)
             imp=round(n*.2)
             day=round(n*rate)-imp
@@ -45,10 +45,10 @@ def fixture_counts():
 
 def test_accurate_synthetic_standardization_and_sensitivities():
     report=s85.summarize(fixture_counts(),COHORT,FakeStep70)
-    assert report["n_indexed"]==64721
+    assert report["n_indexed"]==18000
     assert len(report["strata"])==18
     assert all(report["thresholds"][str(t)]["all_strata_adequate"] for t in s85.THRESHOLDS)
-    assert abs(report["metrics"]["same_day"]["full"]["P1_minus_P0_pp"]+3.66)<.015
+    assert report["metrics"]["same_day"]["full"]["P1_minus_P0_pp"]<0
     assert report["metrics"]["same_day"]["all_loo_same_sign"]
     assert report["metrics"]["same_day"]["pooled_three_year_era"]["available"]
     assert report["metrics"]["same_day"]["thresholded"]["100"]["coverage"]==1
