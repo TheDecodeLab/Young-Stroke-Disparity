@@ -7,7 +7,8 @@ from scripts import step86_figure1_from_frozen as s86
 
 def fake_aggregate():
     rows={}
-    for p,den in enumerate(s86.EXPECTED_N):
+    rows[f"COHORT|{s86.COHORT}"]={"n":9000}
+    for p,den in enumerate((5000,4000)):
         rows[f"P|{s86.COHORT}|P={p}"]={"n":den}
         for i,(mod,_) in enumerate(s86.MODALITIES):
             rows[f"MODALITY_P|{s86.COHORT}|P={p}|{mod}"]={
