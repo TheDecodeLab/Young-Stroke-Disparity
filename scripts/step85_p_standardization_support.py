@@ -130,7 +130,7 @@ def summarize(counts, cohort, s70):
             "all_strata_adequate": all(d["min_P_n"] >= threshold for d in details),
             "strata_below_threshold": sum(d["min_P_n"] < threshold for d in details),
         }
-    # In particular verify the reported -3.66% point same-day result.
+    # Independently cross-check the common-weight estimate against Step70.
     for label, fields in METRICS.items():
         full = _weighted(group, fields)
         independent = s70.standardized(counts, cohort, fields, "year_and_quarantine")
