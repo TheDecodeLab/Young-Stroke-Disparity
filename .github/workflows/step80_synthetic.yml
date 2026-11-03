@@ -16,13 +16,13 @@ permissions:
 
 jobs:
   fabricated:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: "3.9"
+          python-version: "3.11"
       - name: Install scientific and testing dependencies
         run: python -m pip install -r requirements.txt
       - name: Compile Step80
