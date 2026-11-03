@@ -40,3 +40,9 @@ The new [`publication_release_gate.yml`](../.github/workflows/publication_releas
 ## Audit basis and limits
 
 Verified directly using repository metadata, branch comparisons, PR #1, Git trees, `.gitignore`, README, the Phase 1 audit and GitHub Actions job logs. The notebook and legacy patient-level Parquet were **not downloaded or inspected for individual rows**. The safety interpretation follows the repository's own prior audit and explicit PR restrictions. This audit does not establish whether a specific dataset redistribution agreement has been signed, whether historical source code has outstanding licensing issues, or whether private local clones have uncommitted work.
+
+## Verified GitHub Actions outcome after CI repair
+
+At analysis branch commit `a8c186d375962f8d02a3bc2a7d269595e412897e`, GitHub Actions ran the consolidated synthetic test suite with CPython 3.11.17 and statsmodels 0.14.6. It reported **830 passed and 2 non-fatal warnings**. The initial dependency-compatibility failures with statsmodels 0.15 were resolved by pinning the tested 0.14 series. Three README assertions were updated or made current without restoring a false pre-reconstruction status statement, and a figure-validation error message was corrected.
+
+The separate tracked-file safety job reported **five blocked paths**. These are the existing legacy Parquet, notebook with saved outputs and three historical study aggregate CSVs already described above. Its failure is intentional and must not be bypassed to make the badge green. The overall workflow remains failed until those files have a reviewed disposition. The completed synthetic-tests job is green, but publication release is **still blocked**.
