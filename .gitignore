@@ -207,3 +207,21 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Public research-code safety boundaries. These rules apply only to newly added
+# files, and DO NOT remove historically tracked files or Git history.
+*.parquet
+*.arrow
+*.feather
+*.sqlite
+*.sqlite3
+*.db
+*.pkl
+*.pickle
+*.zip
+*_LOCAL_ONLY.*
+*_INTERNAL_ONLY.*
+dataset/*patient*.csv
+dataset/*encounter*.csv
+dataset/*diagnosis*.csv
+dataset/*procedure*.csv

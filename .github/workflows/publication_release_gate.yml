@@ -1,0 +1,38 @@
+name: Public release safety and synthetic tests
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [analysis-rebuild-phase1-audit]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-tree-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Reject historical tracked data and saved notebook results
+        run: python scripts/check_public_release_tree.py
+
+  synthetic-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install synthetic test dependencies
+        run: python -m pip install -r requirements.txt python-docx
+      - name: Compile scripts
+        run: python -m compileall -q scripts
+      - name: Run synthetic test suite
+        run: python -m pytest -q
