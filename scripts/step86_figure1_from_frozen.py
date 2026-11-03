@@ -34,7 +34,7 @@ def get_data(obj):
             raise ValueError("Source P-group denominator mismatch")
         groups[p]=int(records[pk]["n"])
     if sum(groups.values())!=int(cohort_row["n"]):
-        raise ValueError("Source P groups fail primary cohort reconciliation")
+        raise ValueError("Source P-group denominator totals fail primary cohort reconciliation")
     ans={}
     for p in (0,1):
         row=[]

@@ -150,7 +150,7 @@ def test_readme_has_one_active_plan_and_explicit_historical_warning():
     assert readme.count("## CURRENT PLAN OF RECORD")==1
     assert "IMAGING_CODE_CITATION_REGISTER.md" in readme
     assert "historical implementation records" in readme
-    assert "No source-wide revised Research Network scan executed" in readme
+    assert "Primary empirical analyses require access to the approved local research datasets" in readme
 
 
 def test_public_inclusion_registry_evidence_urls_match_code_crosswalk():

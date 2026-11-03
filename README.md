@@ -4,7 +4,7 @@
 
 This project examines how attributing recorded neuroimaging procedure codes to different encounters changes reported code capture among young adults with ischemic-stroke diagnosis codes. It studies the measurement properties of administrative data. Recorded procedure codes do not establish completed imaging, episode membership, or clinical care quality.
 
-## Current analysis
+## CURRENT PLAN OF RECORD
 
 The active development branch is `analysis-rebuild-phase1-audit`. The original `master` branch retains the older Diamond/NIS research history. Pull request [#1](https://github.com/TheDecodeLab/Young-Stroke-Disparity/pull/1) remains **draft and unmerged** while publication and historical data-governance checks are pending.
 
@@ -30,7 +30,7 @@ The last command intentionally fails until historical tracked data and notebooks
 
 ## Historical development and release status
 
-Earlier staged Methods and data-quality decision records remain in [`docs/`](docs/) and Git history. Some reflect hypotheses or implementation states later superseded by the Research Network reconstruction. Do not use them as current manuscript results without verifying the corresponding version.
+Earlier staged Methods and data-quality decision records remain in [`docs/`](docs/) and Git history as historical implementation records. The research was conducted under an approved Penn State research protocol. The earlier [Research Network pre-reconstruction gate](docs/RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md), [data steward request](docs/RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md), and Step58 local bounded technical pilot document planning stages that preceded the completed Research Network reconstruction. The [imaging code citation register](docs/IMAGING_CODE_CITATION_REGISTER.md) also records historical codebook work. Some reflect hypotheses or implementation states later superseded by the Research Network reconstruction. Do not use them as current manuscript results without verifying the corresponding version.
 
 The public repository presently contains a legacy derived patient-level Parquet dataset and a notebook with saved outputs. A previous manuscript draft also exists in older commit history. Publication requires an approved disposition for those files and a history-remediation plan. Simply deleting a file at the current commit or merging the active branch does not remove it from Git history.
 
