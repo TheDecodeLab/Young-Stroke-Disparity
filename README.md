@@ -1,126 +1,41 @@
-## Young Stroke Disparity
+# Young Stroke Neuroimaging: Encounter Attribution and Recorded Procedure Codes
 
-This repository contains code and analysis for studying **disparities in young stroke** outcomes. It appears to focus on exploratory data analysis and statistical modeling in a Jupyter notebook (`disparity_young-claen.ipynb`), with the goal of understanding how stroke characteristics and outcomes differ across populations.
+**Research code repository. Publication release is currently blocked pending the [release audit](docs/PUBLICATION_RELEASE_AUDIT_2026-11-02.md).**
 
-> If this description is not perfectly aligned with your project’s goals, feel free to tell me and I can refine the wording or add more technical detail.
+This project examines how attributing recorded neuroimaging procedure codes to different encounters changes reported code capture among young adults with ischemic-stroke diagnosis codes. It studies the measurement properties of administrative data. Recorded procedure codes do not establish completed imaging, episode membership, or clinical care quality.
 
----
+## CURRENT PLAN OF RECORD
 
-### Study Workflow (Flowchart)
+The active development branch is `analysis-rebuild-phase1-audit`. The original `master` branch retains the older Diamond/NIS research history. Pull request [#1](https://github.com/TheDecodeLab/Young-Stroke-Disparity/pull/1) remains **draft and unmerged** while publication and historical data-governance checks are pending.
 
-Below is a high-level overview of how the study is conducted, from data to results.
+The primary study uses a locally held TriNetX Research Network export. The analysis defines an index inpatient I63-coded encounter and measures neuroimaging code presence under alternative encounter attribution rules. Exploratory comparisons include demographic coding and encounter-key ambiguity. A separate historical TriNetX Diamond measurement analysis is descriptive context, not external validation. Historical NIS work is not part of the current inferential study.
 
-```mermaid
-flowchart TD
-    A[Define research question - young stroke disparities] --> B[Obtain stroke dataset from approved source]
-    B --> C[Apply inclusion and exclusion criteria - young stroke cohort]
-    C --> D[Data cleaning and preprocessing - missing values, coding, outliers]
-    D --> E[Feature engineering - risk factors, demographics, clinical variables]
-    E --> F[Exploratory data analysis - tables and visualizations]
-    F --> G[Statistical modeling or ML - e.g. regression or risk modeling]
-    G --> H[Evaluate models - performance, assumptions, sensitivity]
-    H --> I[Interpret disparities - compare groups, adjust for confounders]
-    I --> J[Report results and figures - manuscript, slides, dashboards]
-```
+## Reproducibility
 
----
+- Pipeline and staged consistency tests: [`scripts/`](scripts/) and [`tests/`](tests/)
+- Step 88, paired demographic contrasts and patient-equivalent bootstrap: [`scripts/step88_paired_demographic_rule_contrasts.py`](scripts/step88_paired_demographic_rule_contrasts.py)
+- Step 89, source-header and medication/procedure feasibility: [`scripts/step89_treatment_source_feasibility.py`](scripts/step89_treatment_source_feasibility.py)
+- Historical measurement-window sensitivity: [`docs/STEP87_S3_AGGREGATE_VALIDATION.md`](docs/STEP87_S3_AGGREGATE_VALIDATION.md)
+- Public file safety gate: [`scripts/check_public_release_tree.py`](scripts/check_public_release_tree.py)
 
-### Project Structure
-
-- **`disparity_young-claen.ipynb`**: Main analysis notebook for data cleaning, exploration, modeling, and visualization related to young stroke disparities.
-- **`.gitignore`**: Git ignore rules to keep temporary, large, or sensitive files out of version control.
-
-You may also have additional data or results files locally (for example, CSVs, parquet files, or figures) that are not committed to git.
-
----
-
-### Getting Started
-
-- **Prerequisites**
-  - Python 3.9+ (any recent version should work)
-  - `pip` or `conda` for managing packages
-  - Jupyter (Notebook or Lab)
-
-- **Clone the repository**
+Synthetic tests can run without source clinical datasets. Primary empirical analyses require access to the approved local research datasets and private checkpoints. The source ZIP, patient-level intermediate tables, and manuscript-specific protected aggregates are **not intended for redistribution** in this code repository. See the source-specific approved access conditions for any release authorization.
 
 ```bash
-git clone <YOUR_REPO_URL>.git
-cd Young-Stroke-Disparity
+python -m pip install -r requirements.txt
+python -m pytest -q
+python scripts/check_public_release_tree.py
 ```
 
-- **Create and activate a virtual environment (recommended)**
+The last command intentionally fails until historical tracked data and notebooks are reviewed or removed from the releasable tree. **A passing unit-test suite does not authorize publication of the repository or its data.**
 
-```bash
-python -m venv .venv
-source .venv/bin/activate   # on macOS/Linux
-# .venv\Scripts\activate    # on Windows (PowerShell/CMD)
-```
+## Historical development and release status
 
-- **Install dependencies**
+Earlier staged Methods and data-quality decision records remain in [`docs/`](docs/) and Git history as historical implementation records. The research was conducted under an approved Penn State research protocol. The earlier [Research Network pre-reconstruction gate](docs/RESEARCH_NETWORK_PRE_RECONSTRUCTION_GATE.md), [data steward request](docs/RESEARCH_NETWORK_DATA_STEWARD_REQUEST.md), and Step58 local bounded technical pilot document planning stages that preceded the completed Research Network reconstruction. The [imaging code citation register](docs/IMAGING_CODE_CITATION_REGISTER.md) also records historical codebook work. Some reflect hypotheses or implementation states later superseded by the Research Network reconstruction. Do not use them as current manuscript results without verifying the corresponding version.
 
-If you already maintain a `requirements.txt` or `environment.yml`, install from that file, for example:
+The public repository presently contains a legacy derived patient-level Parquet dataset and a notebook with saved outputs. A previous manuscript draft also exists in older commit history. Publication requires an approved disposition for those files and a history-remediation plan. Simply deleting a file at the current commit or merging the active branch does not remove it from Git history.
 
-```bash
-pip install -r requirements.txt
-```
+For the exact release blockers, branch cleanup sequence, and checks, see [Publication release audit](docs/PUBLICATION_RELEASE_AUDIT_2026-11-02.md).
 
-If not, a typical stack for this type of analysis is:
+## License
 
-```bash
-pip install jupyter pandas numpy matplotlib seaborn scikit-learn statsmodels
-```
-
----
-
-### Running the Analysis
-
-1. **Start Jupyter**
-
-   ```bash
-   jupyter notebook
-   ```
-
-2. In the browser, open **`disparity_young-claen.ipynb`**.
-3. Run the cells from top to bottom, adjusting any configuration paths (for example, where your raw data files live) as needed.
-
----
-
-### Data
-
-Because stroke and health data often involve sensitive personal information:
-
-- **Raw data is typically not committed** to this repository.
-- You may need to obtain the dataset from its original, approved source (for example, a clinical registry, hospital system, or public health database) and store it locally in a secure location.
-
-If there is a specific expected folder structure for data (for example, `data/raw`, `data/processed`), you can document it here. Example:
-
-- `data/raw/` – Original datasets (not version-controlled)
-- `data/processed/` – Cleaned and transformed data used in the notebook
-- `outputs/` – Figures, tables, and model outputs
-
----
-
-### Reproducibility Notes
-
-- **Environment**: Use a dedicated virtual environment and pin versions in `requirements.txt` (or use `pip freeze > requirements.txt`) once your setup is stable.
-- **Randomness**: If the analysis uses random splits or simulations, set a random seed to make results reproducible.
-- **Data paths**: Consider using configuration variables at the top of the notebook for all file paths, so they are easy to update.
-
----
-
-### Contributing
-
-If you or collaborators plan to extend this work:
-
-- Use feature branches and pull requests.
-- Keep notebooks clean:
-  - Clear unnecessary intermediate outputs.
-  - Use clear, descriptive markdown cells to explain each step.
-- Consider refactoring repeated logic into reusable Python modules (for example, `src/` or `utils/`) as the project grows.
-
----
-
-### License
-
-Specify a license for this work if you plan to share or publish it (for example, MIT, Apache 2.0, or an institutional/research-specific license). For now, this section is a placeholder.
-
+See [`LICENSE`](LICENSE) for code licensing. That code license does **not** grant rights to redistribute clinical research datasets or third-party codebooks and source materials.

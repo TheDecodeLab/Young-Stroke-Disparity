@@ -1,0 +1,15 @@
+{
+  "decision": "NOT_APPROVED",
+  "investigator_reviewer": "",
+  "clinical_reviewer": "",
+  "approval_date": "",
+  "codebook_sha256": "",
+  "archive_members_sha256": "",
+  "study_population_identifier": "principal_I63_2018_2019_approx_age19_50_recognized_sex",
+  "primary_window_days_each_side": 1,
+  "maximum_extraction_window_days_each_side": 7,
+  "recorded_code_outcome_only": true,
+  "no_verified_encounter_claims": true,
+  "data_use_review_complete": false,
+  "notes": "TEMPLATE ONLY. Copy to approved private storage and complete only after real clinical and data-governance sign-off. Never commit the approved copy."
+}
